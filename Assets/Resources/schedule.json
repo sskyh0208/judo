@@ -1,0 +1,7 @@
+{
+    "scheduleArray": [
+        {"Month": "3", "Day": "", "Week": "3", "DayOfWeek": "0", "EventName": "全国高等学校選手権大会", "EventId": "1"},
+        {"Month": "7", "Day": "22", "Week": "", "DayOfWeek": "", "EventName": "金鷲旗高校大会", "EventId": "2"},
+        {"Month": "8", "Day": "", "Week": "2", "DayOfWeek": "0", "EventName": "インターハイ柔道競技", "EventId": "3"}
+    ]
+}
