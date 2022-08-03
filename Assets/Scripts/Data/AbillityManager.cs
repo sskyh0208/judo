@@ -21,6 +21,34 @@ public class AbillityManager
         }
         return targetWazaName;
     }
+
+    // 技タイプで技IDをすべて取得する
+    public List<string> GetWazaIdArrayWithType(string typeId)
+    {
+        List<string> resultWazaArray = new List<string>();
+        foreach (Waza waza in wazaList)
+        {
+            if(waza.typeId == typeId)
+            {
+                resultWazaArray.Add(waza.id);
+            }
+        }
+        return resultWazaArray;
+    }
+
+    // 技種類で技IDをすべて取得する
+    public List<string> GetWazaIdArrayWithGroup(string groupId)
+    {
+        List<string> resultWazaArray = new List<string>();
+        foreach (Waza waza in wazaList)
+        {
+            if(waza.groupId == groupId)
+            {
+                resultWazaArray.Add(waza.id);
+            }
+        }
+        return resultWazaArray;
+    }
 }
 
 [Serializable]

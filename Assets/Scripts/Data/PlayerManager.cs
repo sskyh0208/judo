@@ -277,15 +277,15 @@ public class PlayerManager
     }
 
     // 練習の成果を反映
-    public void GetTrainingExp(List<TrainingExp> trainingExpArray)
+    public void GetTrainingExp(List<Tuple<string, int>> trainingExpArray)
     {
-        foreach (TrainingExp exp in trainingExpArray)
+        foreach (Tuple<string, int> exp in trainingExpArray)
         {
             foreach (Abillity abillity in abillities)
             {
-                if(exp.id == abillity.id && ! abillity.CheckLimit())
+                if(exp.Item1 == abillity.id && ! abillity.CheckLimit())
                 {   
-                    abillity.UpdateExpPoint(exp.exp);
+                    abillity.UpdateExpPoint(exp.Item2);
                 }
             }
         }
@@ -408,6 +408,11 @@ public class Abillity
         return displayString;
     }
 
+    private void SetDisplayString()
+    {
+        displayString = GenerateDisplayString();
+    }
+
     // 限界値かどうか判定する
     public bool CheckLimit()
     {   
@@ -424,14 +429,11 @@ public class Abillity
                 expPoint -= this.status;
                 this.exp = expPoint;
             }
+            if(CheckLimit())
+            {
+                break;
+            }
         }
+        SetDisplayString();
     }
-}
-
-
-public class TrainingExp
-{
-    // AbillityID
-    public string id;
-    public int exp;
 }

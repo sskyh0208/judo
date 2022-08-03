@@ -34,6 +34,8 @@ public class MainController : MonoBehaviour
         GameData.instance.NextDate();
         DispayDateText();
         checkEvent();
+
+        GameData.instance.schoolManager.getPlayerSchool(GameData.instance.player).DoneTraining();
     }
 
     private void checkEvent()
