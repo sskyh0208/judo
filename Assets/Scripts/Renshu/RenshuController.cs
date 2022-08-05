@@ -9,17 +9,24 @@ public class RenshuController : MonoBehaviour
 {
 
     private GameObject trainingMenuPanel;
+    private GameObject trainingMenuParent;
+    School targetSchool;
     private void Start() {
         trainingMenuPanel = GameObject.Find("TrainingMenuPanel");
+        targetSchool = GameData.instance.schoolManager.GetSchool(GameData.instance.player.schoolId);
+        trainingMenuParent = GameObject.Find("TrainingMenuParent");
+
+        if(targetSchool.trainingMenu.Count > 0)
+        {
+            SetTrainingMenuInput();
+        }
     }
     public void SetTrainingMenu()
     {
-        School targetSchool = GameData.instance.schoolManager.getPlayerSchool(GameData.instance.player);
-
         List<Tuple<RectTransform, Image, int>> barTrainingList = new List<Tuple<RectTransform, Image, int>>();
         List<Tuple<string, int>> trainingMenuTuple = new List<Tuple<string, int>>();
         int totalTrainingMinutes = 0;
-        foreach (Transform child in GameObject.Find("TrainingMenuParent").transform)
+        foreach (Transform child in trainingMenuParent.transform)
         {   
             int trainingMinutes = Int32.Parse(child.transform.Find("Input").GetComponent<InputField>().text);
             if(trainingMinutes == 0){continue;}
@@ -67,6 +74,35 @@ public class RenshuController : MonoBehaviour
         foreach (Transform child in trainingMenuPanel.transform)
         {
             Destroy(child.gameObject);
+        }
+    }
+
+    private void SetTrainingMenuInput()
+    {
+        foreach (Tuple<string, int> trainingMenu in targetSchool.trainingMenu)
+        {
+            InputField setField;
+            switch (trainingMenu.Item1)
+            {
+                default:
+                case "ランニング":
+                    setField = trainingMenuParent.transform.Find("Running").transform.Find("Input").GetComponent<InputField>();
+                    break;
+                case "ダッシュ":
+                    setField = trainingMenuParent.transform.Find("Dash").transform.Find("Input").GetComponent<InputField>();
+                    break;
+                case "階段ダッシュ":
+                    setField = trainingMenuParent.transform.Find("KaidanDash").transform.Find("Input").GetComponent<InputField>();
+                    break;
+                case "自重トレ":
+                    setField = trainingMenuParent.transform.Find("SelfWeight").transform.Find("Input").GetComponent<InputField>();
+                    break;
+                case "マシントレ":
+                    setField = trainingMenuParent.transform.Find("MachineWeight").transform.Find("Input").GetComponent<InputField>();
+                    break;
+            }
+            Debug.Log(trainingMenu.Item1 + " : " + trainingMenu.Item2.ToString());
+            setField.text = trainingMenu.Item2.ToString();
         }
     }
 }

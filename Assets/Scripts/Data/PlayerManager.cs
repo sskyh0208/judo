@@ -6,6 +6,7 @@ using UnityEngine;
 
 public class PlayerManager
 {
+    public string id;
     public string nameKaki;
     public string nameYomi;
     // 誕生日
@@ -33,8 +34,15 @@ public class PlayerManager
     // 寝技
     public string waza1String;
 
-    public PlayerManager(string nameKaki, string nameYomi, DateTime generateDt, int positionId, string placeId, string schoolId, int sense)
+    // 大会成績
+    public int cityRank;
+    public int placeRank;
+    public int regionRank;
+    public int countryRank;
+
+    public PlayerManager(string id, string nameKaki, string nameYomi, DateTime generateDt, int positionId, string placeId, string schoolId, int sense)
     {
+        this.id = id;
         this.nameKaki = nameKaki;
         this.nameYomi = nameYomi;
         this.birthDay = GeneratePlayerBirthDay(generateDt);
@@ -50,6 +58,10 @@ public class PlayerManager
         this.staminaString = GetAbillity("902").displayString;
         this.waza0String = GetAbillityTypeStatusDisplayString("0");
         this.waza1String = GetAbillityTypeStatusDisplayString("1");
+        this.cityRank = 0;
+        this.placeRank = 0;
+        this.regionRank = 0;
+        this.countryRank = 0;
         CorrectionAbility();
     }
 
@@ -289,6 +301,14 @@ public class PlayerManager
                 }
             }
         }
+    }
+
+    public void ClearResultRank()
+    {
+        this.cityRank = 0;
+        this.placeRank = 0;
+        this.regionRank = 0;
+        this.countryRank = 0;
     }
 }
 

@@ -9,87 +9,93 @@ using UnityEngine;
 [Serializable]
 public class SchoolManager
 {
-    public School[] schoolArray;
+    public SchoolMst[] schoolMst;
+    public Dictionary<string, School> schoolList;
 
-    public School getPlayerSchool(PlayerManager player)
+    public void SetAllSchool()
     {
-        string placeId = player.placeId;
-        string schoolId = player.schoolId;
-
-        School target = new School();
-        foreach(School school in schoolArray)
+        schoolList = new Dictionary<string, School>();
+        foreach (SchoolMst data in schoolMst)
         {
-            if(school.placeId == placeId && school.id == schoolId)
-            {
-                target = school;
-            }
+            schoolList.Add(data.id, new School(data.id, data.placeId, data.name, data.schoolRank));
         }
-        return target;
     }
 
-    public School getSchool(string placeId, string schoolId)
+    public School GetSchool(string schoolId)
     {
-        School target = new School();
-        foreach(School school in schoolArray)
-        {
-            if(school.placeId == placeId && school.id == schoolId)
-            {
-                target = school;
-            }
-        }
-        return target;
+        return schoolList[schoolId];
     }
 
-    public List<School> getPlaceAllSchool(string placeId)
+    public List<School> GetPlaceAllSchool(string placeId)
     {
-        List<School> targetPlaceSchools = new List<School>();
-        foreach(School school in schoolArray)
+        List<School> targetSchools = new List<School>();
+        foreach (string key in schoolList.Keys)
         {
-            if(school.placeId == placeId)
+            if (key.Substring(0, 2) == placeId)
             {
-                targetPlaceSchools.Add(school);
+                targetSchools.Add(schoolList[key]);
             }
         }
-        return targetPlaceSchools;
+        return targetSchools;
     }
 
     // 監督を設定する
-    public void setSuperVoisor(string placeId, string schoolId, PlayerManager supervisor)
+    public void SetSuperVoisor(string schoolId, PlayerManager supervisor)
     {
-        foreach(School school in schoolArray)
-        {
-            if(school.placeId == placeId && school.id == schoolId)
-            {
-                school.supervisor = supervisor;
-                break;
-            }
-        }
+        schoolList[schoolId].supervisor = supervisor;
+    }
+
+    public PlayerManager GetSchoolMember(string memberId)
+    {
+        return GetSchool(memberId.Substring(4, 9)).GetMember(memberId);
     }
 }
 
 [Serializable]
+public class SchoolMst
+{
+    public string id;
+    public string placeId;
+    public string name;
+    public int schoolRank;
+}
+
 public class School
 {
     public string id;
     public string placeId;
     public string name;
-    public int rank;
+    public int schoolRank;
 
     // 顧問
     public PlayerManager supervisor;
 
     // 部員
-    public List<PlayerManager> members;
+    public Dictionary<string, PlayerManager> members;
 
-    public int trainingLimitMinutes = 120;
-    public List<Tuple<string, int>> trainingMenu;
+    public int trainingLimitMinutes;
+    public List<Tuple<string, int>> trainingMenu = new List<Tuple<string, int>>();
+    public List<Tuple<string, int>> trainingMenuResult = new List<Tuple<string, int>>();
+
+    public School(string id, string placeId, string name, int schoolRank)
+    {
+        this.id = id;
+        this.placeId = placeId;
+        this.name = name;
+        this.schoolRank = schoolRank;
+        this.supervisor = null;
+        this.members = new Dictionary<string, PlayerManager>();
+        this.trainingLimitMinutes = 120;
+        this.trainingMenu = new List<Tuple<string, int>>();
+        this.trainingMenuResult = new List<Tuple<string, int>>();
+    }
 
     public int GenerateThisYearLimitMembersNum()
     {
         float membersDefaultNum = 10.0f;
         float membersMaxWeight;
         System.Random r = new System.Random();
-        switch (rank)
+        switch (schoolRank)
         {
             default:
             case 1:
@@ -115,16 +121,25 @@ public class School
         return (int)(membersDefaultNum * membersMaxWeight);
     }
 
+    // 学年の降順で部員を取得
     public List<PlayerManager> GetSortDescMembers()
     {
-        return members.OrderByDescending(member => member.positionId).ToList();
+        return members.Values.OrderByDescending(member => member.positionId).ToList();
+    }
+
+    // IDで部員を取得
+    public PlayerManager GetMember(string memberId)
+    {
+        {
+            return members[memberId];
+        }
     }
 
     public void DoneTraining()
     {
-        foreach (PlayerManager member in members)
+        foreach (PlayerManager member in members.Values)
         {
-            member.GetTrainingExp(trainingMenu);
+            member.GetTrainingExp(trainingMenuResult);
         }
     }
 
@@ -137,10 +152,12 @@ public class School
     public void ClearTrainingMenu()
     {
         this.trainingMenu = new List<Tuple<string, int>>();
+        this.trainingMenuResult = new List<Tuple<string, int>>();
     }
 
     public void SetTrainingMenu(string trainingName, int minutes)
     {
+        this.trainingMenu.Add(new Tuple<string, int>(trainingName, minutes));
         switch (trainingName)
         {
             default:
@@ -170,16 +187,16 @@ public class School
         int secondExp = 20;
         // 監督の指導力係数
         // 設備の効果係数
-        this.trainingMenu.Add(new Tuple<string, int>("902", mainExp * minutes));
+        this.trainingMenuResult.Add(new Tuple<string, int>("902", mainExp * minutes));
         // 立技すべて
         foreach (string wazaId in GameData.instance.abillityManager.GetWazaIdArrayWithType("0"))
         {
-            this.trainingMenu.Add(new Tuple<string, int>(wazaId, secondExp * minutes));
+            this.trainingMenuResult.Add(new Tuple<string, int>(wazaId, secondExp * minutes));
         }
         // 寝技すべて
         foreach (string wazaId in GameData.instance.abillityManager.GetWazaIdArrayWithType("1"))
         {
-            this.trainingMenu.Add(new Tuple<string, int>(wazaId, secondExp * minutes));
+            this.trainingMenuResult.Add(new Tuple<string, int>(wazaId, secondExp * minutes));
         }
     }
 
@@ -191,16 +208,16 @@ public class School
         int secondExp = 20;
         // 監督の指導力係数
         // 設備の効果係数
-        this.trainingMenu.Add(new Tuple<string, int>("901", mainExp * minutes));
+        this.trainingMenuResult.Add(new Tuple<string, int>("901", mainExp * minutes));
         // 立技すべて
         foreach (string wazaId in GameData.instance.abillityManager.GetWazaIdArrayWithType("0"))
         {
-            this.trainingMenu.Add(new Tuple<string, int>(wazaId, secondExp * minutes));
+            this.trainingMenuResult.Add(new Tuple<string, int>(wazaId, secondExp * minutes));
         }
         // 寝技すべて
         foreach (string wazaId in GameData.instance.abillityManager.GetWazaIdArrayWithType("1"))
         {
-            this.trainingMenu.Add(new Tuple<string, int>(wazaId, secondExp * minutes));
+            this.trainingMenuResult.Add(new Tuple<string, int>(wazaId, secondExp * minutes));
         }
     }
 
@@ -213,17 +230,17 @@ public class School
         int thirdExp = 20;
         // 監督の指導力係数
         // 設備の効果係数
-        this.trainingMenu.Add(new Tuple<string, int>("902", mainExp * minutes));
-        this.trainingMenu.Add(new Tuple<string, int>("901", secondExp * minutes));
+        this.trainingMenuResult.Add(new Tuple<string, int>("902", mainExp * minutes));
+        this.trainingMenuResult.Add(new Tuple<string, int>("901", secondExp * minutes));
         // 立技すべて
         foreach (string wazaId in GameData.instance.abillityManager.GetWazaIdArrayWithType("0"))
         {
-            this.trainingMenu.Add(new Tuple<string, int>(wazaId, thirdExp * minutes));
+            this.trainingMenuResult.Add(new Tuple<string, int>(wazaId, thirdExp * minutes));
         }
         // 寝技すべて
         foreach (string wazaId in GameData.instance.abillityManager.GetWazaIdArrayWithType("1"))
         {
-            this.trainingMenu.Add(new Tuple<string, int>(wazaId, thirdExp * minutes));
+            this.trainingMenuResult.Add(new Tuple<string, int>(wazaId, thirdExp * minutes));
         }
     }
 
@@ -235,16 +252,16 @@ public class School
         int secondExp = 20;
         // 監督の指導力係数
         // 設備の効果係数
-        this.trainingMenu.Add(new Tuple<string, int>("900", mainExp * minutes));
+        this.trainingMenuResult.Add(new Tuple<string, int>("900", mainExp * minutes));
         // 立技すべて
         foreach (string wazaId in GameData.instance.abillityManager.GetWazaIdArrayWithType("0"))
         {
-            this.trainingMenu.Add(new Tuple<string, int>(wazaId, secondExp * minutes));
+            this.trainingMenuResult.Add(new Tuple<string, int>(wazaId, secondExp * minutes));
         }
         // 寝技すべて
         foreach (string wazaId in GameData.instance.abillityManager.GetWazaIdArrayWithType("1"))
         {
-            this.trainingMenu.Add(new Tuple<string, int>(wazaId, secondExp * minutes));
+            this.trainingMenuResult.Add(new Tuple<string, int>(wazaId, secondExp * minutes));
         }
     }
     // マシントレ
@@ -255,16 +272,16 @@ public class School
         int secondExp = 10;
         // 監督の指導力係数
         // 設備の効果係数
-        this.trainingMenu.Add(new Tuple<string, int>("900", mainExp * minutes));
+        this.trainingMenuResult.Add(new Tuple<string, int>("900", mainExp * minutes));
         // 立技すべて
         foreach (string wazaId in GameData.instance.abillityManager.GetWazaIdArrayWithType("0"))
         {
-            this.trainingMenu.Add(new Tuple<string, int>(wazaId, secondExp * minutes));
+            this.trainingMenuResult.Add(new Tuple<string, int>(wazaId, secondExp * minutes));
         }
         // 寝技すべて
         foreach (string wazaId in GameData.instance.abillityManager.GetWazaIdArrayWithType("1"))
         {
-            this.trainingMenu.Add(new Tuple<string, int>(wazaId, secondExp * minutes));
+            this.trainingMenuResult.Add(new Tuple<string, int>(wazaId, secondExp * minutes));
         }
     }
 }

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class GameData : MonoBehaviour
@@ -13,6 +14,14 @@ public class GameData : MonoBehaviour
     public PlayerManager player {get; set;}
     public AbillityManager abillityManager;
     public NameManager nameManager;
+    public Dictionary<string, string[]> schoolCityRank;
+    public Dictionary<string, string[]> schoolPlaceRank;
+    public Dictionary<string, string[]> schoolRegionRank;
+    public Dictionary<string, string[]> schoolCountryRank;
+    public Dictionary<string, string[]> memberCityRank;
+    public Dictionary<string, string[]> memberPlaceRank;
+    public Dictionary<string, string[]> memberRegionRank;
+    public Dictionary<string, string[]> memberCountryRank;
     private void Awake()
     {
         if (instance == null)
@@ -31,6 +40,7 @@ public class GameData : MonoBehaviour
         placeManager = LoadJapanData();
         scheduleManager =LoadScheduleData();
         schoolManager = LoadSchoolData();
+        schoolManager.SetAllSchool();
         abillityManager = LoadAbillityData();
         storyDate = GenerateNewStartDate();
         nameManager = LoadNameData();
@@ -99,17 +109,18 @@ public class GameData : MonoBehaviour
     public void GenerateSupervisor(DateTime generateDt)
     {
         System.Random r = new System.Random();
-        foreach (School school in schoolManager.schoolArray)
+        foreach (School school in schoolManager.schoolList.Values)
         {
-            int minSense = school.rank - 1;
+            int minSense = school.schoolRank - 1;
             if(minSense < 1)
             {
                 minSense = 1;
             }
-            int maxSense = school.rank + 1;
+            int maxSense = school.schoolRank + 1;
             string[] name = GameData.instance.nameManager.GenarateRandomName();
             DateTime newGenerateDt = new DateTime(generateDt.Year - r.Next(22, 55), generateDt.Month, generateDt.Day);
-            school.supervisor = new PlayerManager(name[0], name[1], newGenerateDt, 101, school.placeId, school.id, r.Next(minSense, school.rank));
+            string id = string.Format("{0}{1}{2}", generateDt.Year, school.id, "0");
+            school.supervisor = new PlayerManager(id, name[0], name[1], newGenerateDt, 101, school.placeId, school.id, r.Next(minSense, school.schoolRank));
         }
     }
 
@@ -118,15 +129,11 @@ public class GameData : MonoBehaviour
         System.Random r = new System.Random();
 
         // 経験者　～　強化選手をランダムで配置
-        foreach (School school in schoolManager.schoolArray)
+        foreach (School school in schoolManager.schoolList.Values)
         {
-            if(school.members == null)
-            {
-                school.members = new List<PlayerManager>();
-            }
             int schoolLimitMembersNum = school.GenerateThisYearLimitMembersNum();
-            int maxSense = school.rank;
-            int minSense = school.rank - 2;
+            int maxSense = school.schoolRank;
+            int minSense = school.schoolRank - 2;
             if (maxSense < 2)
             {
                 maxSense = 2;
@@ -137,21 +144,24 @@ public class GameData : MonoBehaviour
             }
             for(int i = 0; i < schoolLimitMembersNum; i++){
                 string[] name = GameData.instance.nameManager.GenarateRandomName();
-                school.members.Add(
-                    new PlayerManager(name[0], name[1], generateDt, generateGrade, school.placeId, school.id, r.Next(minSense, maxSense))
+                string id = string.Format("{0}{1}{2}", generateDt.Year, school.id, i + 1);
+                school.members[id] = new PlayerManager(
+                    id, name[0], name[1], generateDt, generateGrade, school.placeId, school.id, r.Next(minSense, maxSense)
                 );
             }
         }
 
         // 金メダリストレベル選手作る
         int genSense6PlayerNum = r.Next(1, 3);
+        List<string> schoolIds = schoolManager.schoolList.Keys.ToList();
         for(int i = 0; i < genSense6PlayerNum; i++){
             string[] name = GameData.instance.nameManager.GenarateRandomName();
-            int targetSchoolNum = r.Next(0, schoolManager.schoolArray.Length);
-            schoolManager.schoolArray[targetSchoolNum].members.Add(
-                new PlayerManager(name[0], name[1], generateDt, generateGrade, schoolManager.schoolArray[targetSchoolNum].placeId, schoolManager.schoolArray[targetSchoolNum].id, 6)
-            );
-            Debug.Log(schoolManager.schoolArray[targetSchoolNum].name);
+            string targetSchoolId = schoolIds[r.Next(0, schoolIds.Count)];
+            string id = string.Format("{0}{1}{2}", generateDt.Year, targetSchoolId, schoolManager.schoolList[targetSchoolId].members.Count + i + 1);
+            schoolManager.schoolList[targetSchoolId].members[id] = 
+                new PlayerManager(
+                    id,name[0], name[1], generateDt, generateGrade, targetSchoolId.Substring(0, 2), targetSchoolId, 6
+                );
         }
     }
 }

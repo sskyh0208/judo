@@ -123,7 +123,7 @@ public class NewGameController : MonoBehaviour
         GameObject Viewport = schoolScrollView.transform.Find("Viewport").gameObject;
         GameObject schoolScrollViewContent = Instantiate(schoolScrollViewContentPrefab, Viewport.transform);
         schoolScrollViewContent.name = place.id;
-        List<School> targetSchoolArray = GameData.instance.schoolManager.getPlaceAllSchool(place.id);
+        List<School> targetSchoolArray = GameData.instance.schoolManager.GetPlaceAllSchool(place.id);
         foreach (School school in targetSchoolArray)
         {
             GameObject _text = Instantiate(textPrefab, schoolScrollViewContent.transform);
@@ -168,19 +168,21 @@ public class NewGameController : MonoBehaviour
         string defaultPlayerNameKaki = "山田太郎";
         nameInputField.text = defaultPlayerNameKaki;
         int playerSense = new System.Random().Next(7, 7);
-        Debug.Log(playerSense);
-        PlayerManager player = new PlayerManager(defaultPlayerNameKaki, "", new DateTime(1988, 2, 8), positionId: 101, "0", "0", playerSense);
+        PlayerManager player = new PlayerManager("0", defaultPlayerNameKaki, "", new DateTime(1988, 2, 8), positionId: 101, "0", "0", playerSense);
         return player;
     }
 
     // プレイヤーを設定する
     public void SetPlayer()
     {
+        string playerId = string.Format("{0}{1}{2}", GameData.instance.storyDate.Year, selectedSchool.id, "0");
+        GameData.instance.player.id = playerId;
+        GameData.instance.player.nameKaki = nameInputField.text;
         GameData.instance.player.nameKaki = nameInputField.text;
         GameData.instance.player.placeId = selectedSchool.placeId;
         GameData.instance.player.schoolId = selectedSchool.id;
 
-        GameData.instance.schoolManager.setSuperVoisor(selectedSchool.placeId, selectedSchool.id, GameData.instance.player);
+        GameData.instance.schoolManager.SetSuperVoisor(selectedSchool.id, GameData.instance.player);
 
         GameObject SceneController = GameObject.Find("SceneController");
         SceneController.GetComponent<SceneTransitionController>().LoadTo("Main");

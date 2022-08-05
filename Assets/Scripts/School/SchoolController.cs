@@ -149,7 +149,7 @@ public class SchoolController : MonoBehaviour
         GameObject Viewport = schoolScrollView.transform.Find("Viewport").gameObject;
         GameObject schoolScrollViewContent = Instantiate(schoolScrollViewContentPrefab, Viewport.transform);
         schoolScrollViewContent.name = place.id;
-        List<School> targetSchoolArray = GameData.instance.schoolManager.getPlaceAllSchool(place.id);
+        List<School> targetSchoolArray = GameData.instance.schoolManager.GetPlaceAllSchool(place.id);
         foreach (School school in targetSchoolArray)
         {
             GameObject _text = Instantiate(placeNameTextPrefab, schoolScrollViewContent.transform);
@@ -303,6 +303,7 @@ public class SchoolController : MonoBehaviour
             trigger.triggers.Add(entry);
             if(count == 0) {SelectedMember(memberPanel, member);}
             count ++;
+            Debug.Log(member.id);
         }
         membersScrollViewContent.SetActive(false);
     }

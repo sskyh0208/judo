@@ -1,7 +1,10 @@
 {
     "scheduleArray": [
-        {"Month": "3", "Day": "", "Week": "3", "DayOfWeek": "0", "EventName": "全国高等学校選手権大会", "EventId": "1"},
-        {"Month": "7", "Day": "22", "Week": "", "DayOfWeek": "", "EventName": "金鷲旗高校大会", "EventId": "2"},
-        {"Month": "8", "Day": "", "Week": "2", "DayOfWeek": "0", "EventName": "インターハイ柔道競技", "EventId": "3"}
+        {"month": "3", "day": "", "week": "3", "dayOfWeek": "0", "eventName": "全国高等学校選手権大会", "eventId": "1", "filters": {"school": {"regionRank": "4"}, "member": {"regionRank": "4"}}},
+        {"month": "5", "day": "", "week": "1", "dayOfWeek": "0", "eventName": "市高校総体", "eventId": "2", "filters": {"school": {"cityRank": "0"}, "member": {"cityRank": "0"}}},
+        {"month": "5", "day": "", "week": "4", "dayOfWeek": "0", "eventName": "県高校総体", "eventId": "3", "filters": {"school": {"cityRank": "4"}, "member": {"cityRank": "4"}}},
+        {"month": "6", "day": "", "week": "2", "dayOfWeek": "0", "eventName": "地方高校総体", "eventId": "4", "filters": {"school": {"placeRank": "4"}, "member": {"placeRank": "4"}}},
+        {"month": "7", "day": "22", "week": "", "dayOfWeek": "", "eventName": "金鷲旗高校大会", "eventId": "5", "filters": {"school": {"cityRank": "16"}, "member": {}}},
+        {"month": "8", "day": "", "week": "2", "dayOfWeek": "0", "eventName": "全国高校総体", "eventId": "6", "filters": {"school": {"placeRank": "1"}, "member": {"placeRank": "1"}}}
     ]
 }

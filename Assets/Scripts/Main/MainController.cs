@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using System;
+using System.Collections.Generic;
 
 public class MainController : MonoBehaviour
 {
@@ -11,17 +12,7 @@ public class MainController : MonoBehaviour
     private void Start()
     {
         DispayDateText();
-        checkEvent();
-        // foreach(Abillity abillity in GameData.instance.player.abillities)
-        // {
-        //     Debug.Log(String.Format("技ID: {0}  センス: {1}　上限: {2}  能力: {3}", abillity.id, abillity.sense, abillity.limit, abillity.status));
-        // }
-        // Debug.Log(String.Format("監督名: {0}  身長: {1}  体重: {2}  才能: {3}  生年月日: {4}", GameData.instance.player.name, GameData.instance.player.height, GameData.instance.player.weight, GameData.instance.player.sense, GameData.instance.player.birthDay));
-
-        foreach(PlayerManager member in GameData.instance.schoolManager.getSchool(GameData.instance.player.placeId, GameData.instance.player.schoolId).members)
-        {
-            Debug.Log(String.Format("{0} {1} {2} {3} {4} {5}", member.nameKaki, member.nameYomi, member.height, member.weight, member.sense, member.birthDay));
-        }
+        CheckEvent();
     }
 
     private void DispayDateText()
@@ -33,17 +24,31 @@ public class MainController : MonoBehaviour
     {   
         GameData.instance.NextDate();
         DispayDateText();
-        checkEvent();
+        CheckEvent();
 
-        GameData.instance.schoolManager.getPlayerSchool(GameData.instance.player).DoneTraining();
+        GameData.instance.schoolManager.GetSchool(GameData.instance.player.schoolId).DoneTraining();
     }
 
-    private void checkEvent()
+    private void CheckEvent()
     {
-        Schedule DayEvent = GameData.instance.GetScheduleEvent();
-        if(DayEvent.eventName != null)
+        Schedule dayEvent = GameData.instance.GetScheduleEvent();
+        if(dayEvent.eventName != null)
         {
-            Debug.Log(String.Format("本日{0}に{1}が開催される。", GameData.instance.storyDate.ToString(dateFormatPattern), DayEvent.eventName));
+            Debug.Log(String.Format("本日{0}に{1}が開催される。", GameData.instance.storyDate.ToString(dateFormatPattern), dayEvent.eventName));
+            School result = null;
+            if(dayEvent.filters["school"] != null)
+            {
+                // フィルターをチェック
+                result = GameData.instance.schoolManager.GetSchool(GameData.instance.player.schoolId);
+            }
+            if(dayEvent.filters["member"] != null)
+            {
+                result = GameData.instance.schoolManager.GetSchool(GameData.instance.player.schoolId);
+            }
+            // 参加する
+            if (result != null)
+            {
+            }
         }
         else
         {

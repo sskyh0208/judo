@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using UnityEngine;
 
 [Serializable]
 public class ScheduleManager
@@ -81,4 +82,6 @@ public class Schedule
     public int dayOfWeek;
     public string eventName;
     public string eventId;
+
+    public Dictionary<string, Dictionary<string, int>> filters;
 }
