@@ -82,6 +82,7 @@ public class Schedule
     public int dayOfWeek;
     public string eventName;
     public string eventId;
-
-    public Dictionary<string, Dictionary<string, int>> filters;
+    public string eventType;
+    public string filterType;
+    public int filterValue;
 }

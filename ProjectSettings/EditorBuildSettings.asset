@@ -27,6 +27,9 @@ EditorBuildSettings:
     path: Assets/Scenes/Setsubi.unity
     guid: 65f74b44a2a6bf5418f58aec4232769f
   - enabled: 1
+    path: Assets/Scenes/Event.unity
+    guid: 71b71eda634348147970327f42909647
+  - enabled: 1
     path: Assets/Scenes/Taikai.unity
     guid: 75430b7ff1519c045bd9d27b26cb0841
   m_configObjects: {}

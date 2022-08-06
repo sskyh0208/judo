@@ -1,11 +1,17 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine;
 using System.Linq;
 
 public class RankingManager
 {
-    Dictionary<int, YearRanking> allYearRanking;
+    public Dictionary<int, YearRanking> allYearRanking;
+
+    public RankingManager()
+    {
+        this.allYearRanking = new Dictionary<int, YearRanking>();
+    }
 
     public YearRanking GetYearRanking(int year)
     {
@@ -21,6 +27,16 @@ public class YearRanking
     public Dictionary<string, Ranking> regionRanking;
     public Dictionary<string, Ranking> placeRanking;
     public Dictionary<string, Ranking> cityRanking;
+
+    public YearRanking(DateTime generateDt)
+    {
+        this.year = generateDt.Year;
+        this.parameterRanking = new Ranking("999", generateDt);
+        this.countryRanking = new Dictionary<string, Ranking>();
+        this.regionRanking = new Dictionary<string, Ranking>();
+        this.placeRanking = new Dictionary<string, Ranking>();
+        this.cityRanking = new Dictionary<string, Ranking>();
+    }
 
     public Ranking GetCountryRanking(string countryId)
     {

@@ -26,14 +26,39 @@ public class SchoolManager
         return schoolList[schoolId];
     }
 
-    public List<School> GetPlaceAllSchool(string placeId)
+    public List<School> GetSchools(List<string> schoolIdList)
+    {   
+        List<School> result = new List<School>();
+        foreach (string schoolId in schoolIdList)
+        {
+            result.Add(schoolList[schoolId]);
+        }
+        return result;
+    }
+
+    public List<School> GetRegionAllSchool(string schoolId)
     {
+        return GetTargetTypeAllSchool(0, 2, schoolId);
+    }
+    public List<School> GetPlaceAllSchool(string schoolId)
+    {
+        return GetTargetTypeAllSchool(2, 2, schoolId);
+    }
+
+    public List<School> GetCityAllSchool(string schoolId)
+    {
+        return GetTargetTypeAllSchool(4, 2, schoolId);
+    }
+
+    private List<School> GetTargetTypeAllSchool(int start, int length, string targetId)
+    {
+        targetId = targetId.Substring(start, length);
         List<School> targetSchools = new List<School>();
         foreach (string key in schoolList.Keys)
         {
-            if (key.Substring(0, 2) == placeId)
+            if (key.Substring(start, length) == targetId)
             {
-                targetSchools.Add(schoolList[key]);
+                targetSchools.Add(GetSchool(key));
             }
         }
         return targetSchools;

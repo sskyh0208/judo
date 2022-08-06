@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 using System;
 using System.Collections.Generic;
 
@@ -12,7 +13,6 @@ public class MainController : MonoBehaviour
     private void Start()
     {
         DispayDateText();
-        CheckEvent();
     }
 
     private void DispayDateText()
@@ -24,36 +24,32 @@ public class MainController : MonoBehaviour
     {   
         GameData.instance.NextDate();
         DispayDateText();
-        CheckEvent();
+        // イベントに参加
+        if (CheckJoinEvent())
+        {
+            FadeIOManager.instance.FadeOutToIn( () => SceneManager.LoadScene("Event"));
+        }
 
         GameData.instance.schoolManager.GetSchool(GameData.instance.player.schoolId).DoneTraining();
     }
 
-    private void CheckEvent()
+    private bool CheckJoinEvent()
     {
-        Schedule dayEvent = GameData.instance.GetScheduleEvent();
-        if(dayEvent.eventName != null)
+        Schedule todayEvent = GameData.instance.GetTodayEvent();
+        if(todayEvent.eventName != null)
         {
-            Debug.Log(String.Format("本日{0}に{1}が開催される。", GameData.instance.storyDate.ToString(dateFormatPattern), dayEvent.eventName));
-            School result = null;
-            if(dayEvent.filters["school"] != null)
+            Debug.Log(String.Format("本日{0}に{1}が開催される。", GameData.instance.storyDate.ToString(dateFormatPattern), todayEvent.eventName));
+            if(todayEvent.eventType == "all" || todayEvent.eventType == "school")
             {
                 // フィルターをチェック
-                result = GameData.instance.schoolManager.GetSchool(GameData.instance.player.schoolId);
+                return true;
             }
-            if(dayEvent.filters["member"] != null)
+            if(todayEvent.eventType == "all" || todayEvent.eventType == "member")
             {
-                result = GameData.instance.schoolManager.GetSchool(GameData.instance.player.schoolId);
-            }
-            // 参加する
-            if (result != null)
-            {
+                return true;
             }
         }
-        else
-        {
-            Debug.Log(String.Format("{0} イベントなし", GameData.instance.storyDate.ToString(dateFormatPattern)));
-        }
+        return false;
     }
 
 }
