@@ -41,14 +41,22 @@ public class GameData : MonoBehaviour
         nameManager = LoadNameData();
         for(int i = 0; i < 3; i++)
         {
+            Debug.Log(string.Format("{0}年生作成中...", i + 1));
             DateTime generateDt = new DateTime(storyDate.Year - 16 - i, 4, 1);
-            GenerateThisYearPlayers(storyDate, generateDt, i + 1);
+            GenerateThisYearPlayers(new DateTime(storyDate.Year - i, 4, 1), generateDt, i + 1);
         }
         GenerateSupervisor(storyDate);
         // ランキング初期化
         rankingManager = new RankingManager();
         rankingManager.allYearRanking[storyDate.Year] = new YearRanking(storyDate);
         SetDefaultRanking();
+    }
+
+    public void GenerateNewYearGameDate()
+    {
+        GameData.instance.schoolManager.DoneGuradiationAllSchools();
+        DateTime generateDt = new DateTime(storyDate.Year - 16, 4, 1);
+        GenerateThisYearPlayers(new DateTime(storyDate.Year, 4, 1), generateDt, 1);
     }
 
     // スケジュールイベント取得
@@ -160,6 +168,7 @@ public class GameData : MonoBehaviour
         // 金メダリストレベル選手作る
         int genSense6PlayerNum = r.Next(1, 3);
         List<string> schoolIds = schoolManager.schoolList.Keys.ToList();
+        Debug.Log(string.Format("金メダリストレベル作成数: {0}人", genSense6PlayerNum));
         for(int i = 0; i < genSense6PlayerNum; i++){
             string[] name = GameData.instance.nameManager.GenarateRandomName();
             string targetSchoolId = schoolIds[r.Next(0, schoolIds.Count)];
@@ -169,6 +178,7 @@ public class GameData : MonoBehaviour
                 );
             schoolManager.schoolList[targetSchoolId].members[id] = member;
             string targetCityId = targetSchoolId.Substring(2, 4);
+            Debug.Log(string.Format("名前: {0} 高校: {1}", member.nameKaki, schoolManager.schoolList[targetSchoolId].name));
         }
     }
 

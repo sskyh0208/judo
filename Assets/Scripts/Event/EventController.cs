@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -35,6 +36,28 @@ public class EventController : MonoBehaviour
         // 個人戦を含むかどうか
         if (todayEvent.eventType == "all" || todayEvent.eventType == "member")
         {SetJoinMembers(placeId);}
+
+        SortSchoolTotalStatus();
+        int count = 1;
+        foreach (School school in joinSchoolList)
+        {
+            Debug.Log(string.Format("No.{0}   {1}  部員数{2}", count, school.name, school.members.Count));
+            count ++;
+        }
+
+        List<List<School>> schoolLeaderBord = GenerateEventLeaderBoad<School>(joinSchoolList);
+
+        foreach (List<School> bord in schoolLeaderBord)
+        {
+            int num = 1;
+            foreach (School school in bord)
+            {
+                Debug.Log(string.Format("{0} {1}", num, school.name));
+                num ++;
+            }
+            num = 1;
+        }
+
     }
 
     public void SetJoinScools(string placeId)
@@ -86,7 +109,7 @@ public class EventController : MonoBehaviour
                 }
                 break;
         }
-        joinSchoolList = GameData.instance.schoolManager.GetSchools(schoolIdList);
+        joinSchoolList = GameData.instance.schoolManager.GetApplyJoinEventMembersNumSchools(schoolIdList);
     }
 
     public void SetJoinMembers(string placeId)
@@ -306,5 +329,49 @@ public class EventController : MonoBehaviour
                 break;
         }
         
+    }
+
+    // 総合力が高い順に学校を並べ替え
+    public void SortSchoolTotalStatus()
+    {
+        List<School> tmpSchoolList = new List<School>();
+        foreach (School school in joinSchoolList)
+        {
+            school.SetSchoolTotalStatus();
+            tmpSchoolList.Add(school);
+        }
+        joinSchoolList = tmpSchoolList.OrderByDescending(school => school.totalStatus).ToList();
+    }
+
+    public List<List<T>> GenerateEventLeaderBoad<T>(List<T> targetList)
+    {
+        List<T> leaderBoadLeftList = new List<T>();
+        List<T> leaderBoadRightList = new List<T>();
+        // 第1シード決め
+        leaderBoadLeftList.Add(targetList[0]);
+        // 第2シード決め
+        leaderBoadRightList.Add(targetList[1]);
+
+        // 第3と4以外をシャッフル
+        List<T> shuffleTargetListOther = targetList.Skip(4).Take(targetList.Count).ToList();
+
+        for (int i = 0; i < shuffleTargetListOther.Count; i ++)
+        {
+            if(i % 2 == 0){
+                leaderBoadLeftList.Add(shuffleTargetListOther[i]);
+            }
+            else
+            {
+                leaderBoadRightList.Add(shuffleTargetListOther[i]);
+            }
+        }
+
+        // 第3シード決め
+        leaderBoadLeftList.Add(targetList[2]);
+        // 第4シード決め
+        leaderBoadRightList.Add(targetList[3]);
+
+
+        return new List<List<T>>(){leaderBoadLeftList, leaderBoadRightList};
     }
 }   

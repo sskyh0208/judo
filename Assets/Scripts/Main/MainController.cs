@@ -22,6 +22,7 @@ public class MainController : MonoBehaviour
 
     public void Next()
     {   
+        GameData.instance.schoolManager.GetSchool(GameData.instance.player.schoolId).DoneTraining();
         GameData.instance.NextDate();
         DispayDateText();
         // イベントに参加
@@ -30,7 +31,12 @@ public class MainController : MonoBehaviour
             FadeIOManager.instance.FadeOutToIn( () => SceneManager.LoadScene("Event"));
         }
 
-        GameData.instance.schoolManager.GetSchool(GameData.instance.player.schoolId).DoneTraining();
+        if (GameData.instance.storyDate.Month == 4 && GameData.instance.storyDate.Day == 1)
+        {
+            Debug.Log(string.Format("{0}年 新学期スタート", GameData.instance.storyDate.Year));
+            GameData.instance.GenerateNewYearGameDate();
+        }
+
     }
 
     private bool CheckJoinEvent()

@@ -27,6 +27,7 @@ public class SchoolController : MonoBehaviour
 
     private GameObject selectedMemberObj;
     private PlayerManager selectedMember;
+
     void Start()
     {
         schoolStatusPanel = GameObject.Find("SchoolUICanvas").transform.Find("SchoolStatusPanel").gameObject;
@@ -303,7 +304,6 @@ public class SchoolController : MonoBehaviour
             trigger.triggers.Add(entry);
             if(count == 0) {SelectedMember(memberPanel, member);}
             count ++;
-            Debug.Log(member.id);
         }
         membersScrollViewContent.SetActive(false);
     }

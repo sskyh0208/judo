@@ -36,6 +36,20 @@ public class SchoolManager
         return result;
     }
 
+    // 部員数5名以上を有する学校のみ取得
+    public List<School> GetApplyJoinEventMembersNumSchools(List<string> schoolIdList)
+    {   
+        List<School> result = new List<School>();
+        foreach (string schoolId in schoolIdList)
+        {
+            if (schoolList[schoolId].members.Count >= 5)
+            {
+                result.Add(schoolList[schoolId]);
+            }
+        }
+        return result;
+    }
+
     public List<School> GetRegionAllSchool(string schoolId)
     {
         return GetTargetTypeAllSchool(0, 2, schoolId);
@@ -74,6 +88,14 @@ public class SchoolManager
     {
         return GetSchool(memberId.Substring(4, 9)).GetMember(memberId);
     }
+
+    public void DoneGuradiationAllSchools()
+    {
+        foreach (string schoolId in schoolList.Keys)
+        {
+            schoolList[schoolId].DoneGraduationMembers();
+        }
+    }
 }
 
 [Serializable]
@@ -92,6 +114,8 @@ public class School
     public string name;
     public int schoolRank;
 
+    public int totalStatus;
+
     // 顧問
     public PlayerManager supervisor;
 
@@ -108,6 +132,7 @@ public class School
         this.placeId = placeId;
         this.name = name;
         this.schoolRank = schoolRank;
+        this.totalStatus = 0;
         this.supervisor = null;
         this.members = new Dictionary<string, PlayerManager>();
         this.trainingLimitMinutes = 120;
@@ -160,11 +185,44 @@ public class School
         }
     }
 
+    // 学校の総合力取得
+    public void SetSchoolTotalStatus()
+    {
+        totalStatus = 0;
+        foreach (PlayerManager member in members.Values)
+        {
+            foreach(Abillity abillity in member.abillities)
+            {
+                totalStatus += abillity.status;
+            }
+        }
+    }
+
     public void DoneTraining()
     {
         foreach (PlayerManager member in members.Values)
         {
             member.GetTrainingExp(trainingMenuResult);
+        }
+    }
+
+    public void DoneGraduationMembers()
+    {
+        // 部員から削除
+        List<string> memberIds = members.Keys.ToList();
+        foreach (string memberId in memberIds)
+        {
+
+            if (members[memberId].positionId == 3)
+            {
+                members.Remove(key: memberId);
+            }
+        }
+        // １学年上げる
+        memberIds = members.Keys.ToList();
+        foreach (string memberId in memberIds)
+        {
+            members[memberId].positionId ++;
         }
     }
 
