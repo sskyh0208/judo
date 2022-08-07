@@ -44,7 +44,10 @@ public class SchoolManager
         {
             if (schoolList[schoolId].members.Count >= 5)
             {
-                result.Add(schoolList[schoolId]);
+                School school = schoolList[schoolId];
+                // 団体戦メンバーを設定
+                school.SetRegularMember();
+                result.Add(school);
             }
         }
         return result;
@@ -121,10 +124,11 @@ public class School
 
     // 部員
     public Dictionary<string, PlayerManager> members;
+    public Dictionary<int, PlayerManager> regularMembers;
 
     public int trainingLimitMinutes;
-    public List<Tuple<string, int>> trainingMenu = new List<Tuple<string, int>>();
-    public List<Tuple<string, int>> trainingMenuResult = new List<Tuple<string, int>>();
+    public List<Tuple<string, int>> trainingMenu;
+    public List<Tuple<string, int>> trainingMenuResult;
 
     public School(string id, string placeId, string name, int schoolRank)
     {
@@ -135,6 +139,7 @@ public class School
         this.totalStatus = 0;
         this.supervisor = null;
         this.members = new Dictionary<string, PlayerManager>();
+        this.regularMembers = new Dictionary<int, PlayerManager>();
         this.trainingLimitMinutes = 120;
         this.trainingMenu = new List<Tuple<string, int>>();
         this.trainingMenuResult = new List<Tuple<string, int>>();
@@ -224,6 +229,20 @@ public class School
         {
             members[memberId].positionId ++;
         }
+    }
+
+    public void SetRegularMember()
+    {
+        int count = 4;
+        foreach (PlayerManager member in members.Values.OrderByDescending(member => member.totalStatus).ToList())
+        {
+            regularMembers[count] = member;
+            if (count == 0)
+            {
+                break;
+            }
+        }
+
     }
 
     public bool CheckTrainingLimitMinutes(int minutes)

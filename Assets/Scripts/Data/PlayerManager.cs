@@ -40,6 +40,8 @@ public class PlayerManager
     public int regionRank;
     public int countryRank;
 
+    public int totalStatus;
+
     public PlayerManager(string id, string nameKaki, string nameYomi, DateTime generateDt, int positionId, string placeId, string schoolId, int sense)
     {
         this.id = id;
@@ -62,6 +64,7 @@ public class PlayerManager
         this.placeRank = 0;
         this.regionRank = 0;
         this.countryRank = 0;
+        SetTotalStatus();
         CorrectionAbility();
     }
 
@@ -309,6 +312,15 @@ public class PlayerManager
         this.placeRank = 0;
         this.regionRank = 0;
         this.countryRank = 0;
+    }
+
+    public void SetTotalStatus()
+    {
+        this.totalStatus = 0;
+        foreach (Abillity abillity in abillities)
+        {
+            totalStatus += abillity.status;
+        }
     }
 }
 
