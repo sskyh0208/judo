@@ -45,17 +45,21 @@ public class EventController : MonoBehaviour
             count ++;
         }
 
-        List<List<School>> schoolLeaderBord = GenerateEventLeaderBoad<School>(joinSchoolList);
+        List<List<List<School>>> schoolLeaderBord = GenerateEventLeaderBoad<School>(joinSchoolList);
 
-        foreach (List<School> bord in schoolLeaderBord)
+        foreach (List<List<School>> bord in schoolLeaderBord)
         {
             int num = 1;
-            foreach (School school in bord)
+            foreach (List<School> child in bord)
             {
-                Debug.Log(string.Format("{0} {1}", num, school.name));
-                num ++;
+                int childNum = 1;
+                foreach (School school in child)
+                {
+                    Debug.Log(string.Format("{0} {1} {2}", num, childNum, school.name));
+                }
+                childNum ++;
             }
-            num = 1;
+            num ++;
         }
 
     }
@@ -343,35 +347,65 @@ public class EventController : MonoBehaviour
         joinSchoolList = tmpSchoolList.OrderByDescending(school => school.totalStatus).ToList();
     }
 
-    public List<List<T>> GenerateEventLeaderBoad<T>(List<T> targetList)
+    public List<List<List<T>>> GenerateEventLeaderBoad<T>(List<T> targetList)
     {
-        List<T> leaderBoadLeftList = new List<T>();
-        List<T> leaderBoadRightList = new List<T>();
+        List<List<T>> leaderBoadLeftList = new List<List<T>>();
+        List<List<T>> leaderBoadRightList = new List<List<T>>();
         // 第1シード決め
-        leaderBoadLeftList.Add(targetList[0]);
+        leaderBoadLeftList.Add(new List<T>(){targetList[0]});
         // 第2シード決め
-        leaderBoadRightList.Add(targetList[1]);
+        leaderBoadRightList.Add(new List<T>(){targetList[1]});
 
         // 第3と4以外をシャッフル
         List<T> shuffleTargetListOther = targetList.Skip(4).Take(targetList.Count).ToList();
 
+        // 子要素初期化
+        List<T> childLeftList = new List<T>();
+        List<T> childRightList = new List<T>();
         for (int i = 0; i < shuffleTargetListOther.Count; i ++)
         {
             if(i % 2 == 0){
-                leaderBoadLeftList.Add(shuffleTargetListOther[i]);
+                childLeftList.Add(shuffleTargetListOther[i]);
+                if (childLeftList.Count == 2)
+                {
+                    leaderBoadLeftList.Add(childLeftList);
+                    childLeftList = new List<T>();
+                }
             }
             else
             {
-                leaderBoadRightList.Add(shuffleTargetListOther[i]);
+                childRightList.Add(shuffleTargetListOther[i]);
+                if (childRightList.Count == 2)
+                {
+                    leaderBoadRightList.Add(childRightList);
+                    childRightList = new List<T>();
+                }
             }
         }
 
         // 第3シード決め
-        leaderBoadLeftList.Add(targetList[2]);
+        if (childLeftList.Count == 1)
+        {
+            childLeftList.Add(targetList[2]);
+            leaderBoadLeftList.Add(childLeftList);
+        }
+        else
+        {
+            leaderBoadLeftList.Add(new List<T>(){targetList[2]});
+        }
+
         // 第4シード決め
-        leaderBoadRightList.Add(targetList[3]);
+        if (childRightList.Count == 1)
+        {
+            childRightList.Add(targetList[3]);
+            leaderBoadRightList.Add(childRightList);
+        }
+        else
+        {
+            leaderBoadRightList.Add(new List<T>(){targetList[3]});
+        }
 
 
-        return new List<List<T>>(){leaderBoadLeftList, leaderBoadRightList};
+        return new List<List<List<T>>>(){leaderBoadLeftList, leaderBoadRightList};
     }
 }   
