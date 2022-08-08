@@ -26,6 +26,7 @@ public class NewGameController : MonoBehaviour
         GenerateAllSchoolSelectButton(GameData.instance.placeManager.placeArray);
         GameData.instance.player = GenerateNewPlayer();
         SetDisplayPlayerStatus();
+        Debug.Log(10 + Int16.Parse("01"));
     }
 
     // 各県を選択するボタンを画面に作成する。

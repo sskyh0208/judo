@@ -241,6 +241,7 @@ public class School
             {
                 break;
             }
+            count --;
         }
 
     }

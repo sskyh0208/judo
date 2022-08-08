@@ -425,19 +425,20 @@ public class EventController : MonoBehaviour
             List<School> winnerList = new List<School>();
             foreach (List<School> targetMatch in matchList)
             {
-                // 試合をする
-                List<School> resultMatch = DoMatchSchool(targetMatch);
-                if (resultMatch.Count > 1)
+                if (targetMatch.Count == 1)
                 {
-                    // 負け
-                    result.Add(resultMatch[1]);
+                    winnerList.Add(targetMatch[0]);
+                    {Debug.Log(string.Format("不戦勝: {0}", targetMatch[0].name));}
+                    continue;
                 }
-                // 勝ち
-                winnerList.Add(resultMatch[0]);
-                if (resultMatch.Count > 1)
-                {Debug.Log(string.Format("勝ち: {0}    負け: {1}", resultMatch[0].name, resultMatch[1].name));}
                 else
-                {Debug.Log(string.Format("不戦勝: {0}", resultMatch[0].name));}
+                {
+                    // 試合をする
+                    SchoolMatch schoolMatch = new SchoolMatch("s", targetMatch[0], targetMatch[1]);
+                    winnerList.Add(schoolMatch.winner);
+                    result.Add(schoolMatch.loser);
+                    {Debug.Log(string.Format("勝ち: {0}    負け: {1}", schoolMatch.winner.name, schoolMatch.loser.name));}
+                }
             }
             if (winnerList.Count == 1)
             {   
@@ -480,16 +481,16 @@ public class EventController : MonoBehaviour
         {
             List<PlayerManager> winnerList = new List<PlayerManager>();
             foreach (List<PlayerManager> targetMatch in matchList)
-            {
-                // 試合をする
-                List<PlayerManager> resultMatch = DoMatchMember(targetMatch);
-                if (resultMatch.Count > 1)
+            {   
+                if (targetMatch.Count == 1)
                 {
-                    // 負け
-                    result.Add(resultMatch[1]);
+                    winnerList.Add(targetMatch[0]);
+                    continue;
                 }
-                // 勝ち
-                winnerList.Add(resultMatch[0]);
+                // 試合をする
+                MemberMatch memberMatch = new MemberMatch("s", targetMatch[0], targetMatch[1]);
+                winnerList.Add(memberMatch.resultMatch.winner);
+                result.Add(memberMatch.resultMatch.loser);
             }
             if (winnerList.Count == 1)
             {   
@@ -535,6 +536,12 @@ public class EventController : MonoBehaviour
         }
         List<School> result = new List<School>();
         // ここで試合をする
+
+        for (int i = 0; i < 5; i++)
+        {
+            List<PlayerManager> matchMember = new List<PlayerManager>(){ targets[0].regularMembers[i],  targets[1].regularMembers[i]};
+            List<PlayerManager> resultMember = DoMatchMember(matchMember);
+        }
         // test
         if(targets[0].totalStatus <= targets[1].totalStatus)
         {targets.Reverse(); result = targets;}
