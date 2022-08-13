@@ -145,7 +145,7 @@ public class GameData : MonoBehaviour
         foreach (School school in schoolManager.schoolList.Values)
         {
             int schoolLimitMembersNum = school.GenerateThisYearLimitMembersNum();
-            int maxSense = school.schoolRank;
+            int maxSense = school.schoolRank + 1;
             int minSense = school.schoolRank - 1;
             if (maxSense < 2)
             {
