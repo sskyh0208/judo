@@ -118,6 +118,7 @@ public class School
     public int schoolRank;
 
     public int totalStatus;
+    public int regularMemberStatus;
 
     // 顧問
     public PlayerManager supervisor;
@@ -203,6 +204,19 @@ public class School
         }
     }
 
+    // レギュラーの総合力取得
+    private void SetSchoolRegularMemberStatus()
+    {
+        regularMemberStatus = 0;
+        foreach (PlayerManager member in regularMembers.Values)
+        {
+            foreach(Abillity abillity in member.abillities)
+            {
+                regularMemberStatus += abillity.status;
+            }
+        }
+    }
+
     public void DoneTraining()
     {
         foreach (PlayerManager member in members.Values)
@@ -243,6 +257,7 @@ public class School
             }
             count --;
         }
+        SetSchoolRegularMemberStatus();
 
     }
 

@@ -7,562 +7,90 @@ using UnityEngine;
 public class EventController : MonoBehaviour
 {
     Schedule todayEvent;
-    List<School> joinSchoolList;
-    List<PlayerManager> joinMember60List;
-    List<PlayerManager> joinMember66List;
-    List<PlayerManager> joinMember73List;
-    List<PlayerManager> joinMember81List;
-    List<PlayerManager> joinMember90List;
-    List<PlayerManager> joinMember100List;
-    List<PlayerManager> joinMemberOver100List;
     // Start is called before the first frame update
     void Start()
     {
-        todayEvent = GameData.instance.todayEvent;
-        string placeId = GameData.instance.player.schoolId.Substring(0, 6);
 
-        joinSchoolList = new List<School>();
-        joinMember60List = new List<PlayerManager>();
-        joinMember66List = new List<PlayerManager>();
-        joinMember73List = new List<PlayerManager>();
-        joinMember81List = new List<PlayerManager>();
-        joinMember90List = new List<PlayerManager>();
-        joinMember100List = new List<PlayerManager>();
-        joinMemberOver100List = new List<PlayerManager>();
+        Tournament taikai = new Tournament(
+            GameData.instance.todayEvent,
+            GameData.instance.player.schoolId
+        );
 
-        // 団体戦を含むかどうかかどうか
-        if (todayEvent.eventType == "all" || todayEvent.eventType == "school")
-        {SetJoinScools(placeId);}
-        // 個人戦を含むかどうか
-        if (todayEvent.eventType == "all" || todayEvent.eventType == "member")
-        {SetJoinMembers(placeId);}
-
-        SortSchoolTotalStatus();
-        int count = 1;
-        foreach (School school in joinSchoolList)
-        {
-            Debug.Log(string.Format("No.{0}   {1}  部員数{2}", count, school.name, school.members.Count));
-            count ++;
-        }
+        taikai.SetTournamentDetail();
 
         // // 団体確認用
-        // List<List<School>> schoolLeaderBord = GenerateEventLeaderBoad<School>(joinSchoolList);
+        // taikai.SortSchoolTotalStatus();
+        // List<List<School>> schoolLeaderBord = taikai.GenerateEventLeaderBoad<School>(taikai.joinSchoolList);
         // Debug.Log("試合開始");
-        // List<School> result = DoMatchAllSchool(schoolLeaderBord);
-        // for (int i = 1; i < result.Count + 1; i++)
+        // List<School> result = taikai.DoMatchAllSchool(schoolLeaderBord);
+        // for (int i = 0; i < result.Count; i++)
         // {
-        //     Debug.Log(string.Format("第{0}位 {1}", i, result[i - 1].name));
-        // }
-
-        // // 個人確認用
-        // joinMember73List = GetSortMemberTotalStatus(joinMember73List);
-        // List<List<PlayerManager>> LeaderBord73 = GenerateEventLeaderBoad<PlayerManager>(joinMember73List);
-        // Debug.Log("試合開始");
-        // List<PlayerManager> result = DoMatchAllMember(LeaderBord73);
-        // for (int i = 1; i < result.Count + 1; i++)
-        // {
-        //     Debug.Log(string.Format("第{0}位 {1} {2} {3}年生", i, result[i - 1].nameKaki, GameData.instance.schoolManager.GetSchool(result[i - 1].schoolId).name, result[i - 1].positionId));
+        //     Debug.Log(string.Format("第{0}位 {1}", i + 1, result[i].name));
         // }
 
         // 個人確認用
-        joinMember100List = GetSortMemberTotalStatus(joinMember100List);
-        List<List<PlayerManager>> LeaderBord100 = GenerateEventLeaderBoad<PlayerManager>(joinMember100List);
-        Debug.Log("試合開始");
-        List<PlayerManager> result = DoMatchAllMember(LeaderBord100);
-        for (int i = 1; i < result.Count + 1; i++)
+        taikai.joinMember60List = taikai.GetSortMemberTotalStatus(taikai.joinMember60List);
+        List<List<PlayerManager>> LeaderBord60 = taikai.GenerateEventLeaderBoad<PlayerManager>(taikai.joinMember60List);
+        Debug.Log("60kg試合開始");
+        List<PlayerManager> result60 = taikai.DoMatchAllMember(LeaderBord60);
+        for (int i = 0; i < result60.Count; i++)
         {
-            Debug.Log(string.Format("第{0}位 {1} {2} {3}年生", i, result[i - 1].nameKaki, GameData.instance.schoolManager.GetSchool(result[i - 1].schoolId).name, result[i - 1].positionId));
+            Debug.Log(string.Format("第{0}位 {1} {2} {3}年生 {4}", i + 1, result60[i].nameKaki, GameData.instance.schoolManager.GetSchool(result60[i].schoolId).name, result60[i].positionId, result60[i].totalStatus));
         }
 
-    }
-
-    public void SetJoinScools(string placeId)
-    {
-        string region = placeId.Substring(0, 2);
-        string place = placeId.Substring(2, 2);
-        string city = placeId.Substring(2, 4);
-
-        
-        List<string> schoolIdList = new List<string>();
-        Dictionary<int, string> targetRanking = null;
-        YearRanking thisYearRanking = GameData.instance.rankingManager.GetYearRanking(GameData.instance.storyDate.Year);
-        // 他校取得範囲決め
-        switch (todayEvent.filterType)
+        taikai.joinMember66List = taikai.GetSortMemberTotalStatus(taikai.joinMember66List);
+        List<List<PlayerManager>> LeaderBord66 = taikai.GenerateEventLeaderBoad<PlayerManager>(taikai.joinMember66List);
+        Debug.Log("66kg試合開始");
+        List<PlayerManager> result66 = taikai.DoMatchAllMember(LeaderBord66);
+        for (int i = 0; i < result66.Count; i++)
         {
-            // ランキングに存在する条件の場合取得
-            default:
-            case "countryRank":
-                targetRanking = thisYearRanking.GetCountryRanking("0").school;
-                for(int i = 1; i < targetRanking.Count + 1; i++)
-                {
-                    schoolIdList.Add(targetRanking[i]);
-                    if(i >= todayEvent.filterValue && todayEvent.filterValue != 0) {break;}
-                }
-                break;
-
-            case "regionRank":
-                targetRanking = thisYearRanking.GetRegionRanking(region).school;
-                for(int i = 1; i < targetRanking.Count + 1; i++)
-                {
-                    schoolIdList.Add(targetRanking[i]);
-                    if(i >= todayEvent.filterValue && todayEvent.filterValue != 0) {break;}
-                }
-                break;
-            case "placeRank":
-                targetRanking = thisYearRanking.GetPlaceRanking(place).school;
-                for(int i = 1; i < targetRanking.Count + 1; i++)
-                {
-                    schoolIdList.Add(targetRanking[i]);
-                    if(i >= todayEvent.filterValue && todayEvent.filterValue != 0) {break;}
-                }
-                break;
-            case "cityRank":
-                targetRanking = thisYearRanking.GetCityRanking(city).school;
-                for(int i = 1; i < targetRanking.Count + 1; i++)
-                {
-                    schoolIdList.Add(targetRanking[i]);
-                    if(i >= todayEvent.filterValue && todayEvent.filterValue != 0) {break;}
-                }
-                break;
+            Debug.Log(string.Format("第{0}位 {1} {2} {3}年生 {4}", i + 1, result66[i].nameKaki, GameData.instance.schoolManager.GetSchool(result66[i].schoolId).name, result66[i].positionId, result66[i].totalStatus));
         }
-        joinSchoolList = GameData.instance.schoolManager.GetApplyJoinEventMembersNumSchools(schoolIdList);
-    }
 
-    public void SetJoinMembers(string placeId)
-    {
-        string region = placeId.Substring(0, 2);
-        string place = placeId.Substring(2, 2);
-        string city = placeId.Substring(2, 4);
-        
-        Dictionary<int, string> targetRanking = null;
-        YearRanking thisYearRanking = GameData.instance.rankingManager.GetYearRanking(GameData.instance.storyDate.Year);
-        // 他校取得範囲決め
-        switch (todayEvent.filterType)
+        taikai.joinMember73List = taikai.GetSortMemberTotalStatus(taikai.joinMember73List);
+        List<List<PlayerManager>> LeaderBord73 = taikai.GenerateEventLeaderBoad<PlayerManager>(taikai.joinMember73List);
+        Debug.Log("73kg試合開始");
+        List<PlayerManager> result73 = taikai.DoMatchAllMember(LeaderBord73);
+        for (int i = 0; i < result73.Count; i++)
         {
-            // ランキングに存在する条件の場合取得
-            default:
-            case "countryRank":
-                targetRanking = thisYearRanking.GetCountryRanking("0").members60;
-                for(int i = 1; i < targetRanking.Count + 1; i++)
-                {
-                    joinMember60List.Add(GameData.instance.schoolManager.GetSchool(targetRanking[i].Substring(4, 9)).GetMember(targetRanking[i]));
-                    if(i >= todayEvent.filterValue && todayEvent.filterValue != 0) {break;}
-                }
-                
-                targetRanking = thisYearRanking.GetCountryRanking("0").members66;
-                for(int i = 1; i < targetRanking.Count + 1; i++)
-                {
-                    joinMember66List.Add(GameData.instance.schoolManager.GetSchool(targetRanking[i].Substring(4, 9)).GetMember(targetRanking[i]));
-                    if(i >= todayEvent.filterValue && todayEvent.filterValue != 0) {break;}
-                }
-
-                targetRanking = thisYearRanking.GetCountryRanking("0").members73;
-                for(int i = 1; i < targetRanking.Count + 1; i++)
-                {
-                    joinMember73List.Add(GameData.instance.schoolManager.GetSchool(targetRanking[i].Substring(4, 9)).GetMember(targetRanking[i]));
-                    if(i >= todayEvent.filterValue && todayEvent.filterValue != 0) {break;}
-                }
-
-                targetRanking = thisYearRanking.GetCountryRanking("0").members81;
-                for(int i = 1; i < targetRanking.Count + 1; i++)
-                {
-                    joinMember81List.Add(GameData.instance.schoolManager.GetSchool(targetRanking[i].Substring(4, 9)).GetMember(targetRanking[i]));
-                    if(i >= todayEvent.filterValue && todayEvent.filterValue != 0) {break;}
-                }
-
-                targetRanking = thisYearRanking.GetCountryRanking("0").members90;
-                for(int i = 1; i < targetRanking.Count + 1; i++)
-                {
-                    joinMember90List.Add(GameData.instance.schoolManager.GetSchool(targetRanking[i].Substring(4, 9)).GetMember(targetRanking[i]));
-                    if(i >= todayEvent.filterValue && todayEvent.filterValue != 0) {break;}
-                }
-
-                targetRanking = thisYearRanking.GetCountryRanking("0").members100;
-                for(int i = 1; i < targetRanking.Count + 1; i++)
-                {
-                    joinMember100List.Add(GameData.instance.schoolManager.GetSchool(targetRanking[i].Substring(4, 9)).GetMember(targetRanking[i]));
-                    if(i >= todayEvent.filterValue && todayEvent.filterValue != 0) {break;}
-                }
-
-                targetRanking = thisYearRanking.GetCountryRanking("0").membersOver100;
-                for(int i = 1; i < targetRanking.Count + 1; i++)
-                {
-                    joinMemberOver100List.Add(GameData.instance.schoolManager.GetSchool(targetRanking[i].Substring(4, 9)).GetMember(targetRanking[i]));
-                    if(i >= todayEvent.filterValue && todayEvent.filterValue != 0) {break;}
-                }
-                break;
-
-            case "regionRank":
-                targetRanking = thisYearRanking.GetRegionRanking(region).members60;
-                for(int i = 1; i < targetRanking.Count + 1; i++)
-                {
-                    joinMember60List.Add(GameData.instance.schoolManager.GetSchool(targetRanking[i].Substring(4, 9)).GetMember(targetRanking[i]));
-                    if(i >= todayEvent.filterValue && todayEvent.filterValue != 0) {break;}
-                }
-                
-                targetRanking = thisYearRanking.GetRegionRanking(region).members66;
-                for(int i = 1; i < targetRanking.Count + 1; i++)
-                {
-                    joinMember66List.Add(GameData.instance.schoolManager.GetSchool(targetRanking[i].Substring(4, 9)).GetMember(targetRanking[i]));
-                    if(i >= todayEvent.filterValue && todayEvent.filterValue != 0) {break;}
-                }
-
-                targetRanking = thisYearRanking.GetRegionRanking(region).members73;
-                for(int i = 1; i < targetRanking.Count + 1; i++)
-                {
-                    joinMember73List.Add(GameData.instance.schoolManager.GetSchool(targetRanking[i].Substring(4, 9)).GetMember(targetRanking[i]));
-                    if(i >= todayEvent.filterValue && todayEvent.filterValue != 0) {break;}
-                }
-
-                targetRanking = thisYearRanking.GetRegionRanking(region).members81;
-                for(int i = 1; i < targetRanking.Count + 1; i++)
-                {
-                    joinMember81List.Add(GameData.instance.schoolManager.GetSchool(targetRanking[i].Substring(4, 9)).GetMember(targetRanking[i]));
-                    if(i >= todayEvent.filterValue && todayEvent.filterValue != 0) {break;}
-                }
-
-                targetRanking = thisYearRanking.GetRegionRanking(region).members90;
-                for(int i = 1; i < targetRanking.Count + 1; i++)
-                {
-                    joinMember90List.Add(GameData.instance.schoolManager.GetSchool(targetRanking[i].Substring(4, 9)).GetMember(targetRanking[i]));
-                    if(i >= todayEvent.filterValue && todayEvent.filterValue != 0) {break;}
-                }
-
-                targetRanking = thisYearRanking.GetRegionRanking(region).members100;
-                for(int i = 1; i < targetRanking.Count + 1; i++)
-                {
-                    joinMember100List.Add(GameData.instance.schoolManager.GetSchool(targetRanking[i].Substring(4, 9)).GetMember(targetRanking[i]));
-                    if(i >= todayEvent.filterValue && todayEvent.filterValue != 0) {break;}
-                }
-
-                targetRanking = thisYearRanking.GetRegionRanking(region).membersOver100;
-                for(int i = 1; i < targetRanking.Count + 1; i++)
-                {
-                    joinMemberOver100List.Add(GameData.instance.schoolManager.GetSchool(targetRanking[i].Substring(4, 9)).GetMember(targetRanking[i]));
-                    if(i >= todayEvent.filterValue && todayEvent.filterValue != 0) {break;}
-                }
-                break;
-
-            case "placeRank":
-                targetRanking = thisYearRanking.GetPlaceRanking(place).members60;
-                for(int i = 1; i < targetRanking.Count + 1; i++)
-                {
-                    joinMember60List.Add(GameData.instance.schoolManager.GetSchool(targetRanking[i].Substring(4, 9)).GetMember(targetRanking[i]));
-                    if(i >= todayEvent.filterValue && todayEvent.filterValue != 0) {break;}
-                }
-                
-                targetRanking = thisYearRanking.GetPlaceRanking(place).members66;
-                for(int i = 1; i < targetRanking.Count + 1; i++)
-                {
-                    joinMember66List.Add(GameData.instance.schoolManager.GetSchool(targetRanking[i].Substring(4, 9)).GetMember(targetRanking[i]));
-                    if(i >= todayEvent.filterValue && todayEvent.filterValue != 0) {break;}
-                }
-
-                targetRanking = thisYearRanking.GetPlaceRanking(place).members73;
-                for(int i = 1; i < targetRanking.Count + 1; i++)
-                {
-                    joinMember73List.Add(GameData.instance.schoolManager.GetSchool(targetRanking[i].Substring(4, 9)).GetMember(targetRanking[i]));
-                    if(i >= todayEvent.filterValue && todayEvent.filterValue != 0) {break;}
-                }
-
-                targetRanking = thisYearRanking.GetPlaceRanking(place).members81;
-                for(int i = 1; i < targetRanking.Count + 1; i++)
-                {
-                    joinMember81List.Add(GameData.instance.schoolManager.GetSchool(targetRanking[i].Substring(4, 9)).GetMember(targetRanking[i]));
-                    if(i >= todayEvent.filterValue && todayEvent.filterValue != 0) {break;}
-                }
-
-                targetRanking = thisYearRanking.GetPlaceRanking(place).members90;
-                for(int i = 1; i < targetRanking.Count + 1; i++)
-                {
-                    joinMember90List.Add(GameData.instance.schoolManager.GetSchool(targetRanking[i].Substring(4, 9)).GetMember(targetRanking[i]));
-                    if(i >= todayEvent.filterValue && todayEvent.filterValue != 0) {break;}
-                }
-
-                targetRanking = thisYearRanking.GetPlaceRanking(place).members100;
-                for(int i = 1; i < targetRanking.Count + 1; i++)
-                {
-                    joinMember100List.Add(GameData.instance.schoolManager.GetSchool(targetRanking[i].Substring(4, 9)).GetMember(targetRanking[i]));
-                    if(i >= todayEvent.filterValue && todayEvent.filterValue != 0) {break;}
-                }
-
-                targetRanking = thisYearRanking.GetPlaceRanking(place).membersOver100;
-                for(int i = 1; i < targetRanking.Count + 1; i++)
-                {
-                    joinMemberOver100List.Add(GameData.instance.schoolManager.GetSchool(targetRanking[i].Substring(4, 9)).GetMember(targetRanking[i]));
-                    if(i >= todayEvent.filterValue && todayEvent.filterValue != 0) {break;}
-                }
-                break;
-            case "cityRank":
-                targetRanking = thisYearRanking.GetCityRanking(city).members60;
-                for(int i = 1; i < targetRanking.Count + 1; i++)
-                {
-                    joinMember60List.Add(GameData.instance.schoolManager.GetSchool(targetRanking[i].Substring(4, 9)).GetMember(targetRanking[i]));
-                    if(i >= todayEvent.filterValue && todayEvent.filterValue != 0) {break;}
-                }
-                
-                targetRanking = thisYearRanking.GetCityRanking(city).members66;
-                for(int i = 1; i < targetRanking.Count + 1; i++)
-                {
-                    joinMember66List.Add(GameData.instance.schoolManager.GetSchool(targetRanking[i].Substring(4, 9)).GetMember(targetRanking[i]));
-                    if(i >= todayEvent.filterValue && todayEvent.filterValue != 0) {break;}
-                }
-
-                targetRanking = thisYearRanking.GetCityRanking(city).members73;
-                for(int i = 1; i < targetRanking.Count + 1; i++)
-                {
-                    joinMember73List.Add(GameData.instance.schoolManager.GetSchool(targetRanking[i].Substring(4, 9)).GetMember(targetRanking[i]));
-                    if(i >= todayEvent.filterValue && todayEvent.filterValue != 0) {break;}
-                }
-
-                targetRanking = thisYearRanking.GetCityRanking(city).members81;
-                for(int i = 1; i < targetRanking.Count + 1; i++)
-                {
-                    joinMember81List.Add(GameData.instance.schoolManager.GetSchool(targetRanking[i].Substring(4, 9)).GetMember(targetRanking[i]));
-                    if(i >= todayEvent.filterValue && todayEvent.filterValue != 0) {break;}
-                }
-
-                targetRanking = thisYearRanking.GetCityRanking(city).members90;
-                for(int i = 1; i < targetRanking.Count + 1; i++)
-                {
-                    joinMember90List.Add(GameData.instance.schoolManager.GetSchool(targetRanking[i].Substring(4, 9)).GetMember(targetRanking[i]));
-                    if(i >= todayEvent.filterValue && todayEvent.filterValue != 0) {break;}
-                }
-
-                targetRanking = thisYearRanking.GetCityRanking(city).members100;
-                for(int i = 1; i < targetRanking.Count + 1; i++)
-                {
-                    joinMember100List.Add(GameData.instance.schoolManager.GetSchool(targetRanking[i].Substring(4, 9)).GetMember(targetRanking[i]));
-                    if(i >= todayEvent.filterValue && todayEvent.filterValue != 0) {break;}
-                }
-
-                targetRanking = thisYearRanking.GetCityRanking(city).membersOver100;
-                for(int i = 1; i < targetRanking.Count + 1; i++)
-                {
-                    joinMemberOver100List.Add(GameData.instance.schoolManager.GetSchool(targetRanking[i].Substring(4, 9)).GetMember(targetRanking[i]));
-                    if(i >= todayEvent.filterValue && todayEvent.filterValue != 0) {break;}
-                }
-                break;
+            Debug.Log(string.Format("第{0}位 {1} {2} {3}年生 {4}", i + 1, result73[i].nameKaki, GameData.instance.schoolManager.GetSchool(result73[i].schoolId).name, result73[i].positionId, result73[i].totalStatus));
         }
-        
-    }
 
-    // 総合力が高い順に学校を並べ替え
-    public void SortSchoolTotalStatus()
-    {
-        List<School> tmpSchoolList = new List<School>();
-        foreach (School school in joinSchoolList)
+        taikai.joinMember81List = taikai.GetSortMemberTotalStatus(taikai.joinMember81List);
+        List<List<PlayerManager>> LeaderBord81 = taikai.GenerateEventLeaderBoad<PlayerManager>(taikai.joinMember81List);
+        Debug.Log("81kg試合開始");
+        List<PlayerManager> result81 = taikai.DoMatchAllMember(LeaderBord81);
+        for (int i = 0; i < result81.Count; i++)
         {
-            school.SetSchoolTotalStatus();
-            tmpSchoolList.Add(school);
+            Debug.Log(string.Format("第{0}位 {1} {2} {3}年生 {4}", i + 1, result81[i].nameKaki, GameData.instance.schoolManager.GetSchool(result81[i].schoolId).name, result81[i].positionId, result81[i].totalStatus));
         }
-        joinSchoolList = tmpSchoolList.OrderByDescending(school => school.totalStatus).ToList();
-    }
-    
-    public List<PlayerManager> GetSortMemberTotalStatus(List<PlayerManager> targetList)
-    {
-        List<PlayerManager> tmpMemberList = new List<PlayerManager>();
-        foreach (PlayerManager member in targetList)
+
+        taikai.joinMember90List = taikai.GetSortMemberTotalStatus(taikai.joinMember90List);
+        List<List<PlayerManager>> LeaderBord90 = taikai.GenerateEventLeaderBoad<PlayerManager>(taikai.joinMember90List);
+        Debug.Log("90kg試合開始");
+        List<PlayerManager> result90 = taikai.DoMatchAllMember(LeaderBord90);
+        for (int i = 0; i < result90.Count; i++)
         {
-            member.SetTotalStatus();
-            tmpMemberList.Add(member);
+            Debug.Log(string.Format("第{0}位 {1} {2} {3}年生 {4}", i + 1, result90[i].nameKaki, GameData.instance.schoolManager.GetSchool(result90[i].schoolId).name, result90[i].positionId, result90[i].totalStatus));
         }
-        return tmpMemberList.OrderByDescending(member => member.totalStatus).ToList();
-    }
 
-    public List<List<T>> GenerateEventLeaderBoad<T>(List<T> targetList)
-    {
-        List<List<T>> leaderBoad = new List<List<T>>();
-
-        // 上位の二つを抽出
-        T firstTarget = targetList[0];
-        targetList.RemoveAt(0);
-        T secondTarget = targetList[0];
-        targetList.RemoveAt(0);
-
-        // 残りをシャッフルして２番目に強いやつを最後に入れる
-        for (int i = 0; i < targetList.Count; i++)
+        taikai.joinMember100List = taikai.GetSortMemberTotalStatus(taikai.joinMember100List);
+        List<List<PlayerManager>> LeaderBord100 = taikai.GenerateEventLeaderBoad<PlayerManager>(taikai.joinMember100List);
+        Debug.Log("100kg試合開始");
+        List<PlayerManager> result100 = taikai.DoMatchAllMember(LeaderBord100);
+        for (int i = 0; i < result100.Count; i++)
         {
-            T tmp = targetList[i];
-            int randomIndex = UnityEngine.Random.Range(i, targetList.Count);
-            targetList[i] = targetList[randomIndex];
-            targetList[randomIndex] = tmp;
+            Debug.Log(string.Format("第{0}位 {1} {2} {3}年生 {4}", i + 1, result100[i].nameKaki, GameData.instance.schoolManager.GetSchool(result100[i].schoolId).name, result100[i].positionId, result100[i].totalStatus));
         }
 
-        // 二番目に強いやつを最後に入れる
-        targetList.Add(secondTarget);
-        // 奇数の場合一番強いやつをシードにする
-        if ((targetList.Count + 1) % 2 != 0) {
-            leaderBoad.Add(new List<T>(){firstTarget});
-        }
-        else
+        taikai.joinMemberOver100List = taikai.GetSortMemberTotalStatus(taikai.joinMemberOver100List);
+        List<List<PlayerManager>> LeaderBordOver100 = taikai.GenerateEventLeaderBoad<PlayerManager>(taikai.joinMemberOver100List);
+        Debug.Log("100kg超試合開始");
+        List<PlayerManager> resultOver100 = taikai.DoMatchAllMember(LeaderBordOver100);
+        for (int i = 0; i < resultOver100.Count; i++)
         {
-            targetList.Insert(0, firstTarget);
+            Debug.Log(string.Format("第{0}位 {1} {2} {3}年生 {4}", i + 1, resultOver100[i].nameKaki, GameData.instance.schoolManager.GetSchool(resultOver100[i].schoolId).name, resultOver100[i].positionId, resultOver100[i].totalStatus));
         }
 
-        // 子要素初期化
-        List<T> matchList = new List<T>();
-        // 組み合わせ
-        foreach (T target in targetList)
-        {
-            matchList.Add(target);
-            if (matchList.Count == 2)
-            {
-                leaderBoad.Add(matchList);
-                matchList = new List<T>();
-            }
-        }
-
-        return leaderBoad;
-    }
-
-    public List<School> DoMatchAllSchool(List<List<School>> targetBoad)
-    {
-        List<School> result = new List<School>();
-        List<List<School>> matchList = new List<List<School>>(targetBoad);
-        while (true)
-        {
-            List<School> winnerList = new List<School>();
-            foreach (List<School> targetMatch in matchList)
-            {
-                if (targetMatch.Count == 1)
-                {
-                    winnerList.Add(targetMatch[0]);
-                    {Debug.Log(string.Format("不戦勝: {0}", targetMatch[0].name));}
-                    continue;
-                }
-                else
-                {
-                    // 試合をする
-                    SchoolMatch schoolMatch = new SchoolMatch("s", targetMatch[0], targetMatch[1]);
-                    winnerList.Add(schoolMatch.winner);
-                    result.Add(schoolMatch.loser);
-                    {Debug.Log(string.Format("勝ち: {0}    負け: {1}", schoolMatch.winner.name, schoolMatch.loser.name));}
-                }
-            }
-            if (winnerList.Count == 1)
-            {   
-                // 優勝決まり
-                result.Add(winnerList[0]);
-                break;
-            }
-
-            List<School> nextMatch = new List<School>();
-            matchList = new List<List<School>>();
-            bool seedFlag = false;
-            if (winnerList.Count % 2 != 0)
-            {
-                seedFlag = true;
-            }
-            foreach (School winnerSchool in winnerList)
-            {
-                nextMatch.Add(winnerSchool);
-                if (nextMatch.Count == 2 || seedFlag)
-                {
-                    matchList.Add(nextMatch);
-                    nextMatch = new List<School>();
-                    seedFlag = false;
-                }
-            }
-            if (nextMatch.Count > 0)
-            {
-                matchList.Add(nextMatch);
-            }
-
-        }
-        result.Reverse();
-        return result;
-    }
-    public List<PlayerManager> DoMatchAllMember(List<List<PlayerManager>> targetBoad)
-    {
-        List<PlayerManager> result = new List<PlayerManager>();
-        List<List<PlayerManager>> matchList = new List<List<PlayerManager>>(targetBoad);
-        while (true)
-        {
-            List<PlayerManager> winnerList = new List<PlayerManager>();
-            foreach (List<PlayerManager> targetMatch in matchList)
-            {   
-                if (targetMatch.Count == 1)
-                {
-                    winnerList.Add(targetMatch[0]);
-                    continue;
-                }
-                // 試合をする
-                MemberMatch memberMatch = new MemberMatch("s", targetMatch[0], targetMatch[1]);
-                winnerList.Add(memberMatch.resultMatch.winner);
-                result.Add(memberMatch.resultMatch.loser);
-            }
-            if (winnerList.Count == 1)
-            {   
-                // 優勝決まり
-                result.Add(winnerList[0]);
-                break;
-            }
-
-            List<PlayerManager> nextMatch = new List<PlayerManager>();
-            matchList = new List<List<PlayerManager>>();
-            bool seedFlag = false;
-            if (winnerList.Count % 2 != 0)
-            {
-                seedFlag = true;
-            }
-            foreach (PlayerManager winnerMember in winnerList)
-            {
-                nextMatch.Add(winnerMember);
-                if (nextMatch.Count == 2 || seedFlag)
-                {
-                    matchList.Add(nextMatch);
-                    nextMatch = new List<PlayerManager>();
-                    seedFlag = false;
-                }
-            }
-            if (nextMatch.Count > 0)
-            {
-                matchList.Add(nextMatch);
-            }
-
-        }
-        result.Reverse();
-        return result;
-    }
-
-    // 勝ったほうを0番に入れた配列を作成
-    public List<School> DoMatchSchool(List<School> targets)
-    {
-        // 対戦相手がいない場合はそのまま返す
-        if (targets.Count == 1)
-        {
-            return targets;
-        }
-        List<School> result = new List<School>();
-        // ここで試合をする
-
-        for (int i = 0; i < 5; i++)
-        {
-            List<PlayerManager> matchMember = new List<PlayerManager>(){ targets[0].regularMembers[i],  targets[1].regularMembers[i]};
-            List<PlayerManager> resultMember = DoMatchMember(matchMember);
-        }
-        // test
-        if(targets[0].totalStatus <= targets[1].totalStatus)
-        {targets.Reverse(); result = targets;}
-        result = targets;
-        return result;
-    }
-
-    // 勝ったほうを0番に入れた配列を作成
-    public List<PlayerManager> DoMatchMember(List<PlayerManager> targets)
-    {
-        if (targets.Count == 1)
-        {
-            return targets;
-        }
-        // 対戦相手がいない場合はそのまま返す
-        List<PlayerManager> result = new List<PlayerManager>();
-        // ここで試合をする
-        // test
-        if(targets[0].totalStatus <= targets[1].totalStatus)
-        {targets.Reverse(); result = targets;}
-        result = targets;
-        return result;
     }
 }   

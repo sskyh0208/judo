@@ -38,6 +38,22 @@ public class YearRanking
         this.cityRanking = new Dictionary<string, Ranking>();
     }
 
+    public Ranking GetRanking(string id, string filterType)
+    {
+        switch (filterType)
+        {
+            default:
+            case "countoryRank":
+                return countryRanking[id];
+            case "regionRank":
+                return regionRanking[id];
+            case "placeRank":
+                return placeRanking[id];
+            case "cityRank":
+                return cityRanking[id];
+        }
+    }
+
     public Ranking GetCountryRanking(string countryId)
     {
         return countryRanking[countryId];
