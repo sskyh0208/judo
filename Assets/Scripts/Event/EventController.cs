@@ -13,7 +13,8 @@ public class EventController : MonoBehaviour
 
         Tournament taikai = new Tournament(
             GameData.instance.todayEvent,
-            GameData.instance.player.schoolId
+            GameData.instance.player.schoolId,
+            GameData.instance.storyDate
         );
 
         // 団体確認用
@@ -32,47 +33,46 @@ public class EventController : MonoBehaviour
         {
             Debug.Log("60kg試合開始");
             List<PlayerManager> result60 = taikai.DoIndividualMatch("60");
-            for (int i = 0; i < result60.Count; i++)
-            {
-                Debug.Log(string.Format("第{0}位 {1} {2} {3}年生 {4}", i + 1, result60[i].nameKaki, GameData.instance.schoolManager.GetSchool(result60[i].schoolId).name, result60[i].positionId, result60[i].totalStatus));
-            }
+            DebugMemberResult(result60);
             Debug.Log("66kg試合開始");
             List<PlayerManager> result66 = taikai.DoIndividualMatch("66");
-            for (int i = 0; i < result66.Count; i++)
-            {
-                Debug.Log(string.Format("第{0}位 {1} {2} {3}年生 {4}", i + 1, result66[i].nameKaki, GameData.instance.schoolManager.GetSchool(result66[i].schoolId).name, result66[i].positionId, result66[i].totalStatus));
-            }
+            DebugMemberResult(result66);
             Debug.Log("73kg試合開始");
             List<PlayerManager> result73 = taikai.DoIndividualMatch("73");
-            for (int i = 0; i < result73.Count; i++)
-            {
-                Debug.Log(string.Format("第{0}位 {1} {2} {3}年生 {4}", i + 1, result73[i].nameKaki, GameData.instance.schoolManager.GetSchool(result73[i].schoolId).name, result73[i].positionId, result73[i].totalStatus));
-            }
+            DebugMemberResult(result73);
             Debug.Log("81kg試合開始");
             List<PlayerManager> result81 = taikai.DoIndividualMatch("81");
-            for (int i = 0; i < result81.Count; i++)
-            {
-                Debug.Log(string.Format("第{0}位 {1} {2} {3}年生 {4}", i + 1, result81[i].nameKaki, GameData.instance.schoolManager.GetSchool(result81[i].schoolId).name, result81[i].positionId, result81[i].totalStatus));
-            }
+            DebugMemberResult(result81);
             Debug.Log("90kg試合開始");
             List<PlayerManager> result90 = taikai.DoIndividualMatch("90");
-            for (int i = 0; i < result90.Count; i++)
-            {
-                Debug.Log(string.Format("第{0}位 {1} {2} {3}年生 {4}", i + 1, result90[i].nameKaki, GameData.instance.schoolManager.GetSchool(result90[i].schoolId).name, result90[i].positionId, result90[i].totalStatus));
-            }
+            DebugMemberResult(result90);
             Debug.Log("100kg試合開始");
             List<PlayerManager> result100 = taikai.DoIndividualMatch("100");
-            for (int i = 0; i < result100.Count; i++)
-            {
-                Debug.Log(string.Format("第{0}位 {1} {2} {3}年生 {4}", i + 1, result100[i].nameKaki, GameData.instance.schoolManager.GetSchool(result100[i].schoolId).name, result100[i].positionId, result100[i].totalStatus));
-            }
+            DebugMemberResult(result100);
             Debug.Log("Over100kg試合開始");
             List<PlayerManager> resultOver100 = taikai.DoIndividualMatch("Over100");
-            for (int i = 0; i < resultOver100.Count; i++)
-            {
-                Debug.Log(string.Format("第{0}位 {1} {2} {3}年生 {4}", i + 1, resultOver100[i].nameKaki, GameData.instance.schoolManager.GetSchool(resultOver100[i].schoolId).name, resultOver100[i].positionId, resultOver100[i].totalStatus));
-            }
+            DebugMemberResult(resultOver100);
         }
 
+        GameData.instance.matchManager.history.Add(taikai);
+
+    }
+
+    public void DebugMemberResult(List<PlayerManager> members)
+    {
+        for (int i = 0; i < members.Count; i++)
+        {
+            Debug.Log(
+                string.Format(
+                    "第{0}位 {1} {2} {3}年生 {4}cm {5}kg {6}",
+                    i + 1,
+                    members[i].nameKaki,
+                    GameData.instance.schoolManager.GetSchool(members[i].schoolId).name, members[i].positionId,
+                    members[i].height,
+                    members[i].weight,
+                    members[i].totalStatus
+                )
+            );
+        }
     }
 }   

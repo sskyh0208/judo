@@ -124,7 +124,7 @@ public class NewGameController : MonoBehaviour
         GameObject Viewport = schoolScrollView.transform.Find("Viewport").gameObject;
         GameObject schoolScrollViewContent = Instantiate(schoolScrollViewContentPrefab, Viewport.transform);
         schoolScrollViewContent.name = place.id;
-        List<School> targetSchoolArray = GameData.instance.schoolManager.GetPlaceAllSchool("00"+place.id+"00");
+        List<School> targetSchoolArray = GameData.instance.schoolManager.GetSamePlaceAllSchool("00"+place.id+"00");
         foreach (School school in targetSchoolArray)
         {
             GameObject _text = Instantiate(textPrefab, schoolScrollViewContent.transform);

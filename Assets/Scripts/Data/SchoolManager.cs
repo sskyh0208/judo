@@ -36,35 +36,34 @@ public class SchoolManager
         return result;
     }
 
-    // 部員数5名以上を有する学校のみ取得
-    public List<School> GetApplyJoinEventMembersNumSchools(List<string> schoolIdList)
-    {   
-        List<School> result = new List<School>();
-        foreach (string schoolId in schoolIdList)
-        {
-            if (schoolList[schoolId].members.Count >= 5)
-            {
-                School school = schoolList[schoolId];
-                // 団体戦メンバーを設定
-                school.SetRegularMember();
-                result.Add(school);
-            }
-        }
-        return result;
+
+    public List<School> GetRegionAllSchool(string regionId)
+    {
+        return GetTargetTypeAllSchool(0, 2, regionId);
     }
 
-    public List<School> GetRegionAllSchool(string schoolId)
+    public List<School> GetPlaceAllSchool(string placeId)
+    {
+        return GetTargetTypeAllSchool(2, 2, "00" + placeId);
+    }
+
+    public List<School> GetCityAllSchool(string placeId, string cityId)
+    {
+        return GetTargetTypeAllSchool(2, 4, "00" + placeId + cityId);
+    }
+    public List<School> GetSameRegionAllSchool(string schoolId)
     {
         return GetTargetTypeAllSchool(0, 2, schoolId);
     }
-    public List<School> GetPlaceAllSchool(string schoolId)
+
+    public List<School> GetSamePlaceAllSchool(string schoolId)
     {
         return GetTargetTypeAllSchool(2, 2, schoolId);
     }
 
-    public List<School> GetCityAllSchool(string schoolId)
+    public List<School> GetSameCityAllSchool(string schoolId)
     {
-        return GetTargetTypeAllSchool(4, 2, schoolId);
+        return GetTargetTypeAllSchool(2, 4, schoolId);
     }
 
     private List<School> GetTargetTypeAllSchool(int start, int length, string targetId)
@@ -155,7 +154,7 @@ public class School
         {
             default:
             case 1:
-                membersMaxWeight = r.Next(0, 3) * 0.1f;
+                membersMaxWeight = r.Next(1, 3) * 0.1f;
                 break;
             case 2:
                 membersMaxWeight = r.Next(3, 5) * 0.1f;
