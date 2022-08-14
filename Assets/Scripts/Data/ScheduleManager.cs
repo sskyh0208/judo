@@ -83,6 +83,6 @@ public class Schedule
     public string eventName;
     public string eventId;
     public string eventType;
-    public string filterType;
+    public string filterEventId;
     public int filterValue;
 }

@@ -9,27 +9,31 @@ public class MatchManager
     // 年、トーナメントID、地方、県、市で保管
     public List<Tournament> history;
 
-    public Ranking GetRanking(int year, string regionId, string placeId, string cityId, string tournamentId)
+    public MatchManager()
+    {
+        this.history = new List<Tournament>();
+    }
+
+    public List<Ranking> GetRankingList(int year, string tournamentId)
     {   
-        Ranking target = null;
+        List<Ranking> targetList = new List<Ranking>();
         foreach (Tournament tournament in history)
         {
             if (tournament.date.Year != year){continue;}
             if (tournament.tournamentId != tournamentId){continue;}
-            if (tournament.regionId != regionId){continue;}
-            if (tournament.placeId != placeId){continue;}
-            if (tournament.cityId != cityId){continue;}
-            return tournament.ranking;
+            targetList.Add(tournament.ranking);
         }
-        return target;
+        return targetList;
     }
 }
 
 public class Tournament
 {
-    public Schedule eventObj;
     public DateTime date;
     public string tournamentId;
+    public string tournamentType;
+    public string tournamentFilterEventId;
+    public int tournamentFilterValue;
     public string mainPlaceId;
 
     public string regionId;
@@ -37,21 +41,23 @@ public class Tournament
     public string cityId;
     public Ranking ranking;
 
-    public Tournament (Schedule eventObj, string mainPlaceId, DateTime date)
+    public Tournament (Schedule eventObj, DateTime date, string holdPlaceId)
     {
-        this.eventObj = eventObj;
         this.date = date;
-        this.mainPlaceId = mainPlaceId;
-        this.regionId = mainPlaceId.Substring(0, 2);
-        this.placeId = mainPlaceId.Substring(2, 2);
-        this.cityId = mainPlaceId.Substring(4, 2);
+        this.tournamentId = eventObj.eventId;
+        this.tournamentType = eventObj.eventType;
+        this.tournamentFilterEventId = eventObj.filterEventId;
+        this.tournamentFilterValue = eventObj.filterValue;
+        this.regionId = holdPlaceId.Substring(0, 2);
+        this.placeId = holdPlaceId.Substring(2, 2);
+        this.cityId = holdPlaceId.Substring(4, 2);
         this.ranking = new Ranking();
     }
 
     public bool CheckTeamMatch()
     {
         // 団体戦を含むかどうかかどうか
-        if (eventObj.eventType == "all" || eventObj.eventType == "school")
+        if (tournamentType == "all" || tournamentType == "school")
         {
             return true;
         }
@@ -61,7 +67,7 @@ public class Tournament
     public bool CheckIndividualMatch()
     {
         // // 個人戦を含むかどうか
-        if (eventObj.eventType == "all" || eventObj.eventType == "member")
+        if (tournamentType == "all" || tournamentType == "member")
         {
             return true;
         }
@@ -72,32 +78,30 @@ public class Tournament
     {
         List<School> teamList = new List<School>();
         // だれでも参加可能
-        if (eventObj.filterType == "0")
+        if (tournamentFilterEventId == "00")
         {
-            Debug.Log(placeId + cityId);
             // 市のすべてを取得
             foreach (School school in GameData.instance.schoolManager.GetCityAllSchool(placeId, cityId))
             {
-                Debug.Log(school.name);
                 teamList.Add(school);
             }
         }
         // 条件付き
         else
         {
-            Ranking targetRanking = GameData.instance.matchManager.GetRanking(date.Year, regionId, placeId, cityId, eventObj.filterType);
-            for(int i = 1; i < targetRanking.school.Count + 1; i++)
+            List<Ranking> targetRankingList = GameData.instance.matchManager.GetRankingList(date.Year, tournamentFilterEventId);
+            foreach (Ranking targetRanking in targetRankingList)
             {
-                teamList.Add(targetRanking.school[i]);
-                if(i >= eventObj.filterValue && eventObj.filterValue != 0) {break;}
+                for(int i = 0; i < targetRanking.school.Count; i++)
+                {
+                    teamList.Add(targetRanking.school[i]);
+                    if(i >= tournamentFilterValue && tournamentFilterValue != 0) {break;}
+                }
             }
         }
 
         // 全員参加可能な場合強い順位並べ替え
-        if (eventObj.filterValue == 0)
-        {
-            teamList = new List<School>(SortSchoolTotalStatus(teamList));
-        }
+        teamList = new List<School>(SortSchoolTotalStatus(teamList));
 
         // 5人未満を排除
         teamList = GetApplyJoinTournamentTeams(teamList);
@@ -109,7 +113,7 @@ public class Tournament
     {
         List<PlayerManager> targetMembers = new List<PlayerManager>();
         List<PlayerManager> joinMembers = new List<PlayerManager>();
-        if (eventObj.filterType == "0")
+        if (tournamentFilterEventId == "00")
         {
             // 市のすべてを取得
             List<PlayerManager> allMembers = new List<PlayerManager>();
@@ -117,92 +121,86 @@ public class Tournament
             {
                 allMembers.AddRange(school.members.Values.ToList());
             }
-            int checkWeightValue = 60;
+            int min = 0;
+            int max = 60;
             switch (weightClass)
             {
                 case "60":
-                    checkWeightValue = 60;
+                    min = 0;
+                    max = 60;
                     break;
                 case "66":
-                    checkWeightValue = 66;
+                    min = 60;
+                    max = 66;
                     break;
                 case "73":
-                    checkWeightValue = 73;
+                    min = 66;
+                    max = 73;
                     break;
                 case "81":
-                    checkWeightValue = 81;
+                    min = 73;
+                    max = 81;
                     break;
                 case "90":
-                    checkWeightValue = 90;
+                    min = 81;
+                    max = 90;
                     break;
                 case "100":
-                    checkWeightValue = 100;
+                    min = 90;
+                    max = 100;
                     break;
                 case "Over100":
-                    checkWeightValue = 100;
+                    min = 100;
+                    max = 1000;
                     break;
             }
-            if (weightClass != "Over100")
+            foreach (PlayerManager member in allMembers)
             {
-                foreach (PlayerManager member in allMembers)
+                if (min < member.weight && member.weight <= max)
                 {
-                    if (checkWeightValue >= member.weight)
-                    {
-                        joinMembers.Add(member);
-                    }
-                }
-            }
-            else
-            {
-                foreach (PlayerManager member in allMembers)
-                {
-                    if (checkWeightValue <= member.weight)
-                    {
-                        joinMembers.Add(member);
-                    }
+                    joinMembers.Add(member);
                 }
             }
         }
         else
         {
             
-            Ranking ranking = GameData.instance.matchManager.GetRanking(date.Year, regionId, placeId, cityId, eventObj.filterType);
-            switch (weightClass)
+            List<Ranking> targetRankingList = GameData.instance.matchManager.GetRankingList(date.Year, tournamentFilterEventId);
+            foreach (Ranking targetRanking in targetRankingList)
             {
-                case "60":
-                    targetMembers = ranking.members60.Values.ToList();
-                    break;
-                case "66":
-                    targetMembers = ranking.members66.Values.ToList();
-                    break;
-                case "73":
-                    targetMembers = ranking.members73.Values.ToList();
-                    break;
-                case "81":
-                    targetMembers = ranking.members81.Values.ToList();
-                    break;
-                case "90":
-                    targetMembers = ranking.members90.Values.ToList();
-                    break;
-                case "100":
-                    targetMembers = ranking.members100.Values.ToList();
-                    break;
-                case "Over100":
-                    targetMembers = ranking.membersOver100.Values.ToList();
-                    break;
-            }
-            for(int i = 1; i < targetMembers.Count + 1; i++)
-            {
-                joinMembers.Add(targetMembers[i]);
-                if(i >= eventObj.filterValue && eventObj.filterValue != 0) {break;}
+                switch (weightClass)
+                {
+                    case "60":
+                        targetMembers = targetRanking.members60;
+                        break;
+                    case "66":
+                        targetMembers = targetRanking.members66;
+                        break;
+                    case "73":
+                        targetMembers = targetRanking.members73;
+                        break;
+                    case "81":
+                        targetMembers = targetRanking.members81;
+                        break;
+                    case "90":
+                        targetMembers = targetRanking.members90;
+                        break;
+                    case "100":
+                        targetMembers = targetRanking.members100;
+                        break;
+                    case "Over100":
+                        targetMembers = targetRanking.membersOver100;
+                        break;
+                }
+                for(int i = 0; i < targetMembers.Count; i++)
+                {
+                    joinMembers.Add(targetMembers[i]);
+                    if(i >= tournamentFilterValue && tournamentFilterValue != 0) {break;}
+                }
             }
         }
 
-        // 全員参加可能は強い順に並べ替え
-        if (eventObj.filterValue == 0)
-        {
-            joinMembers = SortMemberTotalStatus(joinMembers);
-        }
+        joinMembers = SortMemberTotalStatus(joinMembers);
 
         return GenerateEventLeaderBoad<PlayerManager>(joinMembers);
     }
@@ -232,14 +230,13 @@ public class Tournament
 
     public List<List<T>> GenerateEventLeaderBoad<T>(List<T> targetList)
     {
-        Debug.Log("参加数: " + targetList.Count);
         List<List<T>> leaderBoad = new List<List<T>>();
         List<List<T>> leaderBoadA = new List<List<T>>();
         List<List<T>> leaderBoadB = new List<List<T>>();
         List<List<T>> tmpLeaderBoadA = new List<List<T>>();
         List<List<T>> tmpLeaderBoadB = new List<List<T>>();
 
-        int notSeedNum = 8;
+        int notSeedNum = 2;
 
         List<T> seedList = new List<T>();
         if (targetList.Count >= 256)
@@ -261,6 +258,14 @@ public class Tournament
         else if (targetList.Count >= 16)
         {
             notSeedNum = 16;
+        }
+        else if (targetList.Count >= 8)
+        {
+            notSeedNum = 8;
+        }
+        else if (targetList.Count >= 4)
+        {
+            notSeedNum = 4;
         }
 
         int notSeedCount = targetList.Count % notSeedNum;
@@ -365,7 +370,6 @@ public class Tournament
                 if (targetMatch.Count == 1)
                 {
                     winnerList.Add(targetMatch[0]);
-                    // {Debug.Log(string.Format("不戦勝: {0}", targetMatch[0].name));}
                     continue;
                 }
                 else
@@ -409,7 +413,7 @@ public class Tournament
         int chidCount = 1;
         while (true)
         {
-            Debug.Log(count + "回戦");
+            Debug.Log(weightClass + ": " + count + "回戦");
             List<PlayerManager> winnerList = new List<PlayerManager>();
             foreach (List<PlayerManager> targetMatch in matchList)
             {
@@ -440,7 +444,8 @@ public class Tournament
                     result.Add(loser);
                     Debug.Log(
                         string.Format(
-                            "{0} {1} vs {2} {3}\n{4}",
+                            "{0} {1} {2} vs {3} {4}\n{5}",
+                            GameData.instance.todayEvent.eventId,
                             GameData.instance.schoolManager.GetSchool(winner.schoolId).name, winner.nameKaki,
                             GameData.instance.schoolManager.GetSchool(loser.schoolId).name, loser.nameKaki,
                             matchDetail["formatString"]
@@ -449,7 +454,7 @@ public class Tournament
                 }
                 else
                 {
-                    Debug.Log(matchDetail["formatString"]);
+                    Debug.Log(GameData.instance.todayEvent.eventId +  " " + matchDetail["formatString"]);
                 }
                 chidCount ++;
             }
@@ -602,7 +607,8 @@ public class SchoolMatch
             Dictionary<string, string> matchDetail = match.ChecMatchDetail();
             Debug.Log(
                 string.Format(
-                    "{0} {1}",
+                    "{0} {1} {2}",
+                    GameData.instance.todayEvent.eventId,
                     i,
                     matchDetail["formatString"]
                 )
@@ -998,24 +1004,24 @@ public class MemberMatch
 
 public class Ranking
 {
-    public Dictionary<int, School> school;
-    public Dictionary<int, PlayerManager> members60;
-    public Dictionary<int, PlayerManager> members66;
-    public Dictionary<int, PlayerManager> members73;
-    public Dictionary<int, PlayerManager> members81;
-    public Dictionary<int, PlayerManager> members90;
-    public Dictionary<int, PlayerManager> members100;
-    public Dictionary<int, PlayerManager> membersOver100;
+    public List<School> school;
+    public List<PlayerManager> members60;
+    public List<PlayerManager> members66;
+    public List<PlayerManager> members73;
+    public List<PlayerManager> members81;
+    public List<PlayerManager> members90;
+    public List<PlayerManager> members100;
+    public List<PlayerManager> membersOver100;
 
     public Ranking()
     {
-        this.school = new Dictionary<int, School>();
-        this.members60 = new Dictionary<int, PlayerManager>();
-        this.members66 = new Dictionary<int, PlayerManager>();
-        this.members73 = new Dictionary<int, PlayerManager>();
-        this.members81 = new Dictionary<int, PlayerManager>();
-        this.members90 = new Dictionary<int, PlayerManager>();
-        this.members100 = new Dictionary<int, PlayerManager>();
-        this.membersOver100 = new Dictionary<int, PlayerManager>();
+        this.school = new List<School>();
+        this.members60 = new List<PlayerManager>();
+        this.members66 = new List<PlayerManager>();
+        this.members73 = new List<PlayerManager>();
+        this.members81 = new List<PlayerManager>();
+        this.members90 = new List<PlayerManager>();
+        this.members100 = new List<PlayerManager>();
+        this.membersOver100 = new List<PlayerManager>();
     }
 }

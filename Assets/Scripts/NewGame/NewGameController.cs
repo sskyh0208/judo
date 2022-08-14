@@ -26,7 +26,6 @@ public class NewGameController : MonoBehaviour
         GenerateAllSchoolSelectButton(GameData.instance.placeManager.placeArray);
         GameData.instance.player = GenerateNewPlayer();
         SetDisplayPlayerStatus();
-        Debug.Log(10 + Int16.Parse("01"));
     }
 
     // 各県を選択するボタンを画面に作成する。
@@ -124,7 +123,7 @@ public class NewGameController : MonoBehaviour
         GameObject Viewport = schoolScrollView.transform.Find("Viewport").gameObject;
         GameObject schoolScrollViewContent = Instantiate(schoolScrollViewContentPrefab, Viewport.transform);
         schoolScrollViewContent.name = place.id;
-        List<School> targetSchoolArray = GameData.instance.schoolManager.GetSamePlaceAllSchool("00"+place.id+"00");
+        List<School> targetSchoolArray = GameData.instance.schoolManager.GetSamePlaceAllSchool(place.id+"00");
         foreach (School school in targetSchoolArray)
         {
             GameObject _text = Instantiate(textPrefab, schoolScrollViewContent.transform);

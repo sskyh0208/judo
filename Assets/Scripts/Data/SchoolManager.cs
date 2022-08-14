@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using UnityEngine;
 
 
@@ -98,6 +99,21 @@ public class SchoolManager
             schoolList[schoolId].DoneGraduationMembers();
         }
     }
+
+    // 元となる学校Idから市までの地域IDをすべて取得するGetSamePlaceIdList
+    public List<string> GetSamePlaceIdList(string baseId)
+    {
+        string checkId = baseId.Substring(0, 4);
+        HashSet<string> targetList = new HashSet<string>();
+        foreach (School school in schoolList.Values.ToList())
+        {
+            if (Regex.IsMatch(school.id, "^" + checkId))
+            {
+                targetList.Add(school.id.Substring(0, 6));
+            }
+        }
+        return targetList.ToList();
+    }
 }
 
 [Serializable]
@@ -154,7 +170,7 @@ public class School
         {
             default:
             case 1:
-                membersMaxWeight = r.Next(1, 3) * 0.1f;
+                membersMaxWeight = r.Next(2, 3) * 0.1f;
                 break;
             case 2:
                 membersMaxWeight = r.Next(3, 5) * 0.1f;

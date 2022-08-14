@@ -44,7 +44,6 @@ public class PlaceManager
         }
         return target;
     }
-
 }
 
 [Serializable]
