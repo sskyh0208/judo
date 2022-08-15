@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using System.Text.RegularExpressions;
 
 public class MatchManager
 {
@@ -14,13 +15,14 @@ public class MatchManager
         this.history = new List<Tournament>();
     }
 
-    public List<Ranking> GetRankingList(int year, string tournamentId)
+    public List<Ranking> GetRankingList(int year, string pattern)
     {   
         List<Ranking> targetList = new List<Ranking>();
         foreach (Tournament tournament in history)
         {
+            // Debug.Log("正規表現　" + tournament.tournamentId + " : " + pattern + " -> " + Regex.IsMatch(tournament.tournamentId, pattern));
             if (tournament.date.Year != year){continue;}
-            if (tournament.tournamentId != tournamentId){continue;}
+            if (!Regex.IsMatch(tournament.tournamentId, pattern)){continue;}
             targetList.Add(tournament.ranking);
         }
         return targetList;
@@ -30,27 +32,28 @@ public class MatchManager
 public class Tournament
 {
     public DateTime date;
+    public string eventId;
     public string tournamentId;
     public string tournamentType;
     public string tournamentFilterEventId;
     public int tournamentFilterValue;
-    public string mainPlaceId;
 
     public string regionId;
     public string placeId;
     public string cityId;
     public Ranking ranking;
 
-    public Tournament (Schedule eventObj, DateTime date, string holdPlaceId)
+    public Tournament (Schedule eventObj, DateTime date, string targetId)
     {
         this.date = date;
-        this.tournamentId = eventObj.eventId;
+        this.eventId = eventObj.eventId;
+        this.tournamentId = targetId + eventObj.eventId;
         this.tournamentType = eventObj.eventType;
         this.tournamentFilterEventId = eventObj.filterEventId;
         this.tournamentFilterValue = eventObj.filterValue;
-        this.regionId = holdPlaceId.Substring(0, 2);
-        this.placeId = holdPlaceId.Substring(2, 2);
-        this.cityId = holdPlaceId.Substring(4, 2);
+        this.regionId = targetId.Substring(0, 2);
+        this.placeId = targetId.Substring(2, 2);
+        this.cityId = targetId.Substring(4, 2);
         this.ranking = new Ranking();
     }
 
@@ -78,7 +81,7 @@ public class Tournament
     {
         List<School> teamList = new List<School>();
         // だれでも参加可能
-        if (tournamentFilterEventId == "00")
+        if (eventId == "01")
         {
             // 市のすべてを取得
             foreach (School school in GameData.instance.schoolManager.GetCityAllSchool(placeId, cityId))
@@ -89,7 +92,26 @@ public class Tournament
         // 条件付き
         else
         {
-            List<Ranking> targetRankingList = GameData.instance.matchManager.GetRankingList(date.Year, tournamentFilterEventId);
+            string pattern = "";
+            switch (eventId)
+            {
+                case "02":
+                    pattern = "^"+ regionId + placeId + "[0-9]{2}01";
+                    break;
+                case "03":
+                    pattern = "^" + regionId +"[0-9]{4}02";
+                    break;
+                case "04":
+                    pattern = "^[0-9]{6}01";
+                    break;
+                case "05":
+                    pattern = "^[0-9]{6}02";
+                    break;
+                case "06":
+                    pattern = "^[0-9]{6}03";
+                    break;
+            }
+            List<Ranking> targetRankingList = GameData.instance.matchManager.GetRankingList(date.Year, pattern);
             foreach (Ranking targetRanking in targetRankingList)
             {
                 for(int i = 0; i < targetRanking.school.Count; i++)
@@ -113,7 +135,7 @@ public class Tournament
     {
         List<PlayerManager> targetMembers = new List<PlayerManager>();
         List<PlayerManager> joinMembers = new List<PlayerManager>();
-        if (tournamentFilterEventId == "00")
+        if (eventId == "01")
         {
             // 市のすべてを取得
             List<PlayerManager> allMembers = new List<PlayerManager>();
@@ -164,8 +186,26 @@ public class Tournament
         }
         else
         {
-            
-            List<Ranking> targetRankingList = GameData.instance.matchManager.GetRankingList(date.Year, tournamentFilterEventId);
+            string pattern = "";
+            switch (eventId)
+            {
+                case "02":
+                    pattern = "^"+ regionId + placeId + "[0-9]{2}01";
+                    break;
+                case "03":
+                    pattern = "^" + regionId +"[0-9]{4}02";
+                    break;
+                case "04":
+                    pattern = "^[0-9]{6}01";
+                    break;
+                case "05":
+                    pattern = "^[0-9]{6}02";
+                    break;
+                case "06":
+                    pattern = "^[0-9]{6}03";
+                    break;
+            }
+            List<Ranking> targetRankingList = GameData.instance.matchManager.GetRankingList(date.Year, pattern);
             foreach (Ranking targetRanking in targetRankingList)
             {
                 switch (weightClass)
@@ -442,20 +482,20 @@ public class Tournament
                 if(loser != null)
                 {
                     result.Add(loser);
-                    Debug.Log(
-                        string.Format(
-                            "{0} {1} {2} vs {3} {4}\n{5}",
-                            GameData.instance.todayEvent.eventId,
-                            GameData.instance.schoolManager.GetSchool(winner.schoolId).name, winner.nameKaki,
-                            GameData.instance.schoolManager.GetSchool(loser.schoolId).name, loser.nameKaki,
-                            matchDetail["formatString"]
-                        )
-                    );
+                    // Debug.Log(
+                    //     string.Format(
+                    //         "{0} {1} {2} vs {3} {4}\n{5}",
+                    //         GameData.instance.todayEvent.eventId,
+                    //         GameData.instance.schoolManager.GetSchool(winner.schoolId).name, winner.nameKaki,
+                    //         GameData.instance.schoolManager.GetSchool(loser.schoolId).name, loser.nameKaki,
+                    //         matchDetail["formatString"]
+                    //     )
+                    // );
                 }
-                else
-                {
-                    Debug.Log(GameData.instance.todayEvent.eventId +  " " + matchDetail["formatString"]);
-                }
+                // else
+                // {
+                //     Debug.Log(GameData.instance.todayEvent.eventId +  " " + matchDetail["formatString"]);
+                // }
                 chidCount ++;
             }
             if (winnerList.Count == 1)
@@ -566,7 +606,7 @@ public class SchoolMatch
 
     private bool Fight()
     {
-        Debug.Log("===========================================================================");
+        // Debug.Log("===========================================================================");
         int redSchoolPoint = 0;
         int whiteSchoolPoint = 0;
         bool isDraw = true;
@@ -605,14 +645,14 @@ public class SchoolMatch
             memberMatchList.Add(match);
 
             Dictionary<string, string> matchDetail = match.ChecMatchDetail();
-            Debug.Log(
-                string.Format(
-                    "{0} {1} {2}",
-                    GameData.instance.todayEvent.eventId,
-                    i,
-                    matchDetail["formatString"]
-                )
-            );
+            // Debug.Log(
+            //     string.Format(
+            //         "{0} {1} {2}",
+            //         GameData.instance.todayEvent.eventId,
+            //         i,
+            //         matchDetail["formatString"]
+            //     )
+            // );
         }
 
         if (redWinCount > whiteWinCount)
@@ -625,7 +665,7 @@ public class SchoolMatch
             winner = white;
             loser = red;
         }
-        Debug.Log("===========================================================================");
+        // Debug.Log("===========================================================================");
         return true;
     }
 }

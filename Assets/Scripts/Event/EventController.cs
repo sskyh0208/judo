@@ -10,10 +10,40 @@ public class EventController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        string holdPlaceId = GameData.instance.player.schoolId.Substring(startIndex: 0, 6);
-        List<string> targetList = GameData.instance.schoolManager.GetSamePlaceIdList(holdPlaceId);
-        foreach (string id in targetList)
+        List<string> tournamentIdList = new List<string>(){};
+        switch (GameData.instance.todayEvent.eventId)
         {
+            case "01":
+                tournamentIdList = new List<string>()
+                {
+                    "073301",
+                    "073302",
+                    "073303",
+                    "073304",
+                    "073401",
+                    "073402",
+                    "073403",
+                    "073404",
+                    "073405"
+                };
+                break;
+            case "02":
+                tournamentIdList = new List<string>()
+                {
+                    "073300",
+                    "073400"
+                };
+                break;
+            case "03":
+                tournamentIdList = new List<string>()
+                {
+                    "070000",
+                };
+                break;
+        }
+        foreach (string id in tournamentIdList)
+        {
+            Debug.Log("大会開催ID: " + id);
             Tournament taikai = new Tournament(
                 GameData.instance.todayEvent,
                 GameData.instance.storyDate,
@@ -37,25 +67,25 @@ public class EventController : MonoBehaviour
             {
                 Debug.Log("60kg試合開始");
                 List<PlayerManager> result60 = taikai.DoIndividualMatch("60");
-                DebugMemberResult(result60);
+                //DebugMemberResult(result60);
                 Debug.Log("66kg試合開始");
                 List<PlayerManager> result66 = taikai.DoIndividualMatch("66");
-                DebugMemberResult(result66);
+                //DebugMemberResult(result66);
                 Debug.Log("73kg試合開始");
                 List<PlayerManager> result73 = taikai.DoIndividualMatch("73");
-                DebugMemberResult(result73);
+                //DebugMemberResult(result73);
                 Debug.Log("81kg試合開始");
                 List<PlayerManager> result81 = taikai.DoIndividualMatch("81");
-                DebugMemberResult(result81);
+                //DebugMemberResult(result81);
                 Debug.Log("90kg試合開始");
                 List<PlayerManager> result90 = taikai.DoIndividualMatch("90");
-                DebugMemberResult(result90);
+                //DebugMemberResult(result90);
                 Debug.Log("100kg試合開始");
                 List<PlayerManager> result100 = taikai.DoIndividualMatch("100");
-                DebugMemberResult(result100);
+                //DebugMemberResult(result100);
                 Debug.Log("Over100kg試合開始");
                 List<PlayerManager> resultOver100 = taikai.DoIndividualMatch("Over100");
-                DebugMemberResult(resultOver100);
+                //DebugMemberResult(resultOver100);
                 taikai.ranking.members60 = result60;
                 taikai.ranking.members66 = result66;
                 taikai.ranking.members73 = result73;
@@ -65,10 +95,6 @@ public class EventController : MonoBehaviour
                 taikai.ranking.membersOver100 = resultOver100;
             }
             GameData.instance.matchManager.history.Add(taikai);
-            if (!GameData.instance.todayEvent.eventId.Equals("01"))
-            {
-                break;
-            }
         }
     }
 
