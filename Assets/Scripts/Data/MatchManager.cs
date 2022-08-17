@@ -276,7 +276,7 @@ public class Tournament
         List<List<T>> tmpLeaderBoadA = new List<List<T>>();
         List<List<T>> tmpLeaderBoadB = new List<List<T>>();
 
-        int notSeedNum = 2;
+        int notSeedNum = 1;
 
         List<T> seedList = new List<T>();
         if (targetList.Count >= 256)
@@ -307,90 +307,101 @@ public class Tournament
         {
             notSeedNum = 4;
         }
+        else if (targetList.Count >= 2)
+        {
+            notSeedNum = 2;
+        }
 
         int notSeedCount = targetList.Count % notSeedNum;
 
-        T firstTarget = targetList[0];
-        targetList.RemoveAt(0);
-        T secondTarget = targetList[0];
-        targetList.RemoveAt(0);
-
-        // 残りをシャッフル
-        for (int i = 0; i < targetList.Count; i++)
+        if (notSeedNum > 1)
         {
-            T tmp = targetList[i];
-            int randomIndex = UnityEngine.Random.Range(i, targetList.Count);
-            targetList[i] = targetList[randomIndex];
-            targetList[randomIndex] = tmp;
-        }
-
-        targetList.Insert(0, firstTarget);
-        targetList.Insert(0, secondTarget);
-
-        // 子要素初期化
-        List<T> matchList = new List<T>();
-        // 組み合わせ
-
-        targetList.Reverse();
-        for (int i = 0; i < notSeedCount * 2; i++)
-        {
-            matchList.Add(targetList[0]);
-            if (matchList.Count == 2)
-            {
-                tmpLeaderBoadA.Add(matchList);
-                matchList = new List<T>();
-            }
+            T firstTarget = targetList[0];
             targetList.RemoveAt(0);
-        }
+            T secondTarget = targetList[0];
+            targetList.RemoveAt(0);
 
-        targetList.Reverse();
-        foreach (T target in targetList)
-        {
-            tmpLeaderBoadB.Add(new List<T>(){target});
-        }
+            // 残りをシャッフル
+            for (int i = 0; i < targetList.Count; i++)
+            {
+                T tmp = targetList[i];
+                int randomIndex = UnityEngine.Random.Range(i, targetList.Count);
+                targetList[i] = targetList[randomIndex];
+                targetList[randomIndex] = tmp;
+            }
 
-        for (int i = 0; i < notSeedNum; i++)
-        {
-            if (i < tmpLeaderBoadB.Count)
-            {
-                if (i % 2 == 0)
-                {
-                    leaderBoadB.Add(tmpLeaderBoadB[i]);
-                }
-                else
-                {
-                    leaderBoadA.Add(tmpLeaderBoadB[i]);
-                }
-            }
-            if (i < tmpLeaderBoadA.Count)
-            {
-                if (i % 2 == 0)
-                {
-                    leaderBoadB.Add(tmpLeaderBoadA[i]);
-                }
-                else
-                {
-                    leaderBoadA.Add(tmpLeaderBoadA[i]);
-                }
-            }
-        }
+            targetList.Insert(0, firstTarget);
+            targetList.Insert(0, secondTarget);
 
-        if (leaderBoadA.Count > 0)
-        {
-            foreach (List<T> match in leaderBoadA)
+            // 子要素初期化
+            List<T> matchList = new List<T>();
+            // 組み合わせ
+
+            targetList.Reverse();
+            for (int i = 0; i < notSeedCount * 2; i++)
             {
-                leaderBoad.Add(match);
+                matchList.Add(targetList[0]);
+                if (matchList.Count == 2)
+                {
+                    tmpLeaderBoadA.Add(matchList);
+                    matchList = new List<T>();
+                }
+                targetList.RemoveAt(0);
+            }
+
+            targetList.Reverse();
+            foreach (T target in targetList)
+            {
+                tmpLeaderBoadB.Add(new List<T>(){target});
+            }
+
+            for (int i = 0; i < notSeedNum; i++)
+            {
+                if (i < tmpLeaderBoadB.Count)
+                {
+                    if (i % 2 == 0)
+                    {
+                        leaderBoadB.Add(tmpLeaderBoadB[i]);
+                    }
+                    else
+                    {
+                        leaderBoadA.Add(tmpLeaderBoadB[i]);
+                    }
+                }
+                if (i < tmpLeaderBoadA.Count)
+                {
+                    if (i % 2 == 0)
+                    {
+                        leaderBoadB.Add(tmpLeaderBoadA[i]);
+                    }
+                    else
+                    {
+                        leaderBoadA.Add(tmpLeaderBoadA[i]);
+                    }
+                }
+            }
+
+            if (leaderBoadA.Count > 0)
+            {
+                foreach (List<T> match in leaderBoadA)
+                {
+                    leaderBoad.Add(match);
+                }
+            }
+            if (leaderBoadB.Count > 0)
+            {
+                List<T> tmp = leaderBoadB[0];
+                leaderBoadB[0] = leaderBoadB[leaderBoadB.Count - 1];
+                leaderBoadB[leaderBoadB.Count - 1] = tmp;
+                foreach (List<T> match in leaderBoadB)
+                {
+                    leaderBoad.Add(match);
+                }
             }
         }
-        if (leaderBoadB.Count > 0)
+        else
         {
-            List<T> tmp = leaderBoadB[0];
-            leaderBoadB[0] = leaderBoadB[leaderBoadB.Count - 1];
-            leaderBoadB[leaderBoadB.Count - 1] = tmp;
-            foreach (List<T> match in leaderBoadB)
-            {
-                leaderBoad.Add(match);
-            }
+            leaderBoad.Add(new List<T>(){targetList[0]});
         }
 
         Debug.Log("初回組み合わせ数: " + leaderBoad.Count);

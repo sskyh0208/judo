@@ -16,6 +16,12 @@ public class EventController : MonoBehaviour
             case "01":
                 tournamentIdList = new List<string>()
                 {
+                    "073101",
+                    "073102",
+                    "073103",
+                    "073201",
+                    "073202",
+                    "073203",
                     "073301",
                     "073302",
                     "073303",
@@ -24,14 +30,22 @@ public class EventController : MonoBehaviour
                     "073402",
                     "073403",
                     "073404",
-                    "073405"
+                    "073405",
+                    "073501",
+                    "073502",
+                    "073503",
+                    "073504",
+                    "073505"
                 };
                 break;
             case "02":
                 tournamentIdList = new List<string>()
                 {
+                    "073100",
+                    "073200",
                     "073300",
-                    "073400"
+                    "073400",
+                    "073500"
                 };
                 break;
             case "03":
@@ -67,25 +81,25 @@ public class EventController : MonoBehaviour
             {
                 Debug.Log("60kg試合開始");
                 List<PlayerManager> result60 = taikai.DoIndividualMatch("60");
-                //DebugMemberResult(result60);
+                DebugMemberResult(result60);
                 Debug.Log("66kg試合開始");
                 List<PlayerManager> result66 = taikai.DoIndividualMatch("66");
-                //DebugMemberResult(result66);
+                DebugMemberResult(result66);
                 Debug.Log("73kg試合開始");
                 List<PlayerManager> result73 = taikai.DoIndividualMatch("73");
-                //DebugMemberResult(result73);
+                DebugMemberResult(result73);
                 Debug.Log("81kg試合開始");
                 List<PlayerManager> result81 = taikai.DoIndividualMatch("81");
-                //DebugMemberResult(result81);
+                DebugMemberResult(result81);
                 Debug.Log("90kg試合開始");
                 List<PlayerManager> result90 = taikai.DoIndividualMatch("90");
-                //DebugMemberResult(result90);
+                DebugMemberResult(result90);
                 Debug.Log("100kg試合開始");
                 List<PlayerManager> result100 = taikai.DoIndividualMatch("100");
-                //DebugMemberResult(result100);
+                DebugMemberResult(result100);
                 Debug.Log("Over100kg試合開始");
                 List<PlayerManager> resultOver100 = taikai.DoIndividualMatch("Over100");
-                //DebugMemberResult(resultOver100);
+                DebugMemberResult(resultOver100);
                 taikai.ranking.members60 = result60;
                 taikai.ranking.members66 = result66;
                 taikai.ranking.members73 = result73;
