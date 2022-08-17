@@ -54,6 +54,18 @@ public class EventController : MonoBehaviour
                     "070000",
                 };
                 break;
+            case "04":
+                tournamentIdList = new List<string>()
+                {
+                    "000000",
+                };
+                break;
+            case "05":
+                tournamentIdList = new List<string>()
+                {
+                    "000000",
+                };
+                break;
         }
         foreach (string id in tournamentIdList)
         {

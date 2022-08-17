@@ -117,7 +117,7 @@ public class Tournament
                 for(int i = 0; i < targetRanking.school.Count; i++)
                 {
                     teamList.Add(targetRanking.school[i]);
-                    if(i >= tournamentFilterValue && tournamentFilterValue != 0) {break;}
+                    if(i >= tournamentFilterValue && tournamentFilterValue != 99) {break;}
                 }
             }
         }
@@ -235,7 +235,7 @@ public class Tournament
                 for(int i = 0; i < targetMembers.Count; i++)
                 {
                     joinMembers.Add(targetMembers[i]);
-                    if(i >= tournamentFilterValue && tournamentFilterValue != 0) {break;}
+                    if(i >= tournamentFilterValue && tournamentFilterValue != 99) {break;}
                 }
             }
         }
