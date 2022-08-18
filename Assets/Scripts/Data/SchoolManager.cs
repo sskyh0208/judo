@@ -319,17 +319,17 @@ public class School
         int mainExp = 100;
         int secondExp = 20;
         // 監督の指導力係数
+        mainExp = (int)(mainExp * supervisor.GetAbillity("902").GetUpdateExpSenseCoef());
         // 設備の効果係数
         this.trainingMenuResult.Add(new Tuple<string, int>("902", mainExp * minutes));
-        // 立技すべて
-        foreach (string wazaId in GameData.instance.abillityManager.GetWazaIdArrayWithType("0"))
+        // 技すべて
+        foreach (string wazaTypeId in new List<string>(){"0", "1"})
         {
-            this.trainingMenuResult.Add(new Tuple<string, int>(wazaId, secondExp * minutes));
-        }
-        // 寝技すべて
-        foreach (string wazaId in GameData.instance.abillityManager.GetWazaIdArrayWithType("1"))
-        {
-            this.trainingMenuResult.Add(new Tuple<string, int>(wazaId, secondExp * minutes));
+            foreach (string wazaId in GameData.instance.abillityManager.GetWazaIdArrayWithType(wazaTypeId))
+            {
+                int exp = (int)(secondExp * supervisor.GetAbillity(wazaId).GetUpdateExpSenseCoef());
+                this.trainingMenuResult.Add(new Tuple<string, int>(wazaId, exp * minutes));
+            }
         }
     }
 
@@ -341,16 +341,16 @@ public class School
         int secondExp = 20;
         // 監督の指導力係数
         // 設備の効果係数
+        mainExp = (int)(mainExp * supervisor.GetAbillity("901").GetUpdateExpSenseCoef());
         this.trainingMenuResult.Add(new Tuple<string, int>("901", mainExp * minutes));
-        // 立技すべて
-        foreach (string wazaId in GameData.instance.abillityManager.GetWazaIdArrayWithType("0"))
+        // 技すべて
+        foreach (string wazaTypeId in new List<string>(){"0", "1"})
         {
-            this.trainingMenuResult.Add(new Tuple<string, int>(wazaId, secondExp * minutes));
-        }
-        // 寝技すべて
-        foreach (string wazaId in GameData.instance.abillityManager.GetWazaIdArrayWithType("1"))
-        {
-            this.trainingMenuResult.Add(new Tuple<string, int>(wazaId, secondExp * minutes));
+            foreach (string wazaId in GameData.instance.abillityManager.GetWazaIdArrayWithType(wazaTypeId))
+            {
+                int exp = (int)(secondExp * supervisor.GetAbillity(wazaId).GetUpdateExpSenseCoef());
+                this.trainingMenuResult.Add(new Tuple<string, int>(wazaId, exp * minutes));
+            }
         }
     }
 
@@ -363,17 +363,18 @@ public class School
         int thirdExp = 20;
         // 監督の指導力係数
         // 設備の効果係数
+        mainExp = (int)(mainExp * supervisor.GetAbillity("902").GetUpdateExpSenseCoef());
         this.trainingMenuResult.Add(new Tuple<string, int>("902", mainExp * minutes));
+        secondExp = (int)(secondExp * supervisor.GetAbillity("901").GetUpdateExpSenseCoef());
         this.trainingMenuResult.Add(new Tuple<string, int>("901", secondExp * minutes));
-        // 立技すべて
-        foreach (string wazaId in GameData.instance.abillityManager.GetWazaIdArrayWithType("0"))
+        // 技すべて
+        foreach (string wazaTypeId in new List<string>(){"0", "1"})
         {
-            this.trainingMenuResult.Add(new Tuple<string, int>(wazaId, thirdExp * minutes));
-        }
-        // 寝技すべて
-        foreach (string wazaId in GameData.instance.abillityManager.GetWazaIdArrayWithType("1"))
-        {
-            this.trainingMenuResult.Add(new Tuple<string, int>(wazaId, thirdExp * minutes));
+            foreach (string wazaId in GameData.instance.abillityManager.GetWazaIdArrayWithType(wazaTypeId))
+            {
+                int exp = (int)(thirdExp * supervisor.GetAbillity(wazaId).GetUpdateExpSenseCoef());
+                this.trainingMenuResult.Add(new Tuple<string, int>(wazaId, exp * minutes));
+            }
         }
     }
 
@@ -383,18 +384,18 @@ public class School
         // スタミナUP
         int mainExp = 100;
         int secondExp = 20;
-        // 監督の指導力係数
         // 設備の効果係数
+        // 監督の指導力係数
+        mainExp = (int)(mainExp * supervisor.GetAbillity("900").GetUpdateExpSenseCoef());
         this.trainingMenuResult.Add(new Tuple<string, int>("900", mainExp * minutes));
-        // 立技すべて
-        foreach (string wazaId in GameData.instance.abillityManager.GetWazaIdArrayWithType("0"))
+        // 技すべて
+        foreach (string wazaTypeId in new List<string>(){"0", "1"})
         {
-            this.trainingMenuResult.Add(new Tuple<string, int>(wazaId, secondExp * minutes));
-        }
-        // 寝技すべて
-        foreach (string wazaId in GameData.instance.abillityManager.GetWazaIdArrayWithType("1"))
-        {
-            this.trainingMenuResult.Add(new Tuple<string, int>(wazaId, secondExp * minutes));
+            foreach (string wazaId in GameData.instance.abillityManager.GetWazaIdArrayWithType(wazaTypeId))
+            {
+                int exp = (int)(secondExp * supervisor.GetAbillity(wazaId).GetUpdateExpSenseCoef());
+                this.trainingMenuResult.Add(new Tuple<string, int>(wazaId, exp * minutes));
+            }
         }
     }
     // マシントレ
@@ -403,18 +404,199 @@ public class School
         // スタミナUP
         int mainExp = 150;
         int secondExp = 10;
-        // 監督の指導力係数
         // 設備の効果係数
+        // 監督の指導力係数
+        mainExp = (int)(mainExp * supervisor.GetAbillity("900").GetUpdateExpSenseCoef());
         this.trainingMenuResult.Add(new Tuple<string, int>("900", mainExp * minutes));
+        // 技すべて
+        foreach (string wazaTypeId in new List<string>(){"0", "1"})
+        {
+            foreach (string wazaId in GameData.instance.abillityManager.GetWazaIdArrayWithType(wazaTypeId))
+            {
+                int exp = (int)(secondExp * supervisor.GetAbillity(wazaId).GetUpdateExpSenseCoef());
+                this.trainingMenuResult.Add(new Tuple<string, int>(wazaId, exp * minutes));
+            }
+        }
+    }
+    // 打ち込み(手)
+    public void UchikomiTe(int minutes)
+    {
+        // スタミナUP
+        int mainExp = 100;
+        int secondExp = 20;
+        // 設備の効果係数
+        // 手技すべて
+        foreach (string wazaId in GameData.instance.abillityManager.GetWazaIdArrayWithGroup("0"))
+        {
+            // 監督の指導力係数
+            int exp = (int)(mainExp * supervisor.GetAbillity(wazaId).GetUpdateExpSenseCoef());
+            this.trainingMenuResult.Add(new Tuple<string, int>(wazaId, exp * minutes));
+        }
+        foreach (string wazaId in new List<string>(){"900", "901", "902"})
+        {
+            int exp = (int)(secondExp * supervisor.GetAbillity(wazaId).GetUpdateExpSenseCoef());
+            this.trainingMenuResult.Add(new Tuple<string, int>(wazaId, exp * minutes));
+        }
+    }
+    // 打ち込み(腰)
+    public void UchikomiKoshi(int minutes)
+    {
+        // スタミナUP
+        int mainExp = 100;
+        int secondExp = 20;
+        // 設備の効果係数
+        // 腰技すべて
+        foreach (string wazaId in GameData.instance.abillityManager.GetWazaIdArrayWithGroup("1"))
+        {
+            // 監督の指導力係数
+            int exp = (int)(mainExp * supervisor.GetAbillity(wazaId).GetUpdateExpSenseCoef());
+            this.trainingMenuResult.Add(new Tuple<string, int>(wazaId, exp * minutes));
+        }
+        foreach (string wazaId in new List<string>(){"900", "901", "902"})
+        {
+            int exp = (int)(secondExp * supervisor.GetAbillity(wazaId).GetUpdateExpSenseCoef());
+            this.trainingMenuResult.Add(new Tuple<string, int>(wazaId, exp * minutes));
+        }
+    }
+    // 打ち込み(足)
+    public void UchikomiAshi(int minutes)
+    {
+        // スタミナUP
+        int mainExp = 100;
+        int secondExp = 20;
+        // 設備の効果係数
+        // 足技すべて
+        foreach (string wazaId in GameData.instance.abillityManager.GetWazaIdArrayWithGroup("3"))
+        {
+            // 監督の指導力係数
+            int exp = (int)(mainExp * supervisor.GetAbillity(wazaId).GetUpdateExpSenseCoef());
+            this.trainingMenuResult.Add(new Tuple<string, int>(wazaId, exp * minutes));
+        }
+        foreach (string wazaId in new List<string>(){"900", "901", "902"})
+        {
+            int exp = (int)(secondExp * supervisor.GetAbillity(wazaId).GetUpdateExpSenseCoef());
+            this.trainingMenuResult.Add(new Tuple<string, int>(wazaId, exp * minutes));
+        }
+    }
+    // 打ち込み(捨)
+    public void UchikomiSute(int minutes)
+    {
+        // スタミナUP
+        int mainExp = 100;
+        int secondExp = 20;
+        // 設備の効果係数
+        // 捨身技すべて
+        foreach (string wazaId in GameData.instance.abillityManager.GetWazaIdArrayWithGroup("2"))
+        {
+            // 監督の指導力係数
+            int exp = (int)(mainExp * supervisor.GetAbillity(wazaId).GetUpdateExpSenseCoef());
+            this.trainingMenuResult.Add(new Tuple<string, int>(wazaId, exp * minutes));
+        }
+        foreach (string wazaId in new List<string>(){"900", "901", "902"})
+        {
+            int exp = (int)(secondExp * supervisor.GetAbillity(wazaId).GetUpdateExpSenseCoef());
+            this.trainingMenuResult.Add(new Tuple<string, int>(wazaId, exp * minutes));
+        }
+    }
+    // 乱取り(立)
+    public void RandoriTachi(int minutes)
+    {
+        // スタミナUP
+        int mainExp = 60;
+        int secondExp = 40;
+        // 設備の効果係数
         // 立技すべて
         foreach (string wazaId in GameData.instance.abillityManager.GetWazaIdArrayWithType("0"))
         {
-            this.trainingMenuResult.Add(new Tuple<string, int>(wazaId, secondExp * minutes));
+            // 監督の指導力係数
+            int exp = (int)(mainExp * supervisor.GetAbillity(wazaId).GetUpdateExpSenseCoef());
+            this.trainingMenuResult.Add(new Tuple<string, int>(wazaId, exp * minutes));
         }
-        // 寝技すべて
+        foreach (string wazaId in new List<string>(){"900", "901", "902"})
+        {
+            int exp = (int)(secondExp * supervisor.GetAbillity(wazaId).GetUpdateExpSenseCoef());
+            this.trainingMenuResult.Add(new Tuple<string, int>(wazaId, exp * minutes));
+        }
+    }
+    // 打ち込み(抑)
+    public void UchikomiOsae(int minutes)
+    {
+        // スタミナUP
+        int mainExp = 100;
+        int secondExp = 20;
+        // 設備の効果係数
+        // 抑技すべて
+        foreach (string wazaId in GameData.instance.abillityManager.GetWazaIdArrayWithGroup("5"))
+        {
+            // 監督の指導力係数
+            int exp = (int)(mainExp * supervisor.GetAbillity(wazaId).GetUpdateExpSenseCoef());
+            this.trainingMenuResult.Add(new Tuple<string, int>(wazaId, exp * minutes));
+        }
+        foreach (string wazaId in new List<string>(){"900", "901", "902"})
+        {
+            int exp = (int)(secondExp * supervisor.GetAbillity(wazaId).GetUpdateExpSenseCoef());
+            this.trainingMenuResult.Add(new Tuple<string, int>(wazaId, exp * minutes));
+        }
+    }
+    // 打ち込み(締)
+    public void UchikomiShime(int minutes)
+    {
+        // スタミナUP
+        int mainExp = 100;
+        int secondExp = 20;
+        // 設備の効果係数
+        // 締技すべて
+        foreach (string wazaId in GameData.instance.abillityManager.GetWazaIdArrayWithGroup("6"))
+        {
+            // 監督の指導力係数
+            int exp = (int)(mainExp * supervisor.GetAbillity(wazaId).GetUpdateExpSenseCoef());
+            this.trainingMenuResult.Add(new Tuple<string, int>(wazaId, exp * minutes));
+        }
+        foreach (string wazaId in new List<string>(){"900", "901", "902"})
+        {
+            int exp = (int)(secondExp * supervisor.GetAbillity(wazaId).GetUpdateExpSenseCoef());
+            this.trainingMenuResult.Add(new Tuple<string, int>(wazaId, exp * minutes));
+        }
+    }
+    // 打ち込み(関)
+    public void UchikomiKan(int minutes)
+    {
+        // スタミナUP
+        int mainExp = 100;
+        int secondExp = 20;
+        // 設備の効果係数
+        // 関節技すべて
+        foreach (string wazaId in GameData.instance.abillityManager.GetWazaIdArrayWithGroup("7"))
+        {
+            // 監督の指導力係数
+            int exp = (int)(mainExp * supervisor.GetAbillity(wazaId).GetUpdateExpSenseCoef());
+            this.trainingMenuResult.Add(new Tuple<string, int>(wazaId, exp * minutes));
+        }
+        foreach (string wazaId in new List<string>(){"900", "901", "902"})
+        {
+            int exp = (int)(secondExp * supervisor.GetAbillity(wazaId).GetUpdateExpSenseCoef());
+            this.trainingMenuResult.Add(new Tuple<string, int>(wazaId, exp * minutes));
+        }
+    }
+    // 乱取り(寝)
+    public void RandoriNe(int minutes)
+    {
+        // スタミナUP
+        int mainExp = 60;
+        int secondExp = 40;
+        // 設備の効果係数
+        // 捨身技すべて
         foreach (string wazaId in GameData.instance.abillityManager.GetWazaIdArrayWithType("1"))
         {
-            this.trainingMenuResult.Add(new Tuple<string, int>(wazaId, secondExp * minutes));
+            // 監督の指導力係数
+            int exp = (int)(mainExp * supervisor.GetAbillity(wazaId).GetUpdateExpSenseCoef());
+            this.trainingMenuResult.Add(new Tuple<string, int>(wazaId, exp * minutes));
+        }
+
+        foreach (string wazaId in new List<string>(){"900", "901", "902"})
+        {
+            int exp = (int)(secondExp * supervisor.GetAbillity(wazaId).GetUpdateExpSenseCoef());
+            this.trainingMenuResult.Add(new Tuple<string, int>(wazaId, exp * minutes));
         }
     }
 }

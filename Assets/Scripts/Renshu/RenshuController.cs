@@ -100,6 +100,33 @@ public class RenshuController : MonoBehaviour
                 case "マシントレ":
                     setField = trainingMenuParent.transform.Find("MachineWeight").transform.Find("Input").GetComponent<InputField>();
                     break;
+                case "打ち込み(手)":
+                    setField = trainingMenuParent.transform.Find("UchikomiTe").transform.Find("Input").GetComponent<InputField>();
+                    break;
+                case "打ち込み(腰)":
+                    setField = trainingMenuParent.transform.Find("UchikomiKoshi").transform.Find("Input").GetComponent<InputField>();
+                    break;
+                case "打ち込み(足)":
+                    setField = trainingMenuParent.transform.Find("UchikomiAshi").transform.Find("Input").GetComponent<InputField>();
+                    break;
+                case "打ち込み(捨)":
+                    setField = trainingMenuParent.transform.Find("UchikomiSute").transform.Find("Input").GetComponent<InputField>();
+                    break;
+                case "乱取り(立)":
+                    setField = trainingMenuParent.transform.Find("RandoriTachi").transform.Find("Input").GetComponent<InputField>();
+                    break;
+                case "打ち込み(抑)":
+                    setField = trainingMenuParent.transform.Find("UchikomiOsae").transform.Find("Input").GetComponent<InputField>();
+                    break;
+                case "打ち込み(締)":
+                    setField = trainingMenuParent.transform.Find("UchikomiShime").transform.Find("Input").GetComponent<InputField>();
+                    break;
+                case "打ち込み(関)":
+                    setField = trainingMenuParent.transform.Find("UchikomiKan").transform.Find("Input").GetComponent<InputField>();
+                    break;
+                case "乱取り(寝)":
+                    setField = trainingMenuParent.transform.Find("RandoriNe").transform.Find("Input").GetComponent<InputField>();
+                    break;
             }
             Debug.Log(trainingMenu.Item1 + " : " + trainingMenu.Item2.ToString());
             setField.text = trainingMenu.Item2.ToString();

@@ -133,19 +133,19 @@ public class PlayerManager
         System.Random r = new System.Random();
         if(height > 190)
         {
-            weight = r.Next(73, 130);
+            weight = r.Next(75, 130);
         }
         else if (height > 180)
         {
-            weight = r.Next(66, 120);
+            weight = r.Next(70, 120);
         }
         else if (height > 170)
         {
-            weight = r.Next(60, 110);
+            weight = r.Next(65, 110);
         }
         else
         {
-            weight = r.Next(minValue: 55, 100);
+            weight = r.Next(minValue: 58, 100);
         }
         return weight;
     }
@@ -467,5 +467,25 @@ public class Abillity
             }
         }
         SetDisplayString();
+    }
+
+    public float GetUpdateExpSenseCoef()
+    {
+        switch (sense)
+        {
+            case 1:
+                return  0.8f;
+            case 2:
+                return  0.9f;
+            case 4:
+                return 1.1f;
+            case 5:
+                return 1.2f;
+            case 6:
+                return 1.3f;
+            case 3:
+            default:
+                return 1.0f;
+        }
     }
 }
