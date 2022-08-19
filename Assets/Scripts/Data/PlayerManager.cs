@@ -75,18 +75,11 @@ public class PlayerManager
         genWazaList = GameData.instance.abillityManager.wazaList;
         List<Abillity> playerAbillities = new List<Abillity>();
 
-        int minSense = sense -3;
-        if(minSense < 1)
-        {
-            minSense = 1;
-        }
-
         // 技の能力値決め
         System.Random r = new System.Random();
         foreach(Waza waza in genWazaList)
         {
-            int abillitySense = r.Next(minSense, sense);
-            playerAbillities.Add(new Abillity(waza.name, waza.id, waza.typeId, waza.groupId, abillitySense));
+            playerAbillities.Add(new Abillity(waza.name, waza.id, waza.typeId, waza.groupId, sense));
         }
         return playerAbillities;
     }
@@ -352,6 +345,7 @@ public class Abillity
         this.sense = sense;
         this.limit = GenerateLimitStatuValue(sense);
         this.status = GenerateDefaultStatuValue(sense);
+        if (this.limit < this.status) {this.status = this.limit;}
         this.exp = 0;
         this.displayString = GenerateDisplayString();
 
@@ -366,25 +360,30 @@ public class Abillity
         switch (sense)
         {
             default:
-            case 1:
-                valueWeight = GenerateRandomFloatValue(4, 5);
-                break;
-            case 2:
-                valueWeight = GenerateRandomFloatValue(5, 6);
-                break;
             case 3:
-                valueWeight = GenerateRandomFloatValue(6, 7);
+                valueWeight = GenerateRandomFloatValue(1, 4);
                 break;
             case 4:
-                valueWeight = GenerateRandomFloatValue(7, 8);
+                valueWeight = GenerateRandomFloatValue(3, 5);
                 break;
             case 5:
-                valueWeight = GenerateRandomFloatValue(8, 9);
+                valueWeight = GenerateRandomFloatValue(4, 6);
                 break;
             case 6:
-                valueWeight = GenerateRandomFloatValue(9, 10);
+                valueWeight = GenerateRandomFloatValue(5, 7);
                 break;
-
+            case 7:
+                valueWeight = GenerateRandomFloatValue(6, 8);
+                break;
+            case 8:
+                valueWeight = GenerateRandomFloatValue(7, 9);
+                break;
+            case 9:
+                valueWeight = GenerateRandomFloatValue(8, 10);
+                break;
+            case 10:
+                valueWeight = GenerateRandomFloatValue(9, 11);
+                break;
         }
         return (int)(baseStatusValue * valueWeight);
     }
@@ -394,28 +393,33 @@ public class Abillity
     {
         int baseStatusValue = 1000;
         float valueWeight;
-        switch (sense)
+        switch (sense - new System.Random().Next(0, 5))
         {
             default:
-            case 1:
-                valueWeight = GenerateRandomFloatValue(1, 3);
-                break;
-            case 2:
-                valueWeight = GenerateRandomFloatValue(2, 4);
-                break;
             case 3:
-                valueWeight = GenerateRandomFloatValue(3, 5);
+                valueWeight = GenerateRandomFloatValue(1, 4);
                 break;
             case 4:
-                valueWeight = GenerateRandomFloatValue(4, 7);
+                valueWeight = GenerateRandomFloatValue(3, 5);
                 break;
             case 5:
-                valueWeight = GenerateRandomFloatValue(5, 8);
+                valueWeight = GenerateRandomFloatValue(4, 6);
                 break;
             case 6:
-                valueWeight = GenerateRandomFloatValue(6, 9);
+                valueWeight = GenerateRandomFloatValue(5, 7);
                 break;
-
+            case 7:
+                valueWeight = GenerateRandomFloatValue(6, 8);
+                break;
+            case 8:
+                valueWeight = GenerateRandomFloatValue(7, 9);
+                break;
+            case 9:
+                valueWeight = GenerateRandomFloatValue(8, 10);
+                break;
+            case 10:
+                valueWeight = GenerateRandomFloatValue(9, 11);
+                break;
         }
         return (int)(baseStatusValue * valueWeight);
     }
@@ -473,19 +477,27 @@ public class Abillity
     {
         switch (sense)
         {
+            default:
             case 1:
                 return  0.8f;
             case 2:
                 return  0.9f;
+            case 3:
+                return  1.0f;
             case 4:
                 return 1.1f;
             case 5:
                 return 1.2f;
             case 6:
                 return 1.3f;
-            case 3:
-            default:
-                return 1.0f;
+            case 7:
+                return 1.4f;
+            case 8:
+                return 1.5f;
+            case 9:
+                return 1.6f;
+            case 10:
+                return 1.7f;
         }
     }
 }

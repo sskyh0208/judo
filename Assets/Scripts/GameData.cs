@@ -152,8 +152,17 @@ public class GameData : MonoBehaviour
             {
                 minSense = 1;
             }
+            int randomHighSenseNum = r.Next(0, 100);
             for(int i = 0; i < schoolLimitMembersNum; i++){
                 string[] name = GameData.instance.nameManager.GenarateRandomName();
+                if (i == randomHighSenseNum)
+                {
+                    Debug.Log("ハイセンス生成: " + school.name + " → " + name[0]+name[1]);
+                    minSense += 2;
+                    maxSense += 2;
+                };
+                if (minSense > 11) {minSense = 11;}
+                if (maxSense > 11) {maxSense = 11;}
                 string id = string.Format("{0}{1}{2}", baseDate.Year, school.id, i + 1);
                 PlayerManager member = new PlayerManager(
                     id, name[0], name[1], generateDt, generateGrade, school.placeId, school.id, r.Next(minSense, maxSense)
@@ -171,7 +180,7 @@ public class GameData : MonoBehaviour
             string targetSchoolId = schoolIds[r.Next(0, schoolIds.Count)];
             string id = string.Format("{0}{1}{2}", baseDate.Year, targetSchoolId, schoolManager.schoolList[targetSchoolId].members.Count + i + 1);
             PlayerManager member = new PlayerManager(
-                    id, name[0], name[1], generateDt, generateGrade, targetSchoolId.Substring(0, 2), targetSchoolId, 6
+                    id, name[0], name[1], generateDt, generateGrade, targetSchoolId.Substring(0, 2), targetSchoolId, 10
                 );
             schoolManager.schoolList[targetSchoolId].members[id] = member;
             string targetCityId = targetSchoolId.Substring(2, 4);

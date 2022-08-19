@@ -167,7 +167,7 @@ public class NewGameController : MonoBehaviour
     {
         string defaultPlayerNameKaki = "山田太郎";
         nameInputField.text = defaultPlayerNameKaki;
-        int playerSense = new System.Random().Next(7, 7);
+        int playerSense = new System.Random().Next(1, 11);
         PlayerManager player = new PlayerManager("0", defaultPlayerNameKaki, "", new DateTime(1988, 2, 8), positionId: 101, "0", "0", playerSense);
         return player;
     }

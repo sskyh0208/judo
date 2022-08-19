@@ -170,22 +170,34 @@ public class School
         {
             default:
             case 1:
-                membersMaxWeight = r.Next(2, 3) * 0.1f;
+                membersMaxWeight = r.Next(2, 4) * 0.1f;
                 break;
             case 2:
-                membersMaxWeight = r.Next(3, 5) * 0.1f;
+                membersMaxWeight = r.Next(3, 4) * 0.1f;
                 break;
             case 3:
-                membersMaxWeight = r.Next(5, 7) * 0.1f;
+                membersMaxWeight = r.Next(4, 5) * 0.1f;
                 break;
             case 4:
-                membersMaxWeight = r.Next(7, 9) * 0.1f;
+                membersMaxWeight = r.Next(5, 6) * 0.1f;
                 break;
             case 5:
-                membersMaxWeight = r.Next(9, 11) * 0.1f;
+                membersMaxWeight = r.Next(7, 8) * 0.1f;
                 break;
             case 6:
-                membersMaxWeight = r.Next(11, 13) * 0.1f;
+                membersMaxWeight = r.Next(8, 9) * 0.1f;
+                break;
+            case 7:
+                membersMaxWeight = r.Next(9, 10) * 0.1f;
+                break;
+            case 8:
+                membersMaxWeight = r.Next(10, 11) * 0.1f;
+                break;
+            case 9:
+                membersMaxWeight = r.Next(11, 12) * 0.1f;
+                break;
+            case 10:
+                membersMaxWeight = r.Next(12, 13) * 0.1f;
                 break;
 
         }
