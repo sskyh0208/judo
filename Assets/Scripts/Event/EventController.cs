@@ -69,7 +69,6 @@ public class EventController : MonoBehaviour
         }
         foreach (string id in tournamentIdList)
         {
-            Debug.Log("大会開催ID: " + id);
             Tournament taikai = new Tournament(
                 GameData.instance.todayEvent,
                 GameData.instance.storyDate,
@@ -79,9 +78,9 @@ public class EventController : MonoBehaviour
             // 団体確認用
             if (taikai.CheckTeamMatch())
             {
-                Debug.Log("試合開始");
                 taikai.DoMatchAllSchool();
-                taikai.ranking.DebugRankingTeamMatch();
+                taikai.DebugResultTeamMatchDetail();
+                taikai.DebugRankingTeamMatch();
             }
 
             // 個人確認用
@@ -90,33 +89,12 @@ public class EventController : MonoBehaviour
                 for (int i = 1; i < 8; i++)
                 {
                     taikai.DoIndividualMatch(i);
-                    taikai.ranking.DebugRankingMemberMatch(i);
+                    taikai.DebugResultMemberMatchDetail(i);
+                    taikai.DebugRankingMemberMatch(i);
                 }
             }
             GameData.instance.matchManager.history.Add(taikai);
         }
-    }
 
-    public void DebugMemberResult(List<PlayerManager> members)
-    {
-        if (members.Count == 0)
-        {
-            Debug.Log("出場者なし");
-        }
-        for (int i = 0; i < members.Count; i++)
-        {
-            Debug.Log(
-                string.Format(
-                    "{0} 第{1}位 {2} {3} {4}年生 {5}cm {6}kg {7}",
-                    GameData.instance.todayEvent.eventId,
-                    i + 1,
-                    members[i].nameKaki,
-                    GameData.instance.schoolManager.GetSchool(members[i].schoolId).name, members[i].positionId,
-                    members[i].height,
-                    members[i].weight,
-                    members[i].totalStatus
-                )
-            );
-        }
     }
 }   
