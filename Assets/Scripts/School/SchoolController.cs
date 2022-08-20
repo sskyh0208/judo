@@ -259,7 +259,7 @@ public class SchoolController : MonoBehaviour
     public void ShowSchoolMembers()
     {
         GenerateSchoolMemberSelectButton(selectedSchool);
-        DisplaySchoolMemberSelectScrollViewContent(true, selectedSchool.id);
+        DisplaySchoolMemberSelectScrollViewContent(isDisplay: true, selectedSchool.id);
         canvasGroup.blocksRaycasts = true;
         canvasGroup.DOFade(1, fadeTime)
             .OnComplete( () => {
@@ -315,6 +315,7 @@ public class SchoolController : MonoBehaviour
             membersScrollView.GetComponent<ScrollRect>().content = membersScrollViewContent.GetComponent<RectTransform>();
         }
         membersScrollViewContent.SetActive(isDisplay);
+        membersScrollView.SetActive(isDisplay);
 
     }
 

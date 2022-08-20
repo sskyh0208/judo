@@ -240,6 +240,10 @@ public class Tournament
             }
         }
 
+        if (joinMembers.Count == 0)
+        {
+            return new List<List<PlayerManager>> ();
+        }
         joinMembers = SortMemberTotalStatus(joinMembers);
 
         return GenerateEventLeaderBoad<PlayerManager>(joinMembers);
@@ -459,12 +463,16 @@ public class Tournament
     {
         List<PlayerManager> result = new List<PlayerManager>();
         List<List<PlayerManager>> matchList = GetIndividualMatchList(weightClass);
+        if (matchList.Count == 0)
+        {
+            return new List<PlayerManager>();
+        }
 
         int count = 1;
         int chidCount = 1;
         while (true)
         {
-            Debug.Log(weightClass + ": " + count + "回戦");
+            Debug.Log(eventId + ": " + weightClass + ": " + count + "回戦");
             List<PlayerManager> winnerList = new List<PlayerManager>();
             foreach (List<PlayerManager> targetMatch in matchList)
             {
@@ -493,15 +501,15 @@ public class Tournament
                 if(loser != null)
                 {
                     result.Add(loser);
-                    // Debug.Log(
-                    //     string.Format(
-                    //         "{0} {1} {2} vs {3} {4}\n{5}",
-                    //         GameData.instance.todayEvent.eventId,
-                    //         GameData.instance.schoolManager.GetSchool(winner.schoolId).name, winner.nameKaki,
-                    //         GameData.instance.schoolManager.GetSchool(loser.schoolId).name, loser.nameKaki,
-                    //         matchDetail["formatString"]
-                    //     )
-                    // );
+                    Debug.Log(
+                        string.Format(
+                            "{0} {1} {2} vs {3} {4}\n{5}",
+                            GameData.instance.todayEvent.eventId,
+                            GameData.instance.schoolManager.GetSchool(winner.schoolId).name, winner.nameKaki,
+                            GameData.instance.schoolManager.GetSchool(loser.schoolId).name, loser.nameKaki,
+                            matchDetail["formatString"]
+                        )
+                    );
                 }
                 // else
                 // {
@@ -656,14 +664,14 @@ public class SchoolMatch
             memberMatchList.Add(match);
 
             Dictionary<string, string> matchDetail = match.ChecMatchDetail();
-            // Debug.Log(
-            //     string.Format(
-            //         "{0} {1} {2}",
-            //         GameData.instance.todayEvent.eventId,
-            //         i,
-            //         matchDetail["formatString"]
-            //     )
-            // );
+            Debug.Log(
+                string.Format(
+                    "{0} {1} {2}",
+                    GameData.instance.todayEvent.eventId,
+                    i,
+                    matchDetail["formatString"]
+                )
+            );
         }
 
         if (redWinCount > whiteWinCount)

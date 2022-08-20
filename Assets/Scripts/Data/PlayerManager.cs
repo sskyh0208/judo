@@ -44,6 +44,8 @@ public class PlayerManager
 
     public PlayerManager(string id, string nameKaki, string nameYomi, DateTime generateDt, int positionId, string placeId, string schoolId, int sense)
     {
+        if (sense > 10) {sense = 10;}
+        if (sense < 1) {sense = 1;}
         this.id = id;
         this.nameKaki = nameKaki;
         this.nameYomi = nameYomi;
@@ -76,7 +78,6 @@ public class PlayerManager
         List<Abillity> playerAbillities = new List<Abillity>();
 
         // 技の能力値決め
-        System.Random r = new System.Random();
         foreach(Waza waza in genWazaList)
         {
             playerAbillities.Add(new Abillity(waza.name, waza.id, waza.typeId, waza.groupId, sense));
@@ -150,17 +151,25 @@ public class PlayerManager
         {
             default:
             case 1:
-                return "柔道経験者";
+                return "素人";
             case 2:
-                return "県大会入賞";
+                return "柔道経験者";
             case 3:
-                return "全国ベスト8";
+                return "柔道強豪校出身";
             case 4:
-                return "インターハイ優勝";
+                return "実業団引退者";
             case 5:
-                return "日本代表";
+                return "元強化指定選手";
             case 6:
+                return "元日本代表";
+            case 7:
+                return "オリンピック経験者";
+            case 8:
                 return "金メダリスト";
+            case 9:
+                return "柔道界レジェンド";
+            case 10:
+                return "高校三冠制覇";
         }
     }
 
@@ -361,25 +370,25 @@ public class Abillity
         {
             default:
             case 3:
-                valueWeight = GenerateRandomFloatValue(1, 4);
+                valueWeight = GenerateRandomFloatValue(1, 5);
                 break;
             case 4:
-                valueWeight = GenerateRandomFloatValue(3, 5);
+                valueWeight = GenerateRandomFloatValue(3, 6);
                 break;
             case 5:
-                valueWeight = GenerateRandomFloatValue(4, 6);
+                valueWeight = GenerateRandomFloatValue(4, 7);
                 break;
             case 6:
-                valueWeight = GenerateRandomFloatValue(5, 7);
+                valueWeight = GenerateRandomFloatValue(5, 8);
                 break;
             case 7:
-                valueWeight = GenerateRandomFloatValue(6, 8);
+                valueWeight = GenerateRandomFloatValue(6, 9);
                 break;
             case 8:
-                valueWeight = GenerateRandomFloatValue(7, 9);
+                valueWeight = GenerateRandomFloatValue(7,11);
                 break;
             case 9:
-                valueWeight = GenerateRandomFloatValue(8, 10);
+                valueWeight = GenerateRandomFloatValue(8, 11);
                 break;
             case 10:
                 valueWeight = GenerateRandomFloatValue(9, 11);
@@ -400,25 +409,25 @@ public class Abillity
                 valueWeight = GenerateRandomFloatValue(1, 4);
                 break;
             case 4:
-                valueWeight = GenerateRandomFloatValue(3, 5);
+                valueWeight = GenerateRandomFloatValue(2, 5);
                 break;
             case 5:
-                valueWeight = GenerateRandomFloatValue(4, 6);
+                valueWeight = GenerateRandomFloatValue(3, 6);
                 break;
             case 6:
-                valueWeight = GenerateRandomFloatValue(5, 7);
+                valueWeight = GenerateRandomFloatValue(3, 7);
                 break;
             case 7:
-                valueWeight = GenerateRandomFloatValue(6, 8);
+                valueWeight = GenerateRandomFloatValue(3, 8);
                 break;
             case 8:
-                valueWeight = GenerateRandomFloatValue(7, 9);
+                valueWeight = GenerateRandomFloatValue(3, 9);
                 break;
             case 9:
-                valueWeight = GenerateRandomFloatValue(8, 10);
+                valueWeight = GenerateRandomFloatValue(4, 10);
                 break;
             case 10:
-                valueWeight = GenerateRandomFloatValue(9, 11);
+                valueWeight = GenerateRandomFloatValue(6, 11);
                 break;
         }
         return (int)(baseStatusValue * valueWeight);

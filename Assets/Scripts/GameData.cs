@@ -121,16 +121,12 @@ public class GameData : MonoBehaviour
         System.Random r = new System.Random();
         foreach (School school in schoolManager.schoolList.Values)
         {
-            int minSense = school.schoolRank - 1;
-            if(minSense < 1)
-            {
-                minSense = 1;
-            }
-            int maxSense = school.schoolRank + 1;
+            int minSense = school.schoolRank;
+            int maxSense = school.schoolRank + 3;
             string[] name = GameData.instance.nameManager.GenarateRandomName();
             DateTime newGenerateDt = new DateTime(generateDt.Year - r.Next(22, 55), generateDt.Month, generateDt.Day);
             string id = string.Format("{0}{1}{2}", generateDt.Year, school.id, "0");
-            school.supervisor = new PlayerManager(id, name[0], name[1], newGenerateDt, 101, school.placeId, school.id, r.Next(minSense, school.schoolRank));
+            school.supervisor = new PlayerManager(id, name[0], name[1], newGenerateDt, 101, school.placeId, school.id, r.Next(minSense, maxSense));
         }
     }
 
@@ -144,14 +140,6 @@ public class GameData : MonoBehaviour
             int schoolLimitMembersNum = school.GenerateThisYearLimitMembersNum();
             int maxSense = school.schoolRank + 1;
             int minSense = school.schoolRank - 1;
-            if (maxSense < 2)
-            {
-                maxSense = 2;
-            }
-            if (minSense < 1)
-            {
-                minSense = 1;
-            }
             int randomHighSenseNum = r.Next(0, 100);
             for(int i = 0; i < schoolLimitMembersNum; i++){
                 string[] name = GameData.instance.nameManager.GenarateRandomName();
@@ -161,8 +149,6 @@ public class GameData : MonoBehaviour
                     minSense += 2;
                     maxSense += 2;
                 };
-                if (minSense > 11) {minSense = 11;}
-                if (maxSense > 11) {maxSense = 11;}
                 string id = string.Format("{0}{1}{2}", baseDate.Year, school.id, i + 1);
                 PlayerManager member = new PlayerManager(
                     id, name[0], name[1], generateDt, generateGrade, school.placeId, school.id, r.Next(minSense, maxSense)

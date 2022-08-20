@@ -126,6 +126,10 @@ public class EventController : MonoBehaviour
 
     public void DebugMemberResult(List<PlayerManager> members)
     {
+        if (members.Count == 0)
+        {
+            Debug.Log("出場者なし");
+        }
         for (int i = 0; i < members.Count; i++)
         {
             Debug.Log(
