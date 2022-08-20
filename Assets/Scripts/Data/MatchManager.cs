@@ -501,7 +501,6 @@ public class Tournament
             int countRound = 1;
             while (true)
             {
-                Debug.Log(eventId + ": " + weightClass + ": " + countRound + "回戦");
                 List<PlayerManager> winnerList = new List<PlayerManager>();
                 List<MemberMatch> roundMemberMatch = new List<MemberMatch>();
                 int countMatch = 1;
@@ -684,14 +683,14 @@ public class Tournament
                 {
                     Debug.Log(
                         string.Format(
-                            "試合ID:{0}\n赤 {1}: {2} | {3} - {4} | 白 {5}: {6}",
+                            "試合ID:{0}          赤 {1}: {2} | {3}  -  {4} 白 {5}: {6}",
                             match.id,
                             match.red.name,
                             match.red.regularMemberStatus,
                             match.redWinCount,
+                            match.whiteWinCount,
                             match.white.name,
-                            match.white.regularMemberStatus,
-                            match.whiteWinCount
+                            match.white.regularMemberStatus
                         )
                     );
                 }
@@ -699,7 +698,7 @@ public class Tournament
                 {
                     Debug.Log(
                         string.Format(
-                            "試合ID:{0}\n赤 {1}: {2} | シード",
+                            "試合ID:{0}          赤 {1}: {2}          シード",
                             match.id,
                             match.winner.name,
                             match.winner.regularMemberStatus
@@ -746,7 +745,7 @@ public class Tournament
                 {
                     Debug.Log(
                         string.Format(
-                            "試合ID:{0}\n赤 {1}: {2} vs 白 {3}: {4}\n{5}",
+                            "試合ID:{0}          赤 {1}: {2}  vs  白 {3}: {4}          {5}",
                             match.id,
                             GameData.instance.schoolManager.GetSchool(match.winner.schoolId).name,
                             match.winner.nameKaki,
@@ -760,7 +759,7 @@ public class Tournament
                 {
                     Debug.Log(
                         string.Format(
-                            "試合ID:{0}\n赤 {1}: {2} | シード",
+                            "試合ID:{0}          赤 {1}: {2}          シード",
                             match.id,
                             GameData.instance.schoolManager.GetSchool(match.winner.schoolId).name,
                             match.winner.nameKaki
@@ -777,7 +776,7 @@ public class Tournament
         {
             Debug.Log(
                 string.Format(
-                    "試合ID:{0}\n第{1}位 {2}",
+                    "試合ID:{0}          第{1}位 {2}",
                     this.tournamentId,
                     i + 1,
                     ranking.school[i].name
@@ -821,7 +820,7 @@ public class Tournament
         {
             Debug.Log(
                 string.Format(
-                    "試合ID:{0}\n第{1}位 {2} {3} {4}年生 {5}cm {6}kg {7}",
+                    "試合ID:{0}          第{1}位 {2} {3} {4}年生 {5}cm {6}kg {7}",
                     this.tournamentId,
                     i + 1,
                     target[i].nameKaki,

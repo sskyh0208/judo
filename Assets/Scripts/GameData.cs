@@ -138,8 +138,6 @@ public class GameData : MonoBehaviour
         foreach (School school in schoolManager.schoolList.Values)
         {
             int schoolLimitMembersNum = school.GenerateThisYearLimitMembersNum();
-            int maxSense = school.schoolRank + 1;
-            int minSense = school.schoolRank - 1;
             int randomHighSenseNum = r.Next(0, 100);
             for(int i = 0; i < schoolLimitMembersNum; i++){
                 string[] name = GameData.instance.nameManager.GenarateRandomName();
@@ -148,7 +146,7 @@ public class GameData : MonoBehaviour
                 {
                     Debug.Log("ハイセンス生成: " + school.name + " → " + name[0]+name[1]);
                     PlayerManager member = new PlayerManager(
-                        id, name[0], name[1], generateDt, generateGrade, school.placeId, school.id, r.Next(minSense+2, maxSense+2)
+                        id, name[0], name[1], generateDt, generateGrade, school.placeId, school.id, school.schoolRank + 2
                     );
                     school.members[id] = member;
                     if (member.height > 189)
@@ -159,7 +157,7 @@ public class GameData : MonoBehaviour
                 else
                 {
                     PlayerManager member = new PlayerManager(
-                        id, name[0], name[1], generateDt, generateGrade, school.placeId, school.id, r.Next(minSense, maxSense)
+                        id, name[0], name[1], generateDt, generateGrade, school.placeId, school.id, school.schoolRank
                     );
                     school.members[id] = member;
                     
@@ -180,7 +178,7 @@ public class GameData : MonoBehaviour
             string targetSchoolId = schoolIds[r.Next(0, schoolIds.Count)];
             string id = string.Format("{0}{1}{2}", baseDate.Year, targetSchoolId, schoolManager.schoolList[targetSchoolId].members.Count + i + 1);
             PlayerManager member = new PlayerManager(
-                    id, name[0], name[1], generateDt, generateGrade, targetSchoolId.Substring(0, 2), targetSchoolId, 10
+                    id, name[0], name[1], generateDt, generateGrade, targetSchoolId.Substring(0, 2), targetSchoolId, 11
                 );
             schoolManager.schoolList[targetSchoolId].members[id] = member;
             string targetCityId = targetSchoolId.Substring(2, 4);

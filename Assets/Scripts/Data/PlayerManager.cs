@@ -370,7 +370,7 @@ public class Abillity
         {
             default:
             case 3:
-                valueWeight = GenerateRandomFloatValue(1, 5);
+                valueWeight = GenerateRandomFloatValue(2, 5);
                 break;
             case 4:
                 valueWeight = GenerateRandomFloatValue(3, 6);
