@@ -431,6 +431,7 @@ public class Tournament
                 {
                     // 試合をする
                     SchoolMatch schoolMatch = new SchoolMatch("s", targetMatch[0], targetMatch[1]);
+                    schoolMatch.Fight();
                     winnerList.Add(schoolMatch.winner);
                     result.Add(schoolMatch.loser);
                     Debug.Log(string.Format("赤 {0}: {1} | {2} - {5} | 白 {3}: {4}", schoolMatch.red.name, schoolMatch.red.regularMemberStatus, schoolMatch.redWinCount, schoolMatch.white.name, schoolMatch.white.regularMemberStatus, schoolMatch.whiteWinCount));
@@ -485,7 +486,14 @@ public class Tournament
                 PlayerManager winner = null;
                 PlayerManager loser = null;
                 // 試合をする
-                match = new MemberMatch("s", targetMatch[0], targetMatch[1], false);
+                match = new MemberMatch("s", targetMatch[0], targetMatch[1]);
+                while (true)
+                {
+                    if(match.Fight())
+                    {
+                        break;
+                    }
+                }
                 if (match.winnerFlag == 1)
                 {
                     winner = match.red;
@@ -608,6 +616,14 @@ public class SchoolMatch
     public School loser;
     public int redWinCount;
     public int whiteWinCount;
+    public int redSchoolPoint;
+    public int whiteSchoolPoint;
+    public MemberMatch senpo;
+    public MemberMatch jiho;
+    public MemberMatch tyuken;
+    public MemberMatch fukusho;
+    public MemberMatch taisho;
+    public MemberMatch encho;
 
     public SchoolMatch (string id, School red, School white)
     {
@@ -619,59 +635,61 @@ public class SchoolMatch
         this.loser = null;
         this.redWinCount = 0;
         this.whiteWinCount = 0;
-
-        Fight();
+        this.redSchoolPoint = 0;
+        this.whiteSchoolPoint = 0;
     }
 
-    private bool Fight()
+    public bool Fight()
     {
         // Debug.Log("===========================================================================");
-        int redSchoolPoint = 0;
-        int whiteSchoolPoint = 0;
-        bool isDraw = true;
-        for (int i = 0; i < 5; i++)
-        {
-            string matchId = id + i.ToString("d2");
-            // 勝敗同数かつ同点かつ大将の場合終わるまで
-            if (redWinCount == whiteWinCount && redSchoolPoint == whiteSchoolPoint && i == 4) {
-                isDraw = false;
-            }
-            MemberMatch match = new MemberMatch(matchId, red.regularMembers[i], white.regularMembers[i], isDraw);
-            if(match.winnerFlag == 1)
-            {   
-                if(match.redFusensho > 0 || match.redIppon > 0)
-                {
-                    redSchoolPoint += 10;
-                }
-                if(match.redWazaari > 0)
-                {
-                    redSchoolPoint += 1;
-                }
-                redWinCount ++;
-            }
-            if(match.winnerFlag == 2)
-            {
-                if(match.whiteFusensho > 0 || match.whiteIppon > 0)
-                {
-                    whiteSchoolPoint += 10;
-                }
-                if(match.whiteWazaari > 0)
-                {
-                    whiteSchoolPoint += 1;
-                }
-                whiteWinCount ++;
-            }
-            memberMatchList.Add(match);
+        this.senpo = new MemberMatch(id + 0.ToString("d2"), red.regularMembers[0], white.regularMembers[0]);
+        this.senpo.Fight();
+        UpdateTeamWinnerCount(this.senpo);
 
-            Dictionary<string, string> matchDetail = match.ChecMatchDetail();
-            Debug.Log(
-                string.Format(
-                    "{0} {1} {2}",
-                    GameData.instance.todayEvent.eventId,
-                    i,
-                    matchDetail["formatString"]
-                )
-            );
+        this.jiho= new MemberMatch(id + 1.ToString("d2"), red.regularMembers[1], white.regularMembers[1]);
+        this.jiho.Fight();
+        UpdateTeamWinnerCount(this.jiho);
+
+        this.tyuken = new MemberMatch(id + 2.ToString("d2"), red.regularMembers[2], white.regularMembers[2]);
+        this.tyuken.Fight();
+        UpdateTeamWinnerCount(this.tyuken);
+
+        this.fukusho = new MemberMatch(id + 3.ToString("d2"), red.regularMembers[3], white.regularMembers[3]);
+        this.fukusho.Fight();
+        UpdateTeamWinnerCount(this.fukusho);
+
+        this.taisho = new MemberMatch(id + 4.ToString("d2"), red.regularMembers[4], white.regularMembers[4]);
+        this.taisho.Fight();
+        UpdateTeamWinnerCount(this.taisho);
+        // Dictionary<string, string> matchDetail = match.ChecMatchDetail();
+        // Debug.Log(
+        //     string.Format(
+        //         "{0} {1} {2}",
+        //         GameData.instance.todayEvent.eventId,
+        //         i,
+        //         matchDetail["formatString"]
+        //     )
+        // );
+        if (redWinCount == whiteWinCount && redSchoolPoint == whiteSchoolPoint) {
+            // 勝敗同数かつ同点かつ大将の場合終わるまで
+            this.encho = new MemberMatch(id + 5.ToString("d2"), red.regularMembers[4], white.regularMembers[4]);
+            while (true)
+            {
+                if(this.encho.Fight())
+                {
+                    break;
+                }
+            }
+            // Dictionary<string, string> matchDetail = match.ChecMatchDetail();
+            // Debug.Log(
+            //     string.Format(
+            //         "{0} {1} {2}",
+            //         GameData.instance.todayEvent.eventId,
+            //         5,
+            //         matchDetail["formatString"]
+            //     )
+            // );
+            UpdateTeamWinnerCount(this.encho);
         }
 
         if (redWinCount > whiteWinCount)
@@ -686,6 +704,34 @@ public class SchoolMatch
         }
         // Debug.Log("===========================================================================");
         return true;
+    }
+
+    private void UpdateTeamWinnerCount(MemberMatch match)
+    {
+        if(match.winnerFlag == 1)
+            {   
+                if(match.redFusensho > 0 || match.redIppon > 0)
+                {
+                    this.redSchoolPoint += 10;
+                }
+                if(match.redWazaari > 0)
+                {
+                    this.redSchoolPoint += 1;
+                }
+                this.redWinCount ++;
+            }
+            if(match.winnerFlag == 2)
+            {
+                if(match.whiteFusensho > 0 || match.whiteIppon > 0)
+                {
+                    this.whiteSchoolPoint += 10;
+                }
+                if(match.whiteWazaari > 0)
+                {
+                    this.whiteSchoolPoint += 1;
+                }
+                this.whiteWinCount ++;
+            }
     }
 }
 
@@ -715,52 +761,47 @@ public class MemberMatch
     public Abillity winnerAbillity;
 
 
-    public MemberMatch(string id, PlayerManager red, PlayerManager white, bool isDraw)
+    public MemberMatch(string id, PlayerManager red, PlayerManager white)
     {
         this.id = id;
         this.red = red;
         this.white = white;
         this.winner = null;
         this.loser = null;
-        this.enchoCount = 0;
-        bool endFight = false;
-        if (white == null)
-        {
-            this.winner = red;
-            endFight = true;
-            this.redFusensho ++;
-            this.winnerFlag = 1;
-        }
-        while (!endFight)
-        {
-            this.redFusensho = 0;
-            this.redIppon = 0;
-            this.redWazaari = 0;
-            this.redYuko = 0;
-            
-            this.whiteFusensho = 0;
-            this.whiteIppon = 0;
-            this.whiteWazaari = 0;
-            this.whiteYuko = 0;
-
-            this.winnerFlag = 0;
-            this.winnerAbillity = null;
-            endFight = Fight(isDraw);
-            if(!endFight){this.enchoCount ++;};
-        }
+        
+        this.redFusensho = 0;
+        this.redIppon = 0;
+        this.redWazaari = 0;
+        this.redYuko = 0;
+        
+        this.whiteFusensho = 0;
+        this.whiteIppon = 0;
+        this.whiteWazaari = 0;
+        this.whiteYuko = 0;
     }
 
-    private bool Fight(bool isDraw)
+    public bool Fight()
     {
+        this.redFusensho = 0;
+        this.redIppon = 0;
+        this.redWazaari = 0;
+        this.redYuko = 0;
+        
+        this.whiteFusensho = 0;
+        this.whiteIppon = 0;
+        this.whiteWazaari = 0;
+        this.whiteYuko = 0;
         System.Random r = new System.Random();
         if (red == null)
         {
+            this.winner = white;
             this.whiteFusensho ++;
             this.winnerFlag = 2;
             return true;
         }
         else if (white == null)
         {
+            this.winner = red;
             this.redFusensho ++;
             this.winnerFlag = 1;
             return true;
@@ -769,6 +810,16 @@ public class MemberMatch
         
         Abillity lastAffectiveRedAbillity = null;
         Abillity lastAffectiveWhiteAbillity = null;
+        // 身長差6cm以上かつ体重差20kg以上あると勝敗を分けやすくする
+        int physicalDiffPoint = 0;
+        if (red.height - white.height > 5 & red.weight - white.weight > 19)
+        {
+            physicalDiffPoint += 3;
+        }
+        if (white.height - red.height > 5 & white.weight - red.weight > 19)
+        {
+            physicalDiffPoint -= 3;
+        }
         float matchTime = defaultMatchTime;
         while (!end)
         {
@@ -780,8 +831,7 @@ public class MemberMatch
             int redAbilityStatusNum = (int)Math.Floor((double)(redBaseAbility.status + redTurnAbility.status) / 1000);
             int whiteAbilityStatusNum = (int)Math.Floor((double)(whiteBaseAbility.status + whiteTurnAbility.status) / 1000);
 
-
-            float diffValue = redAbilityStatusNum - whiteAbilityStatusNum;
+            float diffValue = redAbilityStatusNum - whiteAbilityStatusNum + physicalDiffPoint;
 
             // 一回判定したらランダムで秒数追加
             endMatchTime += r.Next(2, 5);
@@ -940,10 +990,14 @@ public class MemberMatch
             this.loser = red;
         }
         
-        if (winnerFlag == 0 && !isDraw)
+        if (winnerFlag == 0)
         {
             // 引き分け負荷は延長戦
             return false;
+        }
+        if (physicalDiffPoint != 0)
+        {
+            Debug.Log(string.Format("体格差あり試合発生 {0}:{1} {2}cm {3}kg - {4}:{5} {6}cm {7}kg  →  勝者:{8}", GameData.instance.schoolManager.GetSchool(red.schoolId).name, red.nameKaki, red.height, red.weight, GameData.instance.schoolManager.GetSchool(white.schoolId).name, white.nameKaki, white.height, white.weight, winner.nameKaki));
         }
         return true;
     }

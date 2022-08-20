@@ -101,7 +101,7 @@ public class PlayerManager
     {
         int height = 0;
         System.Random r = new System.Random();
-        int seed = r.Next(0, 1667);
+        int seed = r.Next(0, 1668);
         if(seed < 109)
         {
             height = r.Next(180, 185);
@@ -127,19 +127,19 @@ public class PlayerManager
         System.Random r = new System.Random();
         if(height > 190)
         {
-            weight = r.Next(75, 130);
+            weight = r.Next(75, 140);
         }
         else if (height > 180)
         {
-            weight = r.Next(70, 120);
+            weight = r.Next(70, 130);
         }
         else if (height > 170)
         {
-            weight = r.Next(65, 110);
+            weight = r.Next(65, 120);
         }
         else
         {
-            weight = r.Next(minValue: 58, 100);
+            weight = r.Next(minValue: 58, 110);
         }
         return weight;
     }
