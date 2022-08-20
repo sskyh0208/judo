@@ -171,20 +171,20 @@ public class GameData : MonoBehaviour
             }
         }
 
-        // // 金メダリストレベル選手作る
-        // int genSense6PlayerNum = r.Next(1, 3);
-        // List<string> schoolIds = schoolManager.schoolList.Keys.ToList();
-        // Debug.Log(string.Format("金メダリストレベル作成数: {0}人", genSense6PlayerNum));
-        // for(int i = 0; i < genSense6PlayerNum; i++){
-        //     string[] name = GameData.instance.nameManager.GenarateRandomName();
-        //     string targetSchoolId = schoolIds[r.Next(0, schoolIds.Count)];
-        //     string id = string.Format("{0}{1}{2}", baseDate.Year, targetSchoolId, schoolManager.schoolList[targetSchoolId].members.Count + i + 1);
-        //     PlayerManager member = new PlayerManager(
-        //             id, name[0], name[1], generateDt, generateGrade, targetSchoolId.Substring(0, 2), targetSchoolId, 10
-        //         );
-        //     schoolManager.schoolList[targetSchoolId].members[id] = member;
-        //     string targetCityId = targetSchoolId.Substring(2, 4);
-        //     Debug.Log(string.Format("名前: {0} 高校: {1}", member.nameKaki, schoolManager.schoolList[targetSchoolId].name));
-        // }
+        // 金メダリストレベル選手作る
+        int genSense6PlayerNum = r.Next(1, 3);
+        List<string> schoolIds = schoolManager.schoolList.Keys.ToList();
+        Debug.Log(string.Format("金メダリストレベル作成数: {0}人", genSense6PlayerNum));
+        for(int i = 0; i < genSense6PlayerNum; i++){
+            string[] name = GameData.instance.nameManager.GenarateRandomName();
+            string targetSchoolId = schoolIds[r.Next(0, schoolIds.Count)];
+            string id = string.Format("{0}{1}{2}", baseDate.Year, targetSchoolId, schoolManager.schoolList[targetSchoolId].members.Count + i + 1);
+            PlayerManager member = new PlayerManager(
+                    id, name[0], name[1], generateDt, generateGrade, targetSchoolId.Substring(0, 2), targetSchoolId, 10
+                );
+            schoolManager.schoolList[targetSchoolId].members[id] = member;
+            string targetCityId = targetSchoolId.Substring(2, 4);
+            Debug.Log(string.Format("名前: {0} 高校: {1}", member.nameKaki, schoolManager.schoolList[targetSchoolId].name));
+        }
     }
 }
