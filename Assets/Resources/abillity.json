@@ -42,6 +42,7 @@
         {"id": "40", "typeId": "1", "groupId": "7", "name": "腕挫三角固"},
         {"id": "900", "typeId": "9", "groupId": "9", "name": "パワー"},
         {"id": "901", "typeId": "9", "groupId": "9", "name": "スピード"},
-        {"id": "902", "typeId": "9", "groupId": "9", "name": "スタミナ"}
+        {"id": "902", "typeId": "9", "groupId": "9", "name": "スタミナ"},
+        {"id": "903", "typeId": "9", "groupId": "9", "name": "名声"}
     ]
 }

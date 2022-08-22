@@ -97,6 +97,15 @@ public class PlayerManager
         int date = r.Next(1, DateTime.DaysInMonth(year, month));
         return new DateTime(year, month, date);
     }
+
+    private void ResetFameAbillity()
+    {
+        Abillity meisei = GetAbillity("903");
+        meisei.limit = 10000;
+        meisei.status = 0;
+        SetAbillity(meisei);
+    }
+
     private int GeneratePlayerHeight()
     {
         int height = 0;
@@ -279,6 +288,10 @@ public class PlayerManager
         else if (height < 180){speedAbillity.limit = (int)(speedAbillity.limit * (r.Next(9, 11) * 0.1f));}
         else if (height < 185){speedAbillity.limit = (int)(speedAbillity.limit * (r.Next(8, 11) * 0.1f));}
         SetAbillity(speedAbillity);
+        // 上限を10000にする
+        Abillity meisei = GetAbillity("903");
+        meisei.limit = 10000;
+        SetAbillity(meisei);
     }
 
     private void SetAbillity(Abillity abillity)
@@ -406,25 +419,25 @@ public class Abillity
         {
             default:
             case 3:
-                valueWeight = GenerateRandomFloatValue(1, 4);
+                valueWeight = GenerateRandomFloatValue(1, 5);
                 break;
             case 4:
-                valueWeight = GenerateRandomFloatValue(2, 5);
+                valueWeight = GenerateRandomFloatValue(2, 6);
                 break;
             case 5:
-                valueWeight = GenerateRandomFloatValue(3, 6);
-                break;
-            case 6:
                 valueWeight = GenerateRandomFloatValue(3, 7);
                 break;
-            case 7:
+            case 6:
                 valueWeight = GenerateRandomFloatValue(3, 8);
                 break;
-            case 8:
+            case 7:
                 valueWeight = GenerateRandomFloatValue(3, 9);
                 break;
+            case 8:
+                valueWeight = GenerateRandomFloatValue(3, 10);
+                break;
             case 9:
-                valueWeight = GenerateRandomFloatValue(4, 10);
+                valueWeight = GenerateRandomFloatValue(4, 11);
                 break;
             case 10:
                 valueWeight = GenerateRandomFloatValue(6, 11);
