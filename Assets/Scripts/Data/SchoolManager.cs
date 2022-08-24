@@ -130,8 +130,10 @@ public class School
     public string id;
     public string placeId;
     public string name;
-    public int schoolRank;
+    public int baseRank;
+    public int fame;
 
+    public int schoolRank;
     public int totalStatus;
     public int regularMemberStatus;
 
@@ -151,7 +153,9 @@ public class School
         this.id = id;
         this.placeId = placeId;
         this.name = name;
-        this.schoolRank = schoolRank;
+        this.baseRank = schoolRank;
+        this.fame = 0;
+        this.schoolRank = 0;
         this.totalStatus = 0;
         this.supervisor = null;
         this.members = new Dictionary<string, PlayerManager>();
@@ -159,6 +163,15 @@ public class School
         this.trainingLimitMinutes = 120;
         this.trainingMenu = new List<Tuple<string, int>>();
         this.trainingMenuResult = new List<Tuple<string, int>>();
+        SetSchoolRank();
+    }
+
+    public void SetSchoolRank()
+    {
+        if (this.baseRank > this.fame)
+        {this.schoolRank = this.baseRank;}
+        else
+        {this.schoolRank = this.fame;}
     }
 
     public int GenerateThisYearLimitMembersNum()
