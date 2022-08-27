@@ -202,6 +202,11 @@ public class Tournament
                 if (min < member.weight && member.weight <= max)
                 {
                     joinMembers.Add(member);
+                    // 48人以上は参加させない
+                    if (joinMembers.Count == 48)
+                    {
+                        break;
+                    }
                 }
             }
         }
@@ -257,6 +262,11 @@ public class Tournament
                 {
                     joinMembers.Add(targetMembers[i]);
                     if(i >= tournamentFilterValue && tournamentFilterValue != 99) {break;}
+                    // 48人以上は参加させない
+                    if (joinMembers.Count == 48)
+                    {
+                        break;
+                    }
                 }
             }
         }
@@ -298,12 +308,11 @@ public class Tournament
         List<List<T>> leaderBoad = new List<List<T>>();
         List<List<T>> leaderBoadA = new List<List<T>>();
         List<List<T>> leaderBoadB = new List<List<T>>();
-        List<List<T>> tmpLeaderBoadA = new List<List<T>>();
-        List<List<T>> tmpLeaderBoadB = new List<List<T>>();
+        List<List<T>> notSeedList = new List<List<T>>();
+        List<List<T>> seedList = new List<List<T>>();
 
         int notSeedNum = 1;
 
-        List<T> seedList = new List<T>();
         if (targetList.Count >= 256)
         {
             notSeedNum = 256;
@@ -338,13 +347,16 @@ public class Tournament
         }
 
         int notSeedCount = targetList.Count % notSeedNum;
+        int seedCount = 2;
 
         if (notSeedNum > 1)
         {
-            T firstTarget = targetList[0];
-            targetList.RemoveAt(0);
-            T secondTarget = targetList[0];
-            targetList.RemoveAt(0);
+            List<T> seedTargetList = new List<T>();
+            for (int i = 0; i < seedCount; i++)
+            {
+                seedTargetList.Add(targetList[0]);
+                targetList.RemoveAt(0);
+            }
 
             // 残りをシャッフル
             for (int i = 0; i < targetList.Count; i++)
@@ -355,20 +367,22 @@ public class Tournament
                 targetList[randomIndex] = tmp;
             }
 
-            targetList.Insert(0, firstTarget);
-            targetList.Insert(0, secondTarget);
+            seedTargetList.Reverse();
+            foreach (T seedTarget in seedTargetList)
+            {
+                targetList.Add(seedTarget);
+            }
 
             // 子要素初期化
             List<T> matchList = new List<T>();
             // 組み合わせ
 
-            targetList.Reverse();
             for (int i = 0; i < notSeedCount * 2; i++)
             {
                 matchList.Add(targetList[0]);
                 if (matchList.Count == 2)
                 {
-                    tmpLeaderBoadA.Add(matchList);
+                    notSeedList.Add(matchList);
                     matchList = new List<T>();
                 }
                 targetList.RemoveAt(0);
@@ -377,31 +391,31 @@ public class Tournament
             targetList.Reverse();
             foreach (T target in targetList)
             {
-                tmpLeaderBoadB.Add(new List<T>(){target});
+                seedList.Add(new List<T>(){target});
             }
 
             for (int i = 0; i < notSeedNum; i++)
             {
-                if (i < tmpLeaderBoadB.Count)
+                if (i < seedList.Count)
                 {
                     if (i % 2 == 0)
                     {
-                        leaderBoadB.Add(tmpLeaderBoadB[i]);
+                        leaderBoadA.Add(seedList[i]);
                     }
                     else
                     {
-                        leaderBoadA.Add(tmpLeaderBoadB[i]);
+                        leaderBoadB.Add(seedList[i]);
                     }
                 }
-                if (i < tmpLeaderBoadA.Count)
+                if (i < notSeedList.Count)
                 {
                     if (i % 2 == 0)
                     {
-                        leaderBoadB.Add(tmpLeaderBoadA[i]);
+                        leaderBoadA.Add(notSeedList[i]);
                     }
                     else
                     {
-                        leaderBoadA.Add(tmpLeaderBoadA[i]);
+                        leaderBoadB.Add(notSeedList[i]);
                     }
                 }
             }
@@ -415,9 +429,9 @@ public class Tournament
             }
             if (leaderBoadB.Count > 0)
             {
-                List<T> tmp = leaderBoadB[0];
-                leaderBoadB[0] = leaderBoadB[leaderBoadB.Count - 1];
-                leaderBoadB[leaderBoadB.Count - 1] = tmp;
+                // List<T> tmp = leaderBoadB[0];
+                // leaderBoadB[0] = leaderBoadB[leaderBoadB.Count - 1];
+                // leaderBoadB[leaderBoadB.Count - 1] = tmp;
                 foreach (List<T> match in leaderBoadB)
                 {
                     leaderBoad.Add(match);
@@ -443,6 +457,15 @@ public class Tournament
             List<School> winnerList = new List<School>();
             List<SchoolMatch> roundSchoolMatch = new List<SchoolMatch>();
             int countMatch = 1;
+            int countId = 0;
+            if (matchList.Count == 1)
+            {countId = 12;}
+            else if (matchList.Count == 2)
+            {countId = 11;}
+            else if (matchList.Count == 4)
+            {countId = 10;}
+            else
+            {countId = countRound;}
             foreach (List<School> targetMatch in matchList)
             {
                 // 第一試合が1組をシード試合とする
@@ -452,7 +475,7 @@ public class Tournament
                 }
                 // 試合をする
                 // 00は試合タイプが団体戦
-                SchoolMatch schoolMatch = new SchoolMatch(this.tournamentId + "00" + countRound.ToString("d2") + countMatch.ToString("d2"), targetMatch[0], targetMatch[1]);
+                SchoolMatch schoolMatch = new SchoolMatch(this.tournamentId + "00" + countId.ToString("d2") + countMatch.ToString("d2"), targetMatch[0], targetMatch[1]);
                 schoolMatch.Fight();
                 roundSchoolMatch.Add(schoolMatch);
                 winnerList.Add(schoolMatch.winner);
@@ -504,6 +527,16 @@ public class Tournament
                 List<PlayerManager> winnerList = new List<PlayerManager>();
                 List<MemberMatch> roundMemberMatch = new List<MemberMatch>();
                 int countMatch = 1;
+                int countId = 0;
+                if (matchList.Count == 1)
+                {countId = 12;}
+                else if (matchList.Count == 2)
+                {countId = 11;}
+                else if (matchList.Count == 4)
+                {countId = 10;}
+                else
+                {countId = countRound;}
+
                 foreach (List<PlayerManager> targetMatch in matchList)
                 {
                     MemberMatch match = null;
@@ -516,7 +549,7 @@ public class Tournament
                     PlayerManager loser = null;
                     // 試合をする
                     // <トーナメントID><試合タイプ><xx回線><試合個人Type>のIDにする
-                    match = new MemberMatch(tournamentId + weightClass.ToString("d2")+countRound.ToString("d2")+countMatch.ToString("d2")+"00", targetMatch[0], targetMatch[1]);
+                    match = new MemberMatch(tournamentId + weightClass.ToString("d2")+countId.ToString("d2")+countMatch.ToString("d2")+"00", targetMatch[0], targetMatch[1]);
                     while (true)
                     {
                         if(match.Fight())
@@ -679,12 +712,22 @@ public class Tournament
         {
             foreach (SchoolMatch match in round)
             {
+                string matchRound = "";
+                if (match.id.Substring(14, 2) == "10")
+                {matchRound = "準々決勝戦";}
+                else if (match.id.Substring(14, 2) == "11")
+                {matchRound = "準決勝戦";}
+                else if (match.id.Substring(14, 2) == "12")
+                {matchRound = "決勝戦";}
+                else
+                {matchRound = match.id.Substring(14, 2) + "回戦";}
                 if (match.loser != null)
                 {
                     Debug.Log(
                         string.Format(
-                            "試合ID:{0}          赤 {1}: {2} | {3}  -  {4} 白 {5}: {6}",
+                            "試合ID:{0}  {1}          赤 {2}: {3} | {4}  -  {5} 白 {6}: {7}",
                             match.id,
+                            matchRound,
                             match.red.name,
                             match.red.regularMemberStatus,
                             match.redWinCount,
@@ -698,8 +741,9 @@ public class Tournament
                 {
                     Debug.Log(
                         string.Format(
-                            "試合ID:{0}          赤 {1}: {2}          シード",
+                            "試合ID:{0}  {1}        赤 {2}: {3}          シード",
                             match.id,
+                            matchRound,
                             match.winner.name,
                             match.winner.regularMemberStatus
                         )
@@ -741,12 +785,24 @@ public class Tournament
         {
             foreach (MemberMatch match in round)
             {
+                string matchRound = "";
+                if (match.id.Substring(14, 2) == "10")
+                {matchRound = "準々決勝戦";}
+                else if (match.id.Substring(14, 2) == "11")
+                {matchRound = "準決勝戦";}
+                else if (match.id.Substring(14, 2) == "12")
+                {matchRound = "決勝戦";}
+                else
+                {matchRound = match.id.Substring(14, 2) + "回戦";}
+                
                 if (match.loser != null)
                 {
+                    
                     Debug.Log(
                         string.Format(
-                            "試合ID:{0}          赤 {1}: {2}  vs  白 {3}: {4}          {5}",
+                            "試合ID:{0}  {1}          赤 {2}: {3}  vs  白 {4}: {5}          {6}",
                             match.id,
+                            matchRound,
                             GameData.instance.schoolManager.GetSchool(match.winner.schoolId).name,
                             match.winner.nameKaki,
                             GameData.instance.schoolManager.GetSchool(match.loser.schoolId).name,
@@ -759,8 +815,9 @@ public class Tournament
                 {
                     Debug.Log(
                         string.Format(
-                            "試合ID:{0}          赤 {1}: {2}          シード",
+                            "試合ID:{0}  {1}         赤 {2}: {3}          シード",
                             match.id,
+                            matchRound,
                             GameData.instance.schoolManager.GetSchool(match.winner.schoolId).name,
                             match.winner.nameKaki
                         )
@@ -1039,10 +1096,10 @@ public class MemberMatch
         float matchTime = defaultMatchTime;
         while (!end)
         {
-            Abillity redBaseAbility = red.abillities[r.Next(red.abillities.Count - 3, red.abillities.Count)];
-            Abillity whiteBaseAbility = white.abillities[r.Next(red.abillities.Count - 3, white.abillities.Count)];
-            Abillity redTurnAbility = red.abillities[r.Next(0, red.abillities.Count - 3)];
-            Abillity whiteTurnAbility = white.abillities[r.Next(0, white.abillities.Count - 3)];
+            Abillity redBaseAbility = red.abillities[r.Next(red.abillities.Count - 4, red.abillities.Count - 1)];
+            Abillity whiteBaseAbility = white.abillities[r.Next(red.abillities.Count - 4, white.abillities.Count - 1)];
+            Abillity redTurnAbility = red.abillities[r.Next(0, red.abillities.Count - 4)];
+            Abillity whiteTurnAbility = white.abillities[r.Next(0, white.abillities.Count - 4)];
 
             int redAbilityStatusNum = (int)Math.Floor((double)(redBaseAbility.status + redTurnAbility.status) / 1000);
             int whiteAbilityStatusNum = (int)Math.Floor((double)(whiteBaseAbility.status + whiteTurnAbility.status) / 1000);
@@ -1054,7 +1111,7 @@ public class MemberMatch
             endMatchTime += timeSpeed;
             switch (diffValue)
             {
-                case >= 5:
+                case >= 6:
                     // 赤一本
                     this.redIppon ++;
                     lastAffectiveRedAbillity = redTurnAbility;
@@ -1064,7 +1121,7 @@ public class MemberMatch
                         endMatchTime += 30;
                     }
                     break;
-                case >= 3:
+                case >= 4:
                     // 赤技あり
                     if (redTurnAbility.groupId != "6" || redTurnAbility.groupId != "7")
                     {
@@ -1094,7 +1151,7 @@ public class MemberMatch
                         endMatchTime += 20;
                     }
                     break;
-                case <= -5:
+                case <= -6:
                     // 白一本
                     this.whiteIppon ++;
                     lastAffectiveWhiteAbillity = whiteTurnAbility;
@@ -1104,7 +1161,7 @@ public class MemberMatch
                         endMatchTime += 30;
                     }
                     break;
-                case <= -3:
+                case <= -4:
                     // 白技あり
                     if  (whiteTurnAbility.groupId != "6" && whiteTurnAbility.groupId != "7")
                     {

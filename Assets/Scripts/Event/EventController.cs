@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using System.Text.RegularExpressions;
 
 public class EventController : MonoBehaviour
 {
@@ -10,6 +11,8 @@ public class EventController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        // // テスト用
+        // TestDataGenerate();
         List<string> tournamentIdList = new List<string>(){};
         switch (GameData.instance.todayEvent.eventId)
         {
@@ -94,7 +97,18 @@ public class EventController : MonoBehaviour
                 }
             }
             GameData.instance.matchManager.history.Add(taikai);
+
+            // // テスト用
+            // if (Regex.IsMatch(GameData.instance.player.schoolId, "^"+id))
+            // {break;}
         }
 
+    }
+
+    private void TestDataGenerate()
+    {
+        GameData.instance.LoadNewGameData();
+        GameData.instance.todayEvent = GameData.instance.scheduleManager.GetSchedule(new DateTime(2022, 5, 1));
+        GameData.instance.player = GameData.instance.schoolManager.GetSchool("073404087").supervisor;
     }
 }   
