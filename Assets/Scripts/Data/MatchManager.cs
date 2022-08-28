@@ -43,14 +43,14 @@ public class Tournament
     public string cityId;
     public Ranking ranking;
 
-    public List<List<SchoolMatch>> allSchoolMatchResult;
-    public List<List<MemberMatch>> memberMatchResult60;
-    public List<List<MemberMatch>> memberMatchResult66;
-    public List<List<MemberMatch>> memberMatchResult73;
-    public List<List<MemberMatch>> memberMatchResult81;
-    public List<List<MemberMatch>> memberMatchResult90;
-    public List<List<MemberMatch>> memberMatchResult100;
-    public List<List<MemberMatch>> memberMatchResultOver100;
+    public List<SchoolMatch> allSchoolMatchResult;
+    public List<MemberMatch> memberMatchResult60;
+    public List<MemberMatch> memberMatchResult66;
+    public List<MemberMatch> memberMatchResult73;
+    public List<MemberMatch> memberMatchResult81;
+    public List<MemberMatch> memberMatchResult90;
+    public List<MemberMatch> memberMatchResult100;
+    public List<MemberMatch> memberMatchResultOver100;
 
     public Tournament (Schedule eventObj, DateTime date, string targetId)
     {
@@ -66,14 +66,14 @@ public class Tournament
         this.placeId = targetId.Substring(2, 2);
         this.cityId = targetId.Substring(4, 2);
         this.ranking = new Ranking();
-        this.allSchoolMatchResult = new List<List<SchoolMatch>>();
-        this.memberMatchResult60 = new List<List<MemberMatch>>();
-        this.memberMatchResult66 = new List<List<MemberMatch>>();
-        this.memberMatchResult73 = new List<List<MemberMatch>>();
-        this.memberMatchResult81 = new List<List<MemberMatch>>();
-        this.memberMatchResult90 = new List<List<MemberMatch>>();
-        this.memberMatchResult100 = new List<List<MemberMatch>>();
-        this.memberMatchResultOver100 = new List<List<MemberMatch>>();
+        this.allSchoolMatchResult = new List<SchoolMatch>();
+        this.memberMatchResult60 = new List<MemberMatch>();
+        this.memberMatchResult66 = new List<MemberMatch>();
+        this.memberMatchResult73 = new List<MemberMatch>();
+        this.memberMatchResult81 = new List<MemberMatch>();
+        this.memberMatchResult90 = new List<MemberMatch>();
+        this.memberMatchResult100 = new List<MemberMatch>();
+        this.memberMatchResultOver100 = new List<MemberMatch>();
         Debug.Log("大会開催ID: " + this.tournamentId);
     }
 
@@ -477,7 +477,7 @@ public class Tournament
                 // 00は試合タイプが団体戦
                 SchoolMatch schoolMatch = new SchoolMatch(this.tournamentId + "00" + countId.ToString("d2") + countMatch.ToString("d2"), targetMatch[0], targetMatch[1]);
                 schoolMatch.Fight();
-                roundSchoolMatch.Add(schoolMatch);
+                this.allSchoolMatchResult.Add(schoolMatch);
                 winnerList.Add(schoolMatch.winner);
                 if (targetMatch[1] != null)
                 {
@@ -490,7 +490,6 @@ public class Tournament
                 countMatch ++;
             }
             // xx回戦の団体戦を配列で追加
-            this.allSchoolMatchResult.Add(roundSchoolMatch);
             if (winnerList.Count == 1)
             {   
                 // 優勝決まり
@@ -525,7 +524,6 @@ public class Tournament
             while (true)
             {
                 List<PlayerManager> winnerList = new List<PlayerManager>();
-                List<MemberMatch> roundMemberMatch = new List<MemberMatch>();
                 int countMatch = 1;
                 int countId = 0;
                 if (matchList.Count == 1)
@@ -567,39 +565,38 @@ public class Tournament
                         winner = match.white;
                         loser = match.red;
                     }
-                    roundMemberMatch.Add(match);
                     winnerList.Add(winner);
+                    switch (weightClass)
+                    {
+                        default:
+                        case 1:
+                            memberMatchResult60.Add(match);
+                            break;
+                        case 2:
+                            memberMatchResult66.Add(match);
+                            break;
+                        case 3:
+                            memberMatchResult73.Add(match);
+                            break;
+                        case 4:
+                            memberMatchResult81.Add(match);
+                            break;
+                        case 5:
+                            memberMatchResult90.Add(match);
+                            break;
+                        case 6:
+                            memberMatchResult100.Add(match);
+                            break;
+                        case 7:
+                            memberMatchResultOver100.Add(match);
+                            break;
+                    }
                     Dictionary<string, string> matchDetail = match.ChecMatchDetail();
                     if(loser != null)
                     {
                         result.Add(loser);
                     }
                     countMatch ++;
-                }
-                switch (weightClass)
-                {
-                    default:
-                    case 1:
-                        memberMatchResult60.Add(roundMemberMatch);
-                        break;
-                    case 2:
-                        memberMatchResult66.Add(roundMemberMatch);
-                        break;
-                    case 3:
-                        memberMatchResult73.Add(roundMemberMatch);
-                        break;
-                    case 4:
-                        memberMatchResult81.Add(roundMemberMatch);
-                        break;
-                    case 5:
-                        memberMatchResult90.Add(roundMemberMatch);
-                        break;
-                    case 6:
-                        memberMatchResult100.Add(roundMemberMatch);
-                        break;
-                    case 7:
-                        memberMatchResultOver100.Add(roundMemberMatch);
-                        break;
                 }
                 if (winnerList.Count == 1)
                 {   
@@ -708,54 +705,51 @@ public class Tournament
 
     public void DebugResultTeamMatchDetail()
     {
-        foreach (List<SchoolMatch> round in this.allSchoolMatchResult)
+        foreach (SchoolMatch match in this.allSchoolMatchResult)
         {
-            foreach (SchoolMatch match in round)
+            string matchRound = "";
+            if (match.id.Substring(14, 2) == "10")
+            {matchRound = "準々決勝戦";}
+            else if (match.id.Substring(14, 2) == "11")
+            {matchRound = "準決勝戦";}
+            else if (match.id.Substring(14, 2) == "12")
+            {matchRound = "決勝戦";}
+            else
+            {matchRound = match.id.Substring(14, 2) + "回戦";}
+            if (match.loser != null)
             {
-                string matchRound = "";
-                if (match.id.Substring(14, 2) == "10")
-                {matchRound = "準々決勝戦";}
-                else if (match.id.Substring(14, 2) == "11")
-                {matchRound = "準決勝戦";}
-                else if (match.id.Substring(14, 2) == "12")
-                {matchRound = "決勝戦";}
-                else
-                {matchRound = match.id.Substring(14, 2) + "回戦";}
-                if (match.loser != null)
-                {
-                    Debug.Log(
-                        string.Format(
-                            "試合ID:{0}  {1}          赤 {2}: {3} | {4}  -  {5} 白 {6}: {7}",
-                            match.id,
-                            matchRound,
-                            match.red.name,
-                            match.red.regularMemberStatus,
-                            match.redWinCount,
-                            match.whiteWinCount,
-                            match.white.name,
-                            match.white.regularMemberStatus
-                        )
-                    );
-                }
-                else
-                {
-                    Debug.Log(
-                        string.Format(
-                            "試合ID:{0}  {1}        赤 {2}: {3}          シード",
-                            match.id,
-                            matchRound,
-                            match.winner.name,
-                            match.winner.regularMemberStatus
-                        )
-                    );
-                }
+                Debug.Log(
+                    string.Format(
+                        "試合ID:{0}  {1}          赤 {2}: {3} | {4}  -  {5} 白 {6}: {7}",
+                        match.id,
+                        matchRound,
+                        match.red.name,
+                        match.red.regularMemberStatus,
+                        match.redWinCount,
+                        match.whiteWinCount,
+                        match.white.name,
+                        match.white.regularMemberStatus
+                    )
+                );
+            }
+            else
+            {
+                Debug.Log(
+                    string.Format(
+                        "試合ID:{0}  {1}        赤 {2}: {3}          シード",
+                        match.id,
+                        matchRound,
+                        match.winner.name,
+                        match.winner.regularMemberStatus
+                    )
+                );
             }
         }
     }
 
     public void DebugResultMemberMatchDetail(int weightClass)
     {   
-        List<List<MemberMatch>> target = new List<List<MemberMatch>>();
+        List<MemberMatch> target = new List<MemberMatch>();
         switch (weightClass)
         {
             default:
@@ -781,48 +775,45 @@ public class Tournament
                 target = memberMatchResultOver100;
                 break;
         }
-        foreach (List<MemberMatch> round in target)
+        foreach (MemberMatch match in target)
         {
-            foreach (MemberMatch match in round)
+            string matchRound = "";
+            if (match.id.Substring(14, 2) == "10")
+            {matchRound = "準々決勝戦";}
+            else if (match.id.Substring(14, 2) == "11")
+            {matchRound = "準決勝戦";}
+            else if (match.id.Substring(14, 2) == "12")
+            {matchRound = "決勝戦";}
+            else
+            {matchRound = match.id.Substring(14, 2) + "回戦";}
+            
+            if (match.loser != null)
             {
-                string matchRound = "";
-                if (match.id.Substring(14, 2) == "10")
-                {matchRound = "準々決勝戦";}
-                else if (match.id.Substring(14, 2) == "11")
-                {matchRound = "準決勝戦";}
-                else if (match.id.Substring(14, 2) == "12")
-                {matchRound = "決勝戦";}
-                else
-                {matchRound = match.id.Substring(14, 2) + "回戦";}
                 
-                if (match.loser != null)
-                {
-                    
-                    Debug.Log(
-                        string.Format(
-                            "試合ID:{0}  {1}          赤 {2}: {3}  vs  白 {4}: {5}          {6}",
-                            match.id,
-                            matchRound,
-                            GameData.instance.schoolManager.GetSchool(match.winner.schoolId).name,
-                            match.winner.nameKaki,
-                            GameData.instance.schoolManager.GetSchool(match.loser.schoolId).name,
-                            match.loser.nameKaki,
-                            match.ChecMatchDetail()["formatString"]
-                        )
-                    );
-                }
-                else
-                {
-                    Debug.Log(
-                        string.Format(
-                            "試合ID:{0}  {1}         赤 {2}: {3}          シード",
-                            match.id,
-                            matchRound,
-                            GameData.instance.schoolManager.GetSchool(match.winner.schoolId).name,
-                            match.winner.nameKaki
-                        )
-                    );
-                }
+                Debug.Log(
+                    string.Format(
+                        "試合ID:{0}  {1}          赤 {2}: {3}  vs  白 {4}: {5}          {6}",
+                        match.id,
+                        matchRound,
+                        GameData.instance.schoolManager.GetSchool(match.winner.schoolId).name,
+                        match.winner.nameKaki,
+                        GameData.instance.schoolManager.GetSchool(match.loser.schoolId).name,
+                        match.loser.nameKaki,
+                        match.ChecMatchDetail()["formatString"]
+                    )
+                );
+            }
+            else
+            {
+                Debug.Log(
+                    string.Format(
+                        "試合ID:{0}  {1}         赤 {2}: {3}          シード",
+                        match.id,
+                        matchRound,
+                        GameData.instance.schoolManager.GetSchool(match.winner.schoolId).name,
+                        match.winner.nameKaki
+                    )
+                );
             }
         }
     }
@@ -888,6 +879,37 @@ public class Tournament
                 )
             );
         }
+    }
+
+     public List<MemberMatch> GetMemberMatch(int weightClass)
+    {   
+        List<MemberMatch> target = new List<MemberMatch>();
+        switch (weightClass)
+        {
+            default:
+            case 1:
+                target = memberMatchResult60;
+                break;
+            case 2:
+                target = memberMatchResult66;
+                break;
+            case 3:
+                target = memberMatchResult73;
+                break;
+            case 4:
+                target = memberMatchResult81;
+                break;
+            case 5:
+                target = memberMatchResult90;
+                break;
+            case 6:
+                target = memberMatchResult100;
+                break;
+            case 7:
+                target = memberMatchResultOver100;
+                break;
+        }
+        return target;
     }
 }
 public class SchoolMatch
