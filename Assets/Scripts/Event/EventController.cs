@@ -5,13 +5,20 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using System.Text.RegularExpressions;
+
 
 public class EventController : MonoBehaviour
 {
     Schedule todayEvent;
     public GameObject placeNameTextPrefab;
-    private GameObject resultScrollView;
+
+    private GameObject classScrollViewContent;
+    private GameObject roundScrollView;
+    private GameObject matchScrollView;
     private GameObject selectedClassObj;
+    public GameObject roundScrollViewContentPrefab;
+    public GameObject matchScrollViewContentPrefab;
     private List<SchoolMatch> selectedSchoolMatch;
     private List<MemberMatch> selectedMemberMatch;
 
@@ -50,6 +57,7 @@ public class EventController : MonoBehaviour
                 }
             }
             GameData.instance.matchManager.history.Add(this.taikai);
+            SetUiModule();
             SetClassScrollViewContent();
         }
 
@@ -138,11 +146,16 @@ public class EventController : MonoBehaviour
         this.is_test = true;
     }
 
+    private void SetUiModule()
+    {
+        classScrollViewContent = GameObject.Find("ClassScrollViewContent");
+        roundScrollView = GameObject.Find("EventUICanvas").transform.Find("RoundScrollView").gameObject;
+        matchScrollView = GameObject.Find("EventUICanvas").transform.Find("MatchScrollView").gameObject;
+    }
+
     private void SetClassScrollViewContent()
     {
-        resultScrollView = GameObject.Find("EventUICanvas").transform.Find("ResultScrollView").gameObject;
         // 団体戦、個人戦60kgなどのボタンを作成する
-        GameObject classScrollViewContent = GameObject.Find("ClassScrollViewContent");
         if (this.taikai.ranking.school.Count != 0)
         {
             GameObject _text = Instantiate(placeNameTextPrefab, classScrollViewContent.transform);
@@ -152,7 +165,7 @@ public class EventController : MonoBehaviour
             EventTrigger.Entry entry = new EventTrigger.Entry();
             entry.eventID = EventTriggerType.PointerDown;
             entry.callback.AddListener((eventDate) => {
-                SelectedResultTeam(_text);
+                SelectedRoundTeam(_text);
             });
             trigger.triggers.Add(entry);
         }
@@ -165,7 +178,7 @@ public class EventController : MonoBehaviour
             EventTrigger.Entry entry = new EventTrigger.Entry();
             entry.eventID = EventTriggerType.PointerDown;
             entry.callback.AddListener((eventDate) => {
-                SelectedResultWeightClass(_text);
+                SelectedRoundWeightClass(_text);
             });
             trigger.triggers.Add(entry);
         }
@@ -178,7 +191,7 @@ public class EventController : MonoBehaviour
             EventTrigger.Entry entry = new EventTrigger.Entry();
             entry.eventID = EventTriggerType.PointerDown;
             entry.callback.AddListener((eventDate) => {
-                SelectedResultWeightClass(_text);
+                SelectedRoundWeightClass(_text);
             });
             trigger.triggers.Add(entry);
         }
@@ -191,7 +204,7 @@ public class EventController : MonoBehaviour
             EventTrigger.Entry entry = new EventTrigger.Entry();
             entry.eventID = EventTriggerType.PointerDown;
             entry.callback.AddListener((eventDate) => {
-                SelectedResultWeightClass(_text);
+                SelectedRoundWeightClass(_text);
             });
             trigger.triggers.Add(entry);
         }
@@ -204,7 +217,7 @@ public class EventController : MonoBehaviour
             EventTrigger.Entry entry = new EventTrigger.Entry();
             entry.eventID = EventTriggerType.PointerDown;
             entry.callback.AddListener((eventDate) => {
-                SelectedResultWeightClass(_text);
+                SelectedRoundWeightClass(_text);
             });
             trigger.triggers.Add(entry);
         }
@@ -217,7 +230,7 @@ public class EventController : MonoBehaviour
             EventTrigger.Entry entry = new EventTrigger.Entry();
             entry.eventID = EventTriggerType.PointerDown;
             entry.callback.AddListener((eventDate) => {
-                SelectedResultWeightClass(_text);
+                SelectedRoundWeightClass(_text);
             });
             trigger.triggers.Add(entry);
         }
@@ -230,7 +243,7 @@ public class EventController : MonoBehaviour
             EventTrigger.Entry entry = new EventTrigger.Entry();
             entry.eventID = EventTriggerType.PointerDown;
             entry.callback.AddListener((eventDate) => {
-                SelectedResultWeightClass(_text);
+                SelectedRoundWeightClass(_text);
             });
             trigger.triggers.Add(entry);
         }
@@ -243,7 +256,7 @@ public class EventController : MonoBehaviour
             EventTrigger.Entry entry = new EventTrigger.Entry();
             entry.eventID = EventTriggerType.PointerDown;
             entry.callback.AddListener((eventDate) => {
-                SelectedResultWeightClass(_text);
+                SelectedRoundWeightClass(_text);
             });
             trigger.triggers.Add(entry);
         }
@@ -280,50 +293,134 @@ public class EventController : MonoBehaviour
         return weightNum;
     }
 
-    private void SelectedResultWeightClass(GameObject targetClassObj)
+    private void SelectedRoundWeightClass(GameObject targetClassObj)
     {
         string _text = targetClassObj.GetComponent<Text>().text;
         this.selectedClassObj = targetClassObj;
         this.selectedMemberMatch = this.taikai.GetMemberMatch(this.ConvetToClassNum(_text));
-        DisplayResultScrollView(true);
-        DisplayClassResultScrollViewContent(true, this.ConvetToClassNum(_text));
+        DisplayRoundScrollView(true);
+        DisplayClassRoundScrollViewContent(true, this.ConvetToClassNum(_text));
     }
 
-    private void SelectedResultTeam(GameObject targetClassObj)
+    private void SelectedRoundTeam(GameObject targetClassObj)
     {
         string _text = targetClassObj.GetComponent<Text>().text;
         this.selectedClassObj = targetClassObj;
         this.selectedSchoolMatch = this.taikai.allSchoolMatchResult;
-        DisplayResultScrollView(true);
-        DisplayTeamResultScrollViewContent(true);
+        DisplayRoundScrollView(true);
+        DisplayTeamRoundScrollViewContent(true);
     }
 
-    private void DisplayResultScrollView(bool isDisplay)
+    private void DisplayRoundScrollView(bool isDisplay)
     {   
-        resultScrollView.SetActive(isDisplay);
+        roundScrollView.SetActive(isDisplay);
     }
 
-    private void DisplayClassResultScrollViewContent(bool isDisplay, int weightClass)
+    private void DisplayMatchScrollView(bool isDisplay)
+    {   
+        matchScrollView.SetActive(isDisplay);
+    }
+
+    private void DisplayClassRoundScrollViewContent(bool isDisplay, int weightClass)
     {
-        GameObject Viewport = resultScrollView.transform.Find("Viewport").gameObject;
-        foreach (MemberMatch match in this.selectedMemberMatch)
+        GameObject Viewport = roundScrollView.transform.Find("Viewport").gameObject;
+        GameObject roundScrollViewContent = Instantiate(roundScrollViewContentPrefab, Viewport.transform);
+        roundScrollViewContent.name = weightClass.ToString();
+        List<List<MemberMatch>> allRoundMemberMatchList = new List<List<MemberMatch>>();
+        foreach (string matchIdPrefix in this.GetMatchRoundIdPrefixes(this.selectedMemberMatch))
         {
-            GameObject _text = Instantiate(placeNameTextPrefab, Viewport.transform);
-            _text.GetComponent<Text>().text = match.id;
+            GameObject _text = Instantiate(placeNameTextPrefab, roundScrollViewContent.transform);
+            _text.GetComponent<Text>().text = GetMatchRoundLabel(matchIdPrefix);
             _text.AddComponent<EventTrigger>();
             EventTrigger trigger = _text.GetComponent<EventTrigger>();
             EventTrigger.Entry entry = new EventTrigger.Entry();
             entry.eventID = EventTriggerType.PointerDown;
             entry.callback.AddListener((eventDate) => {
-                SelectedResultTeam(_text);
+                DisplayClassMatchScrollViewContent(isDisplay, matchIdPrefix);
             });
             trigger.triggers.Add(entry);
         }
     }
 
-    private void DisplayTeamResultScrollViewContent(bool isDisplay)
+    private void DisplayClassMatchScrollViewContent(bool isDisplay, string matchIdPrefix)
+    {
+        DisplayMatchScrollView(isDisplay);
+        GameObject Viewport = matchScrollView.transform.Find("Viewport").gameObject;
+        GameObject matchScrollViewContent = Instantiate(matchScrollViewContentPrefab, Viewport.transform);
+        matchScrollViewContent.name = matchIdPrefix;
+        List<MemberMatch> targetMatchList = new List<MemberMatch>();
+        string pattern = "^" + matchIdPrefix;
+        foreach (MemberMatch match in this.selectedMemberMatch)
+        {
+            if (Regex.IsMatch(match.id, pattern))
+            {
+                targetMatchList.Add(match);
+            }
+        }
+
+        foreach (MemberMatch match in targetMatchList)
+        {
+            GameObject _text = Instantiate(placeNameTextPrefab, matchScrollViewContent.transform);
+            _text.GetComponent<Text>().text = match.id;
+            _text.AddComponent<EventTrigger>();
+            EventTrigger trigger = _text.GetComponent<EventTrigger>();
+            EventTrigger.Entry entry = new EventTrigger.Entry();
+            entry.eventID = EventTriggerType.PointerDown;
+            // entry.callback.AddListener((eventDate) => {
+            //     DisplayClassMatchScrollViewContent(isDisplay, matchIdPrefix);
+            // });
+            trigger.triggers.Add(entry);
+        }
+    }
+
+    private void DisplayTeamRoundScrollViewContent(bool isDisplay)
     {
 
+    }
+
+    public string GetMatchRoundLabel(string matchIdPrefix)
+    {
+        string label = "";
+        string roundStr = matchIdPrefix.Substring(14, 2);
+        {
+            switch (roundStr)
+            {
+                case "10":
+                    label = "準々決勝";
+                    break;
+                case "11":
+                    label = "準決勝";
+                    break;
+                case "12":
+                    label = "決勝";
+                    break;
+                default:
+                    label = roundStr + "回戦";
+                    break;
+            }
+        }
+        return label;
+    }
+    
+    public List<string> GetMatchRoundIdPrefixes(List<MemberMatch> memberMatchList)
+    {
+        List<string> returnList = new List<string>();
+        List<string> tmpList = new List<string>();
+        foreach (MemberMatch match in memberMatchList)
+        {
+            tmpList.Add(match.id);
+        }
+        string checkIdPrefix = "";
+        foreach (string matchId in tmpList.Distinct().ToList())
+        {
+            if (checkIdPrefix != matchId.Substring(0, 16))
+            {
+                checkIdPrefix = matchId.Substring(0, 16);
+                returnList.Add(checkIdPrefix);
+            }
+        }
+        returnList.Reverse();
+        return returnList;
     }
 
 }   
