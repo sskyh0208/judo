@@ -11,10 +11,12 @@ using System.Text.RegularExpressions;
 public class EventController : MonoBehaviour
 {
     Schedule todayEvent;
+    public GameObject ipponIcon;
+    public GameObject wazaariIcon;
+    public GameObject yukoIcon;
     public GameObject placeNameTextPrefab;
-
+    public GameObject resultTextPrefab;
     private GameObject classScrollViewContent;
-    private GameObject roundScrollView;
     private GameObject matchScrollView;
     private GameObject selectedClassObj;
     public GameObject roundScrollViewContentPrefab;
@@ -149,7 +151,6 @@ public class EventController : MonoBehaviour
     private void SetUiModule()
     {
         classScrollViewContent = GameObject.Find("ClassScrollViewContent");
-        roundScrollView = GameObject.Find("EventUICanvas").transform.Find("RoundScrollView").gameObject;
         matchScrollView = GameObject.Find("EventUICanvas").transform.Find("MatchScrollView").gameObject;
     }
 
@@ -298,8 +299,8 @@ public class EventController : MonoBehaviour
         string _text = targetClassObj.GetComponent<Text>().text;
         this.selectedClassObj = targetClassObj;
         this.selectedMemberMatch = this.taikai.GetMemberMatch(this.ConvetToClassNum(_text));
-        DisplayRoundScrollView(true);
-        DisplayClassRoundScrollViewContent(true, this.ConvetToClassNum(_text));
+        DisplayMatchScrollView(true);
+        DisplayClassMatchScrollViewContent(this.ConvetToClassNum(_text));
     }
 
     private void SelectedRoundTeam(GameObject targetClassObj)
@@ -307,13 +308,7 @@ public class EventController : MonoBehaviour
         string _text = targetClassObj.GetComponent<Text>().text;
         this.selectedClassObj = targetClassObj;
         this.selectedSchoolMatch = this.taikai.allSchoolMatchResult;
-        DisplayRoundScrollView(true);
         DisplayTeamRoundScrollViewContent(true);
-    }
-
-    private void DisplayRoundScrollView(bool isDisplay)
-    {   
-        roundScrollView.SetActive(isDisplay);
     }
 
     private void DisplayMatchScrollView(bool isDisplay)
@@ -321,55 +316,51 @@ public class EventController : MonoBehaviour
         matchScrollView.SetActive(isDisplay);
     }
 
-    private void DisplayClassRoundScrollViewContent(bool isDisplay, int weightClass)
+    private void DisplayClassMatchScrollViewContent(int weightClass)
     {
-        GameObject Viewport = roundScrollView.transform.Find("Viewport").gameObject;
-        GameObject roundScrollViewContent = Instantiate(roundScrollViewContentPrefab, Viewport.transform);
-        roundScrollViewContent.name = weightClass.ToString();
-        List<List<MemberMatch>> allRoundMemberMatchList = new List<List<MemberMatch>>();
-        foreach (string matchIdPrefix in this.GetMatchRoundIdPrefixes(this.selectedMemberMatch))
-        {
-            GameObject _text = Instantiate(placeNameTextPrefab, roundScrollViewContent.transform);
-            _text.GetComponent<Text>().text = GetMatchRoundLabel(matchIdPrefix);
-            _text.AddComponent<EventTrigger>();
-            EventTrigger trigger = _text.GetComponent<EventTrigger>();
-            EventTrigger.Entry entry = new EventTrigger.Entry();
-            entry.eventID = EventTriggerType.PointerDown;
-            entry.callback.AddListener((eventDate) => {
-                DisplayClassMatchScrollViewContent(isDisplay, matchIdPrefix);
-            });
-            trigger.triggers.Add(entry);
-        }
-    }
-
-    private void DisplayClassMatchScrollViewContent(bool isDisplay, string matchIdPrefix)
-    {
-        DisplayMatchScrollView(isDisplay);
         GameObject Viewport = matchScrollView.transform.Find("Viewport").gameObject;
         GameObject matchScrollViewContent = Instantiate(matchScrollViewContentPrefab, Viewport.transform);
-        matchScrollViewContent.name = matchIdPrefix;
-        List<MemberMatch> targetMatchList = new List<MemberMatch>();
-        string pattern = "^" + matchIdPrefix;
         foreach (MemberMatch match in this.selectedMemberMatch)
         {
-            if (Regex.IsMatch(match.id, pattern))
+            if (match.loser == null) {continue;}
+            GameObject detail = Instantiate(resultTextPrefab, matchScrollViewContent.transform);
+            detail.transform.Find("red").transform.Find("redName").GetComponent<Text>().text = match.red.nameKaki;
+            detail.transform.Find("red").transform.Find("redSchoolName").GetComponent<Text>().text = GameData.instance.schoolManager.GetSchool(match.red.schoolId).name;
+            detail.transform.Find("white").transform.Find("whiteName").GetComponent<Text>().text = match.white.nameKaki;
+            detail.transform.Find("white").transform.Find("whiteSchoolName").GetComponent<Text>().text = GameData.instance.schoolManager.GetSchool(match.white.schoolId).name;
+            detail.transform.Find("detail").transform.Find("winWaza").GetComponent<Text>().text = match.winnerAbillity.name;
+            detail.transform.Find("detail").transform.Find("time").GetComponent<Text>().text = match.endMatchTime.ToString();
+            // 赤の勝ち
+            if (match.winnerFlag == 1)
             {
-                targetMatchList.Add(match);
+                if (match.redIppon > 0)
+                {
+                    GameObject ippon = Instantiate(ipponIcon, detail.transform.Find("detail").transform.Find(n: "redWin").transform);
+                }
+                else if (match.redWazaari == 1)
+                {
+                    GameObject wazaari = Instantiate(wazaariIcon, detail.transform.Find("detail").transform.Find(n: "redWin").transform);
+                }
+                else if (match.redYuko > 0)
+                {
+                    GameObject yuko = Instantiate(yukoIcon, detail.transform.Find("detail").transform.Find(n: "redWin").transform);
+                }
             }
-        }
-
-        foreach (MemberMatch match in targetMatchList)
-        {
-            GameObject _text = Instantiate(placeNameTextPrefab, matchScrollViewContent.transform);
-            _text.GetComponent<Text>().text = match.id;
-            _text.AddComponent<EventTrigger>();
-            EventTrigger trigger = _text.GetComponent<EventTrigger>();
-            EventTrigger.Entry entry = new EventTrigger.Entry();
-            entry.eventID = EventTriggerType.PointerDown;
-            // entry.callback.AddListener((eventDate) => {
-            //     DisplayClassMatchScrollViewContent(isDisplay, matchIdPrefix);
-            // });
-            trigger.triggers.Add(entry);
+            else if (match.winnerFlag == 2)
+            {
+                if (match.whiteIppon > 0)
+                {
+                    GameObject ippon = Instantiate(ipponIcon, detail.transform.Find("detail").transform.Find(n: "whiteWin").transform);
+                }
+                else if (match.whiteWazaari == 1)
+                {
+                    GameObject wazaari = Instantiate(wazaariIcon, detail.transform.Find("detail").transform.Find(n: "whiteWin").transform);
+                }
+                else if (match.whiteYuko > 0)
+                {
+                    GameObject yuko = Instantiate(yukoIcon, detail.transform.Find("detail").transform.Find(n: "whiteWin").transform);
+                }
+            }
         }
     }
 
