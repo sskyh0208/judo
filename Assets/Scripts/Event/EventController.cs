@@ -16,6 +16,7 @@ public class EventController : MonoBehaviour
     public GameObject yukoIcon;
     public GameObject placeNameTextPrefab;
     public GameObject resultTextPrefab;
+    public GameObject resultRoundLabelPrefab;
     private GameObject classScrollViewContent;
     private GameObject matchScrollView;
     private GameObject selectedClassObj;
@@ -172,8 +173,9 @@ public class EventController : MonoBehaviour
         }
         if (this.taikai.ranking.members60.Count != 0)
         {
+            string weightClass = "60kg級";
             GameObject _text = Instantiate(placeNameTextPrefab, classScrollViewContent.transform);
-            _text.GetComponent<Text>().text = "60kg級";
+            _text.GetComponent<Text>().text = weightClass;
             _text.AddComponent<EventTrigger>();
             EventTrigger trigger = _text.GetComponent<EventTrigger>();
             EventTrigger.Entry entry = new EventTrigger.Entry();
@@ -182,11 +184,13 @@ public class EventController : MonoBehaviour
                 SelectedRoundWeightClass(_text);
             });
             trigger.triggers.Add(entry);
+            GenerateClassMatchScrollViewContent(weightClass);
         }
         if (this.taikai.ranking.members66.Count != 0)
         {
+            string weightClass = "66kg級";
             GameObject _text = Instantiate(placeNameTextPrefab, classScrollViewContent.transform);
-            _text.GetComponent<Text>().text = "66kg級";
+            _text.GetComponent<Text>().text = weightClass;
             _text.AddComponent<EventTrigger>();
             EventTrigger trigger = _text.GetComponent<EventTrigger>();
             EventTrigger.Entry entry = new EventTrigger.Entry();
@@ -195,11 +199,13 @@ public class EventController : MonoBehaviour
                 SelectedRoundWeightClass(_text);
             });
             trigger.triggers.Add(entry);
+            GenerateClassMatchScrollViewContent(weightClass);
         }
         if (this.taikai.ranking.members73.Count != 0)
         {
+            string weightClass = "73kg級";
             GameObject _text = Instantiate(placeNameTextPrefab, classScrollViewContent.transform);
-            _text.GetComponent<Text>().text = "73kg級";
+            _text.GetComponent<Text>().text = weightClass;
             _text.AddComponent<EventTrigger>();
             EventTrigger trigger = _text.GetComponent<EventTrigger>();
             EventTrigger.Entry entry = new EventTrigger.Entry();
@@ -208,11 +214,13 @@ public class EventController : MonoBehaviour
                 SelectedRoundWeightClass(_text);
             });
             trigger.triggers.Add(entry);
+            GenerateClassMatchScrollViewContent(weightClass);
         }
         if (this.taikai.ranking.members81.Count != 0)
         {
+            string weightClass = "81kg級";
             GameObject _text = Instantiate(placeNameTextPrefab, classScrollViewContent.transform);
-            _text.GetComponent<Text>().text = "81kg級";
+            _text.GetComponent<Text>().text = weightClass;
             _text.AddComponent<EventTrigger>();
             EventTrigger trigger = _text.GetComponent<EventTrigger>();
             EventTrigger.Entry entry = new EventTrigger.Entry();
@@ -221,11 +229,13 @@ public class EventController : MonoBehaviour
                 SelectedRoundWeightClass(_text);
             });
             trigger.triggers.Add(entry);
+            GenerateClassMatchScrollViewContent(weightClass);
         }
         if (this.taikai.ranking.members90.Count != 0)
         {
+            string weightClass = "90kg級";
             GameObject _text = Instantiate(placeNameTextPrefab, classScrollViewContent.transform);
-            _text.GetComponent<Text>().text = "90kg級";
+            _text.GetComponent<Text>().text = weightClass;
             _text.AddComponent<EventTrigger>();
             EventTrigger trigger = _text.GetComponent<EventTrigger>();
             EventTrigger.Entry entry = new EventTrigger.Entry();
@@ -234,11 +244,13 @@ public class EventController : MonoBehaviour
                 SelectedRoundWeightClass(_text);
             });
             trigger.triggers.Add(entry);
+            GenerateClassMatchScrollViewContent(weightClass);
         }
         if (this.taikai.ranking.members100.Count != 0)
         {
+            string weightClass = "100kg級";
             GameObject _text = Instantiate(placeNameTextPrefab, classScrollViewContent.transform);
-            _text.GetComponent<Text>().text = "100kg級";
+            _text.GetComponent<Text>().text = weightClass;
             _text.AddComponent<EventTrigger>();
             EventTrigger trigger = _text.GetComponent<EventTrigger>();
             EventTrigger.Entry entry = new EventTrigger.Entry();
@@ -247,11 +259,13 @@ public class EventController : MonoBehaviour
                 SelectedRoundWeightClass(_text);
             });
             trigger.triggers.Add(entry);
+            GenerateClassMatchScrollViewContent(weightClass);
         }
         if (this.taikai.ranking.membersOver100.Count != 0)
         {
+            string weightClass = "100kg超級";
             GameObject _text = Instantiate(placeNameTextPrefab, classScrollViewContent.transform);
-            _text.GetComponent<Text>().text = "100kg超級";
+            _text.GetComponent<Text>().text = weightClass;
             _text.AddComponent<EventTrigger>();
             EventTrigger trigger = _text.GetComponent<EventTrigger>();
             EventTrigger.Entry entry = new EventTrigger.Entry();
@@ -260,6 +274,7 @@ public class EventController : MonoBehaviour
                 SelectedRoundWeightClass(_text);
             });
             trigger.triggers.Add(entry);
+            GenerateClassMatchScrollViewContent(weightClass);
         }
     }
 
@@ -296,11 +311,13 @@ public class EventController : MonoBehaviour
 
     private void SelectedRoundWeightClass(GameObject targetClassObj)
     {
-        string _text = targetClassObj.GetComponent<Text>().text;
+        if(this.selectedClassObj != null)
+        {
+            DisplayMatchScrollView(false, this.selectedClassObj.GetComponent<Text>().text);
+        }
         this.selectedClassObj = targetClassObj;
-        this.selectedMemberMatch = this.taikai.GetMemberMatch(this.ConvetToClassNum(_text));
-        DisplayMatchScrollView(true);
-        DisplayClassMatchScrollViewContent(this.ConvetToClassNum(_text));
+        DisplayMatchScrollView(true, targetClassObj.GetComponent<Text>().text);
+
     }
 
     private void SelectedRoundTeam(GameObject targetClassObj)
@@ -311,23 +328,42 @@ public class EventController : MonoBehaviour
         DisplayTeamRoundScrollViewContent(true);
     }
 
-    private void DisplayMatchScrollView(bool isDisplay)
+    private void DisplayMatchScrollView(bool isDisplay, string weightClass)
     {   
         matchScrollView.SetActive(isDisplay);
+        GameObject matchScrollViewContent = matchScrollView.transform.Find("Viewport").Find(weightClass).gameObject;
+        if(isDisplay){
+            matchScrollView.GetComponent<ScrollRect>().content = matchScrollViewContent.GetComponent<RectTransform>();
+        }
+        matchScrollViewContent.SetActive(isDisplay);
     }
 
-    private void DisplayClassMatchScrollViewContent(int weightClass)
+    private void GenerateClassMatchScrollViewContent(string weightClass)
     {
         GameObject Viewport = matchScrollView.transform.Find("Viewport").gameObject;
         GameObject matchScrollViewContent = Instantiate(matchScrollViewContentPrefab, Viewport.transform);
-        foreach (MemberMatch match in this.selectedMemberMatch)
+        matchScrollViewContent.name = weightClass;
+        List<MemberMatch> dispList = this.taikai.GetMemberMatch(this.ConvetToClassNum(weightClass));
+        dispList.Reverse();
+        string matchRoundStr = "";
+        foreach (MemberMatch match in dispList)
         {
             if (match.loser == null) {continue;}
+            string roundStr = GetMatchRoundLabel(match.id);
+            if (matchRoundStr != roundStr) {
+                matchRoundStr = roundStr;
+                GameObject roundLabel = Instantiate(resultRoundLabelPrefab, matchScrollViewContent.transform);
+                roundLabel.transform.Find("label").GetComponent<Text>().text = matchRoundStr;
+            }
             GameObject detail = Instantiate(resultTextPrefab, matchScrollViewContent.transform);
             detail.transform.Find("red").transform.Find("redName").GetComponent<Text>().text = match.red.nameKaki;
-            detail.transform.Find("red").transform.Find("redSchoolName").GetComponent<Text>().text = GameData.instance.schoolManager.GetSchool(match.red.schoolId).name;
+            School redSchool = GameData.instance.schoolManager.GetSchool(match.red.schoolId);
+            string redSchoolName = string.Format("{0}・{1}", GameData.instance.placeManager.getPlaceDataWithId(redSchool.placeId).name, redSchool.name);
+            detail.transform.Find("red").transform.Find("redSchoolName").GetComponent<Text>().text = redSchoolName;
             detail.transform.Find("white").transform.Find("whiteName").GetComponent<Text>().text = match.white.nameKaki;
-            detail.transform.Find("white").transform.Find("whiteSchoolName").GetComponent<Text>().text = GameData.instance.schoolManager.GetSchool(match.white.schoolId).name;
+            School whiteSchool = GameData.instance.schoolManager.GetSchool(match.white.schoolId);
+            string whiteSchoolName = string.Format("{0}・{1}", GameData.instance.placeManager.getPlaceDataWithId(whiteSchool.placeId).name, whiteSchool.name);
+            detail.transform.Find("white").transform.Find("whiteSchoolName").GetComponent<Text>().text = whiteSchoolName;
             detail.transform.Find("detail").transform.Find("winWaza").GetComponent<Text>().text = match.winnerAbillity.name;
             detail.transform.Find("detail").transform.Find("time").GetComponent<Text>().text = match.endMatchTime.ToString();
             // 赤の勝ち
@@ -361,6 +397,7 @@ public class EventController : MonoBehaviour
                     GameObject yuko = Instantiate(yukoIcon, detail.transform.Find("detail").transform.Find(n: "whiteWin").transform);
                 }
             }
+            matchScrollViewContent.SetActive(false);
         }
     }
 
@@ -369,10 +406,10 @@ public class EventController : MonoBehaviour
 
     }
 
-    public string GetMatchRoundLabel(string matchIdPrefix)
+    public string GetMatchRoundLabel(string matchId)
     {
         string label = "";
-        string roundStr = matchIdPrefix.Substring(14, 2);
+        string roundStr = matchId.Substring(14, 2);
         {
             switch (roundStr)
             {
@@ -386,7 +423,7 @@ public class EventController : MonoBehaviour
                     label = "決勝";
                     break;
                 default:
-                    label = roundStr + "回戦";
+                    label = roundStr.TrimStart(new char[]{'0'}) + "回戦";
                     break;
             }
         }

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 
 
 [Serializable]
@@ -37,7 +38,7 @@ public class PlaceManager
         Place target = new Place();
         foreach(Place place in placeArray)
         {
-            if(place.id == placeId)
+            if(Regex.IsMatch(place.id, placeId + "$"))
             {
                 target = place;
             }
