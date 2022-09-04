@@ -16,6 +16,7 @@ public class EventController : MonoBehaviour
     public GameObject yukoIcon;
     public GameObject placeNameTextPrefab;
     public GameObject resultTextPrefab;
+    public GameObject resultTextLabelPrefab;
     public GameObject resultRoundLabelPrefab;
     private GameObject classScrollViewContent;
     private GameObject matchScrollView;
@@ -354,6 +355,7 @@ public class EventController : MonoBehaviour
                 matchRoundStr = roundStr;
                 GameObject roundLabel = Instantiate(resultRoundLabelPrefab, matchScrollViewContent.transform);
                 roundLabel.transform.Find("label").GetComponent<Text>().text = matchRoundStr;
+                GameObject resultLabel = Instantiate(resultTextLabelPrefab, matchScrollViewContent.transform);
             }
             GameObject detail = Instantiate(resultTextPrefab, matchScrollViewContent.transform);
             detail.transform.Find("red").transform.Find("redName").GetComponent<Text>().text = match.red.nameKaki;
@@ -365,7 +367,7 @@ public class EventController : MonoBehaviour
             string whiteSchoolName = string.Format("{0}・{1}", GameData.instance.placeManager.getPlaceDataWithId(whiteSchool.placeId).name, whiteSchool.name);
             detail.transform.Find("white").transform.Find("whiteSchoolName").GetComponent<Text>().text = whiteSchoolName;
             detail.transform.Find("detail").transform.Find("winWaza").GetComponent<Text>().text = match.winnerAbillity.name;
-            detail.transform.Find("detail").transform.Find("time").GetComponent<Text>().text = match.endMatchTime.ToString();
+            detail.transform.Find("detail").transform.Find("time").GetComponent<Text>().text = match.GetTimeStr();
             // 赤の勝ち
             if (match.winnerFlag == 1)
             {

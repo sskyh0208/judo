@@ -1408,6 +1408,16 @@ public class MemberMatch
 
         return matchDetail;
     }
+
+    public string GetTimeStr()
+    {
+        int min = (int) this.endMatchTime / 60;
+        int sec = (int) this.endMatchTime % 60;
+        string timeStr = "";
+        if (min >= 1){timeStr = string.Format("{0}:{1}", min, sec.ToString("d2"));}
+        else{timeStr = string.Format("0:{0}", sec.ToString("d2"));}
+        return timeStr;
+    }
 }
 
 public class Ranking

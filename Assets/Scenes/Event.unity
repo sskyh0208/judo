@@ -1687,8 +1687,8 @@ MonoBehaviour:
   wazaariIcon: {fileID: 3088291704574045884, guid: c69f8f245086efe428b24268035cbe0d, type: 3}
   yukoIcon: {fileID: 7586492782992349987, guid: 85e459a0142c83b4ebd6c4c5c1265370, type: 3}
   placeNameTextPrefab: {fileID: 8437508880247251776, guid: 5f708de9e34e3e043a5454ffecb22bf6, type: 3}
-  resultTextPrefab: {fileID: 3093748941423814912, guid: dac4b6ff78f951646bd74e3b5c4a5193, type: 3}
-  resultRoundLabelPrefab: {fileID: 0}
+  resultTextPrefab: {fileID: 3093748941423814912, guid: 989128760e60c8f42b84790f5ce564d1, type: 3}
+  resultRoundLabelPrefab: {fileID: 3093748941423814912, guid: dac4b6ff78f951646bd74e3b5c4a5193, type: 3}
   roundScrollViewContentPrefab: {fileID: 9131900057938833667, guid: 2833985a505200144acb34a7a282bf19, type: 3}
   matchScrollViewContentPrefab: {fileID: 9131900057938833667, guid: 2833985a505200144acb34a7a282bf19, type: 3}
 --- !u!4 &2028279031
