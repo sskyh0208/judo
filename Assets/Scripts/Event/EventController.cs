@@ -32,38 +32,42 @@ public class EventController : MonoBehaviour
     void Start()
     {
         // テスト用
-        TestDataGenerate();
+        if(this.is_test){TestDataGenerate();}
         List<string> tournamentIdList = GetTournamentIdList(GameData.instance.todayEvent);
         foreach (string id in tournamentIdList)
         {
-            this.taikai = new Tournament(
+            Tournament taikai = new Tournament(
                 GameData.instance.todayEvent,
                 GameData.instance.storyDate,
                 id
             );
 
             // 団体確認用
-            if (this.taikai.CheckTeamMatch())
+            if (taikai.CheckTeamMatch())
             {
-                this.taikai.DoMatchAllSchool();
-                this.taikai.DebugResultTeamMatchDetail();
-                this.taikai.DebugRankingTeamMatch();
+                taikai.DoMatchAllSchool();
+                taikai.DebugResultTeamMatchDetail();
+                taikai.DebugRankingTeamMatch();
             }
 
             // 個人確認用
-            if(this.taikai.CheckIndividualMatch())
+            if(taikai.CheckIndividualMatch())
             {
                 for (int i = 1; i < 8; i++)
                 {
-                    this.taikai.DoIndividualMatch(i);
-                    this.taikai.DebugResultMemberMatchDetail(i);
-                    this.taikai.DebugRankingMemberMatch(i);
+                    taikai.DoIndividualMatch(i);
+                    taikai.DebugResultMemberMatchDetail(i);
+                    taikai.DebugRankingMemberMatch(i);
                 }
             }
-            GameData.instance.matchManager.history.Add(this.taikai);
-            SetUiModule();
-            SetClassScrollViewContent();
+            GameData.instance.matchManager.history.Add(taikai);
+            if (taikai.is_myschool)
+            {
+                this.taikai = taikai;
+            }
         }
+        SetUiModule();
+        SetClassScrollViewContent();
 
     }
     private List<string> GetTournamentIdList(Schedule schedule)
@@ -147,7 +151,6 @@ public class EventController : MonoBehaviour
         GameData.instance.LoadNewGameData();
         GameData.instance.todayEvent = GameData.instance.scheduleManager.GetSchedule(new DateTime(2022, 5, 1));
         GameData.instance.player = GameData.instance.schoolManager.GetSchool("073404087").supervisor;
-        this.is_test = true;
     }
 
     private void SetUiModule()
@@ -360,14 +363,18 @@ public class EventController : MonoBehaviour
             GameObject detail = Instantiate(resultTextPrefab, matchScrollViewContent.transform);
             detail.transform.Find("red").transform.Find("redName").GetComponent<Text>().text = match.red.nameKaki;
             School redSchool = GameData.instance.schoolManager.GetSchool(match.red.schoolId);
-            string redSchoolName = string.Format("{0}・{1}", GameData.instance.placeManager.getPlaceDataWithId(redSchool.placeId).name, redSchool.name);
+            string redSchoolName = string.Format("{0}・{1}({2})", GameData.instance.placeManager.getPlaceDataWithId(redSchool.placeId).name, redSchool.name, match.red.positionId);
             detail.transform.Find("red").transform.Find("redSchoolName").GetComponent<Text>().text = redSchoolName;
             detail.transform.Find("white").transform.Find("whiteName").GetComponent<Text>().text = match.white.nameKaki;
             School whiteSchool = GameData.instance.schoolManager.GetSchool(match.white.schoolId);
-            string whiteSchoolName = string.Format("{0}・{1}", GameData.instance.placeManager.getPlaceDataWithId(whiteSchool.placeId).name, whiteSchool.name);
+            string whiteSchoolName = string.Format("{0}・{1}({2})", GameData.instance.placeManager.getPlaceDataWithId(whiteSchool.placeId).name, whiteSchool.name, match.white.positionId);
             detail.transform.Find("white").transform.Find("whiteSchoolName").GetComponent<Text>().text = whiteSchoolName;
             detail.transform.Find("detail").transform.Find("winWaza").GetComponent<Text>().text = match.winnerAbillity.name;
             detail.transform.Find("detail").transform.Find("time").GetComponent<Text>().text = match.GetTimeStr();
+            if (GameData.instance.player.schoolId == redSchool.id)
+            {detail.transform.Find("red").GetComponent<Image>().color = Color.red;}
+            if (GameData.instance.player.schoolId == whiteSchool.id)
+            {detail.transform.Find("white").GetComponent<Image>().color = Color.red;}
             // 赤の勝ち
             if (match.winnerFlag == 1)
             {

@@ -52,6 +52,8 @@ public class Tournament
     public List<MemberMatch> memberMatchResult100;
     public List<MemberMatch> memberMatchResultOver100;
 
+    public bool is_myschool;
+
     public Tournament (Schedule eventObj, DateTime date, string targetId)
     {
         this.date = date;
@@ -74,6 +76,7 @@ public class Tournament
         this.memberMatchResult90 = new List<MemberMatch>();
         this.memberMatchResult100 = new List<MemberMatch>();
         this.memberMatchResultOver100 = new List<MemberMatch>();
+        this.is_myschool = false;
         Debug.Log("大会開催ID: " + this.tournamentId);
     }
 
@@ -149,6 +152,16 @@ public class Tournament
         // 5人未満を排除
         teamList = GetApplyJoinTournamentTeams(teamList);
 
+        foreach (School school in teamList)
+        {
+            if (GameData.instance.player.schoolId == school.id)
+            {
+                this.is_myschool = true;
+                Debug.Log("Join Events.");
+                break;
+            }
+        }
+
         return GenerateEventLeaderBoad(teamList);
     }
 
@@ -197,6 +210,7 @@ public class Tournament
                     max = 1000;
                     break;
             }
+            allMembers = SortMemberTotalStatus(allMembers);
             foreach (PlayerManager member in allMembers)
             {
                 if (min < member.weight && member.weight <= max)
@@ -258,6 +272,7 @@ public class Tournament
                         targetMembers = targetRanking.membersOver100;
                         break;
                 }
+                targetMembers = SortMemberTotalStatus(targetMembers);
                 for(int i = 0; i < targetMembers.Count; i++)
                 {
                     joinMembers.Add(targetMembers[i]);
@@ -276,6 +291,16 @@ public class Tournament
             return new List<List<PlayerManager>> ();
         }
         joinMembers = SortMemberTotalStatus(joinMembers);
+
+        foreach (PlayerManager member in joinMembers)
+        {
+            if (GameData.instance.player.schoolId == member.schoolId)
+            {
+                this.is_myschool = true;
+                Debug.Log("Join Events.");
+                break;
+            }
+        }
 
         return GenerateEventLeaderBoad<PlayerManager>(joinMembers);
     }
