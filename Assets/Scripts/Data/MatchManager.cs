@@ -15,6 +15,18 @@ public class MatchManager
         this.history = new List<Tournament>();
     }
 
+    public List<Tournament> GenarateNewTournaments(DateTime date, Schedule schedule)
+    {
+        List<Tournament> newTournamentList = new List<Tournament>();
+        foreach (string id in schedule.GetTournamentIdList())
+        {
+            Tournament taikai = new Tournament(schedule, date, id);
+            this.history.Add(taikai);
+            newTournamentList.Add(taikai);
+        }
+        return newTournamentList;
+    }
+
     public List<Ranking> GetRankingList(int year, string pattern)
     {   
         List<Ranking> targetList = new List<Ranking>();
@@ -88,6 +100,15 @@ public class Tournament
         this.memberMatchResultOver100 = new List<MemberMatch>();
         this.is_myschool = false;
         Debug.Log("大会開催ID: " + this.tournamentId);
+        if(this.CheckTeamMatch())
+        {this.DoMatchAllSchool();}
+        if(this.CheckIndividualMatch())
+        {
+            for (int i = 1; i < 8; i++)
+            {
+                this.DoIndividualMatch(i);
+            }
+        }
     }
 
     public bool CheckTeamMatch()

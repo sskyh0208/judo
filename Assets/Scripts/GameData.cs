@@ -15,8 +15,9 @@ public class GameData : MonoBehaviour
     public AbillityManager abillityManager;
     public NameManager nameManager;
     public MatchManager matchManager;
-
     public Schedule todayEvent;
+    public Tournament todayJoinTournament;
+
     private void Awake()
     {
         if (instance == null)

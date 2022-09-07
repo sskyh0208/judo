@@ -33,39 +33,7 @@ public class EventController : MonoBehaviour
     {
         // テスト用
         if(this.is_test){TestDataGenerate();}
-        List<string> tournamentIdList = GameData.instance.todayEvent.GetTournamentIdList();
-        foreach (string id in tournamentIdList)
-        {
-            Tournament taikai = new Tournament(
-                GameData.instance.todayEvent,
-                GameData.instance.storyDate,
-                id
-            );
-
-            // 団体確認用
-            if (taikai.CheckTeamMatch())
-            {
-                taikai.DoMatchAllSchool();
-                taikai.DebugResultTeamMatchDetail();
-                taikai.DebugRankingTeamMatch();
-            }
-
-            // 個人確認用
-            if(taikai.CheckIndividualMatch())
-            {
-                for (int i = 1; i < 8; i++)
-                {
-                    taikai.DoIndividualMatch(i);
-                    taikai.DebugResultMemberMatchDetail(i);
-                    taikai.DebugRankingMemberMatch(i);
-                }
-            }
-            GameData.instance.matchManager.history.Add(taikai);
-            if (taikai.is_myschool)
-            {
-                this.taikai = taikai;
-            }
-        }
+        this.taikai = GameData.instance.todayJoinTournament;
         SetUiModule();
         SetClassScrollViewContent();
 
@@ -88,16 +56,18 @@ public class EventController : MonoBehaviour
         // 団体戦、個人戦60kgなどのボタンを作成する
         if (this.taikai.ranking.school.Count != 0)
         {
+            string weightClass = "団体戦";
             GameObject _text = Instantiate(placeNameTextPrefab, classScrollViewContent.transform);
-            _text.GetComponent<Text>().text = "団体戦";
+            _text.GetComponent<Text>().text = weightClass;
             _text.AddComponent<EventTrigger>();
             EventTrigger trigger = _text.GetComponent<EventTrigger>();
             EventTrigger.Entry entry = new EventTrigger.Entry();
             entry.eventID = EventTriggerType.PointerDown;
             entry.callback.AddListener((eventDate) => {
-                SelectedRoundTeam(_text);
+                SelectedRoundWeightClass(_text);
             });
             trigger.triggers.Add(entry);
+            GenerateClassMatchScrollViewContent(weightClass);
         }
         if (this.taikai.ranking.members60.Count != 0)
         {
@@ -211,7 +181,6 @@ public class EventController : MonoBehaviour
         int weightNum = 0;
         switch (weightClass)
         {
-            default:
             case "60kg級":
                 weightNum = 1;
                 break;
@@ -233,6 +202,8 @@ public class EventController : MonoBehaviour
             case "100kg超級":
                 weightNum = 7;
                 break;
+            default:
+                break;
         }
         return weightNum;
     }
@@ -246,14 +217,6 @@ public class EventController : MonoBehaviour
         this.selectedClassObj = targetClassObj;
         DisplayMatchScrollView(true, targetClassObj.GetComponent<Text>().text);
 
-    }
-
-    private void SelectedRoundTeam(GameObject targetClassObj)
-    {
-        string _text = targetClassObj.GetComponent<Text>().text;
-        this.selectedClassObj = targetClassObj;
-        this.selectedSchoolMatch = this.taikai.allSchoolMatchResult;
-        DisplayTeamRoundScrollViewContent(true);
     }
 
     private void DisplayMatchScrollView(bool isDisplay, string weightClass)
