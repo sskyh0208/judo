@@ -85,4 +85,69 @@ public class Schedule
     public string eventType;
     public string filterEventId;
     public int filterValue;
+
+    public List<string> GetTournamentIdList()
+    {
+        List<string> idList = new List<string>();
+        switch (this.eventId)
+        {
+            case "01":
+                idList = new List<string>()
+                {
+                    "073101",
+                    "073102",
+                    "073103",
+                    "073201",
+                    "073202",
+                    "073203",
+                    "073301",
+                    "073302",
+                    "073303",
+                    "073304",
+                    "073401",
+                    "073402",
+                    "073403",
+                    "073404",
+                    "073405",
+                    "073501",
+                    "073502",
+                    "073503",
+                    "073504",
+                    "073505"
+                };
+                break;
+            case "02":
+                idList = new List<string>()
+                {
+                    "073100",
+                    "073200",
+                    "073300",
+                    "073400",
+                    "073500"
+                };
+                break;
+            case "03":
+                idList = new List<string>()
+                {
+                    "070000",
+                };
+                break;
+            case "04":
+                idList = new List<string>()
+                {
+                    "000000",
+                };
+                break;
+            case "05":
+                idList = new List<string>()
+                {
+                    "000000",
+                };
+                break;
+            default:
+                idList = new List<string>();
+                break;
+        }
+        return idList;
+    }
 }

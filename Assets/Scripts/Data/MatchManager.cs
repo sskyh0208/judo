@@ -27,6 +27,16 @@ public class MatchManager
         }
         return targetList;
     }
+    public List<PlayerManager> SortMemberTotalStatus(List<PlayerManager> targetList)
+    {
+        List<PlayerManager> tmpMemberList = new List<PlayerManager>();
+        foreach (PlayerManager member in targetList)
+        {
+            member.SetTotalStatus();
+            tmpMemberList.Add(member);
+        }
+        return tmpMemberList.OrderByDescending(member => member.totalStatus).ToList();
+    }
 }
 
 public class Tournament
@@ -210,7 +220,7 @@ public class Tournament
                     max = 1000;
                     break;
             }
-            allMembers = SortMemberTotalStatus(allMembers);
+            allMembers = GameData.instance.matchManager.SortMemberTotalStatus(allMembers);
             foreach (PlayerManager member in allMembers)
             {
                 if (min < member.weight && member.weight <= max)
@@ -272,7 +282,7 @@ public class Tournament
                         targetMembers = targetRanking.membersOver100;
                         break;
                 }
-                targetMembers = SortMemberTotalStatus(targetMembers);
+                targetMembers = GameData.instance.matchManager.SortMemberTotalStatus(targetMembers);
                 for(int i = 0; i < targetMembers.Count; i++)
                 {
                     joinMembers.Add(targetMembers[i]);
@@ -290,7 +300,7 @@ public class Tournament
         {
             return new List<List<PlayerManager>> ();
         }
-        joinMembers = SortMemberTotalStatus(joinMembers);
+        joinMembers = GameData.instance.matchManager.SortMemberTotalStatus(joinMembers);
 
         foreach (PlayerManager member in joinMembers)
         {
@@ -315,17 +325,6 @@ public class Tournament
             tmpSchoolList.Add(school);
         }
         return tmpSchoolList.OrderByDescending(school => school.totalStatus).ToList();
-    }
-
-    public List<PlayerManager> SortMemberTotalStatus(List<PlayerManager> targetList)
-    {
-        List<PlayerManager> tmpMemberList = new List<PlayerManager>();
-        foreach (PlayerManager member in targetList)
-        {
-            member.SetTotalStatus();
-            tmpMemberList.Add(member);
-        }
-        return tmpMemberList.OrderByDescending(member => member.totalStatus).ToList();
     }
 
     public List<List<T>> GenerateEventLeaderBoad<T>(List<T> targetList)
