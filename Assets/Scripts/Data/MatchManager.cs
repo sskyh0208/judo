@@ -926,7 +926,7 @@ public class Tournament
         }
     }
 
-     public List<MemberMatch> GetMemberMatch(int weightClass)
+    public List<MemberMatch> GetMemberMatch(int weightClass)
     {   
         List<MemberMatch> target = new List<MemberMatch>();
         switch (weightClass)

@@ -17,6 +17,9 @@ public class EventController : MonoBehaviour
     public GameObject placeNameTextPrefab;
     public GameObject resultTextPrefab;
     public GameObject resultTextLabelPrefab;
+    public GameObject resultTeamTextPrefab;
+    public GameObject resultTeamTextLabelPrefab;
+    public GameObject resultTeamTextLabelPrefab2;
     public GameObject resultRoundLabelPrefab;
     private GameObject classScrollViewContent;
     private GameObject matchScrollView;
@@ -234,66 +237,108 @@ public class EventController : MonoBehaviour
         GameObject Viewport = matchScrollView.transform.Find("Viewport").gameObject;
         GameObject matchScrollViewContent = Instantiate(matchScrollViewContentPrefab, Viewport.transform);
         matchScrollViewContent.name = weightClass;
-        List<MemberMatch> dispList = this.taikai.GetMemberMatch(this.ConvetToClassNum(weightClass));
-        dispList.Reverse();
         string matchRoundStr = "";
-        foreach (MemberMatch match in dispList)
+        if (weightClass == "団体戦")
         {
-            if (match.loser == null) {continue;}
-            string roundStr = GetMatchRoundLabel(match.id);
-            if (matchRoundStr != roundStr) {
-                matchRoundStr = roundStr;
-                GameObject roundLabel = Instantiate(resultRoundLabelPrefab, matchScrollViewContent.transform);
-                roundLabel.transform.Find("label").GetComponent<Text>().text = matchRoundStr;
-                GameObject resultLabel = Instantiate(resultTextLabelPrefab, matchScrollViewContent.transform);
-            }
-            GameObject detail = Instantiate(resultTextPrefab, matchScrollViewContent.transform);
-            detail.transform.Find("red").transform.Find("redName").GetComponent<Text>().text = match.red.nameKaki;
-            School redSchool = GameData.instance.schoolManager.GetSchool(match.red.schoolId);
-            string redSchoolName = string.Format("{0}・{1}({2})", GameData.instance.placeManager.getPlaceDataWithId(redSchool.placeId).name, redSchool.name, match.red.positionId);
-            detail.transform.Find("red").transform.Find("redSchoolName").GetComponent<Text>().text = redSchoolName;
-            detail.transform.Find("white").transform.Find("whiteName").GetComponent<Text>().text = match.white.nameKaki;
-            School whiteSchool = GameData.instance.schoolManager.GetSchool(match.white.schoolId);
-            string whiteSchoolName = string.Format("{0}・{1}({2})", GameData.instance.placeManager.getPlaceDataWithId(whiteSchool.placeId).name, whiteSchool.name, match.white.positionId);
-            detail.transform.Find("white").transform.Find("whiteSchoolName").GetComponent<Text>().text = whiteSchoolName;
-            detail.transform.Find("detail").transform.Find("winWaza").GetComponent<Text>().text = match.winnerAbillity.name;
-            detail.transform.Find("detail").transform.Find("time").GetComponent<Text>().text = match.GetTimeStr();
-            if (GameData.instance.player.schoolId == redSchool.id)
-            {detail.transform.Find("red").GetComponent<Image>().color = Color.red;}
-            if (GameData.instance.player.schoolId == whiteSchool.id)
-            {detail.transform.Find("white").GetComponent<Image>().color = Color.red;}
-            // 赤の勝ち
-            if (match.winnerFlag == 1)
+            foreach (SchoolMatch match in this.taikai.allSchoolMatchResult)
             {
-                if (match.redIppon > 0)
-                {
-                    GameObject ippon = Instantiate(ipponIcon, detail.transform.Find("detail").transform.Find(n: "redWin").transform);
+                if (match.loser == null) {continue;}
+                string roundStr = GetMatchRoundLabel(match.id);
+                if (matchRoundStr != roundStr) {
+                    matchRoundStr = roundStr;
+                    GameObject roundLabel = Instantiate(resultRoundLabelPrefab, matchScrollViewContent.transform);
+                    roundLabel.transform.Find("label").GetComponent<Text>().text = matchRoundStr;
                 }
-                else if (match.redWazaari == 1)
-                {
-                    GameObject wazaari = Instantiate(wazaariIcon, detail.transform.Find("detail").transform.Find(n: "redWin").transform);
-                }
-                else if (match.redYuko > 0)
-                {
-                    GameObject yuko = Instantiate(yukoIcon, detail.transform.Find("detail").transform.Find(n: "redWin").transform);
-                }
+                GameObject resultLabel = Instantiate(resultTeamTextLabelPrefab, matchScrollViewContent.transform);
+                resultLabel.transform.Find("red").transform.Find("name").GetComponent<Text>().text = match.red.name;
+                resultLabel.transform.Find("red").transform.Find("placeName").GetComponent<Text>().text = GameData.instance.placeManager.getPlaceDataWithId(match.red.placeId).name;
+                resultLabel.transform.Find("white").transform.Find("name").GetComponent<Text>().text = match.white.name;
+                resultLabel.transform.Find("white").transform.Find("placeName").GetComponent<Text>().text = GameData.instance.placeManager.getPlaceDataWithId(match.white.placeId).name;
+                string result = string.Format("{0} - {1}", match.redWinCount, match.whiteWinCount);
+                resultLabel.transform.Find("detail").transform.Find("result").GetComponent<Text>().text = result;
+                if (GameData.instance.player.schoolId == match.red.id)
+                {resultLabel.transform.Find("red").GetComponent<Image>().color = Color.red;}
+                if (GameData.instance.player.schoolId == match.white.id)
+                {resultLabel.transform.Find("white").GetComponent<Image>().color = Color.red;}
+
+                GameObject resultLabel2 = Instantiate(resultTeamTextLabelPrefab2, matchScrollViewContent.transform);
+                
+                GameObject detail = Instantiate(resultTeamTextPrefab, matchScrollViewContent.transform);
+                detail.transform.Find("red").transform.Find("redName").GetComponent<Text>().text = match.red.nameKaki;
+                School redSchool = GameData.instance.schoolManager.GetSchool(match.red.schoolId);
+                string redSchoolName = string.Format("{0}・{1}({2})", GameData.instance.placeManager.getPlaceDataWithId(redSchool.placeId).name, redSchool.name, match.red.positionId);
+                detail.transform.Find("red").transform.Find("redSchoolName").GetComponent<Text>().text = redSchoolName;
+                detail.transform.Find("white").transform.Find("whiteName").GetComponent<Text>().text = match.white.nameKaki;
+                School whiteSchool = GameData.instance.schoolManager.GetSchool(match.white.schoolId);
+                string whiteSchoolName = string.Format("{0}・{1}({2})", GameData.instance.placeManager.getPlaceDataWithId(whiteSchool.placeId).name, whiteSchool.name, match.white.positionId);
+                detail.transform.Find("white").transform.Find("whiteSchoolName").GetComponent<Text>().text = whiteSchoolName;
+                detail.transform.Find("detail").transform.Find("winWaza").GetComponent<Text>().text = match.winnerAbillity.name;
+                detail.transform.Find("detail").transform.Find("time").GetComponent<Text>().text = match.GetTimeStr();
+
             }
-            else if (match.winnerFlag == 2)
+
+        }
+        else
+        {
+            List<MemberMatch> dispList = this.taikai.GetMemberMatch(this.ConvetToClassNum(weightClass));
+            foreach (MemberMatch match in dispList)
             {
-                if (match.whiteIppon > 0)
-                {
-                    GameObject ippon = Instantiate(ipponIcon, detail.transform.Find("detail").transform.Find(n: "whiteWin").transform);
+                if (match.loser == null) {continue;}
+                string roundStr = GetMatchRoundLabel(match.id);
+                if (matchRoundStr != roundStr) {
+                    matchRoundStr = roundStr;
+                    GameObject roundLabel = Instantiate(resultRoundLabelPrefab, matchScrollViewContent.transform);
+                    roundLabel.transform.Find("label").GetComponent<Text>().text = matchRoundStr;
+                    GameObject resultLabel = Instantiate(resultTextLabelPrefab, matchScrollViewContent.transform);
                 }
-                else if (match.whiteWazaari == 1)
+                GameObject detail = Instantiate(resultTextPrefab, matchScrollViewContent.transform);
+                detail.transform.Find("red").transform.Find("redName").GetComponent<Text>().text = match.red.nameKaki;
+                School redSchool = GameData.instance.schoolManager.GetSchool(match.red.schoolId);
+                string redSchoolName = string.Format("{0}・{1}({2})", GameData.instance.placeManager.getPlaceDataWithId(redSchool.placeId).name, redSchool.name, match.red.positionId);
+                detail.transform.Find("red").transform.Find("redSchoolName").GetComponent<Text>().text = redSchoolName;
+                detail.transform.Find("white").transform.Find("whiteName").GetComponent<Text>().text = match.white.nameKaki;
+                School whiteSchool = GameData.instance.schoolManager.GetSchool(match.white.schoolId);
+                string whiteSchoolName = string.Format("{0}・{1}({2})", GameData.instance.placeManager.getPlaceDataWithId(whiteSchool.placeId).name, whiteSchool.name, match.white.positionId);
+                detail.transform.Find("white").transform.Find("whiteSchoolName").GetComponent<Text>().text = whiteSchoolName;
+                detail.transform.Find("detail").transform.Find("winWaza").GetComponent<Text>().text = match.winnerAbillity.name;
+                detail.transform.Find("detail").transform.Find("time").GetComponent<Text>().text = match.GetTimeStr();
+                if (GameData.instance.player.schoolId == redSchool.id)
+                {detail.transform.Find("red").GetComponent<Image>().color = Color.red;}
+                if (GameData.instance.player.schoolId == whiteSchool.id)
+                {detail.transform.Find("white").GetComponent<Image>().color = Color.red;}
+                // 赤の勝ち
+                if (match.winnerFlag == 1)
                 {
-                    GameObject wazaari = Instantiate(wazaariIcon, detail.transform.Find("detail").transform.Find(n: "whiteWin").transform);
+                    if (match.redIppon > 0)
+                    {
+                        GameObject ippon = Instantiate(ipponIcon, detail.transform.Find("detail").transform.Find(n: "redWin").transform);
+                    }
+                    else if (match.redWazaari == 1)
+                    {
+                        GameObject wazaari = Instantiate(wazaariIcon, detail.transform.Find("detail").transform.Find(n: "redWin").transform);
+                    }
+                    else if (match.redYuko > 0)
+                    {
+                        GameObject yuko = Instantiate(yukoIcon, detail.transform.Find("detail").transform.Find(n: "redWin").transform);
+                    }
                 }
-                else if (match.whiteYuko > 0)
+                else if (match.winnerFlag == 2)
                 {
-                    GameObject yuko = Instantiate(yukoIcon, detail.transform.Find("detail").transform.Find(n: "whiteWin").transform);
+                    if (match.whiteIppon > 0)
+                    {
+                        GameObject ippon = Instantiate(ipponIcon, detail.transform.Find("detail").transform.Find(n: "whiteWin").transform);
+                    }
+                    else if (match.whiteWazaari == 1)
+                    {
+                        GameObject wazaari = Instantiate(wazaariIcon, detail.transform.Find("detail").transform.Find(n: "whiteWin").transform);
+                    }
+                    else if (match.whiteYuko > 0)
+                    {
+                        GameObject yuko = Instantiate(yukoIcon, detail.transform.Find("detail").transform.Find(n: "whiteWin").transform);
+                    }
                 }
+                matchScrollViewContent.SetActive(false);
             }
-            matchScrollViewContent.SetActive(false);
         }
     }
 

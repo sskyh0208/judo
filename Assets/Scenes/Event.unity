@@ -1632,6 +1632,9 @@ MonoBehaviour:
   placeNameTextPrefab: {fileID: 8437508880247251776, guid: 5f708de9e34e3e043a5454ffecb22bf6, type: 3}
   resultTextPrefab: {fileID: 3093748941423814912, guid: 6aadb83c78c9b17499cf50d1480ecdee, type: 3}
   resultTextLabelPrefab: {fileID: 3093748941423814912, guid: 989128760e60c8f42b84790f5ce564d1, type: 3}
+  resultTeamTextPrefab: {fileID: 3093748941423814912, guid: 4bcd30e594576924393e5d7d1153c56d, type: 3}
+  resultTeamTextLabelPrefab: {fileID: 3093748941423814912, guid: ce9804b1d990869498271a0a057afb94, type: 3}
+  resultTeamTextLabelPrefab2: {fileID: 3093748941423814912, guid: 25d7a315c426b94408f688bc4ab2c2fd, type: 3}
   resultRoundLabelPrefab: {fileID: 3093748941423814912, guid: dac4b6ff78f951646bd74e3b5c4a5193, type: 3}
   roundScrollViewContentPrefab: {fileID: 9131900057938833667, guid: 2833985a505200144acb34a7a282bf19, type: 3}
   matchScrollViewContentPrefab: {fileID: 9131900057938833667, guid: 17d07b9661a0a304d93f65c3769ae0a3, type: 3}
