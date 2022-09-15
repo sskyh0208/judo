@@ -970,10 +970,10 @@ public class SchoolMatch
     public int whiteSchoolPoint;
     public MemberMatch senpo;
     public MemberMatch jiho;
-    public MemberMatch tyuken;
+    public MemberMatch chuken;
     public MemberMatch fukusho;
     public MemberMatch taisho;
-    public MemberMatch encho;
+    public MemberMatch daihyo;
 
     public SchoolMatch (string id, School red, School white)
     {
@@ -1009,9 +1009,9 @@ public class SchoolMatch
         this.jiho.Fight();
         UpdateTeamWinnerCount(this.jiho);
 
-        this.tyuken = new MemberMatch(id + "03", redMember[2], whiteMember[2]);
-        this.tyuken.Fight();
-        UpdateTeamWinnerCount(this.tyuken);
+        this.chuken = new MemberMatch(id + "03", redMember[2], whiteMember[2]);
+        this.chuken.Fight();
+        UpdateTeamWinnerCount(this.chuken);
 
         this.fukusho = new MemberMatch(id + "04", redMember[3], whiteMember[3]);
         this.fukusho.Fight();
@@ -1022,15 +1022,15 @@ public class SchoolMatch
         UpdateTeamWinnerCount(this.taisho);
         if (redWinCount == whiteWinCount && redSchoolPoint == whiteSchoolPoint) {
             // 勝敗同数かつ同点かつ大将の場合終わるまで
-            this.encho = new MemberMatch(id + "06", redMember[4], whiteMember[4]);
+            this.daihyo = new MemberMatch(id + "06", redMember[4], whiteMember[4]);
             while (true)
             {
-                if(this.encho.Fight())
+                if(this.daihyo.Fight())
                 {
                     break;
                 }
             }
-            UpdateTeamWinnerCount(this.encho);
+            UpdateTeamWinnerCount(this.daihyo);
         }
 
         if (redWinCount > whiteWinCount)
