@@ -1054,7 +1054,7 @@ public class SchoolMatch
                 {
                     this.redSchoolPoint += 10;
                 }
-                if(match.redWazaari > 0)
+                else if(match.redWazaari > 0)
                 {
                     this.redSchoolPoint += 1;
                 }
@@ -1066,7 +1066,7 @@ public class SchoolMatch
                 {
                     this.whiteSchoolPoint += 10;
                 }
-                if(match.whiteWazaari > 0)
+                else if(match.whiteWazaari > 0)
                 {
                     this.whiteSchoolPoint += 1;
                 }
