@@ -238,6 +238,7 @@ public class EventController : MonoBehaviour
         string matchRoundStr = "";
         if (weightClass == "団体戦")
         {
+            matchScrollViewContent.GetComponent<VerticalLayoutGroup>().spacing = 40;
             foreach (SchoolMatch match in this.taikai.allSchoolMatchResult)
             {
                 if (match.loser == null) {continue;}
@@ -298,6 +299,7 @@ public class EventController : MonoBehaviour
         }
         else
         {
+            matchScrollViewContent.GetComponent<VerticalLayoutGroup>().spacing = 0;
             List<MemberMatch> dispList = this.taikai.GetMemberMatch(this.ConvetToClassNum(weightClass));
             foreach (MemberMatch match in dispList)
             {
@@ -450,5 +452,4 @@ public class EventController : MonoBehaviour
         returnList.Reverse();
         return returnList;
     }
-
 }   

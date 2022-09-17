@@ -1161,6 +1161,8 @@ public class MemberMatch
             physicalDiffPoint -= 3;
         }
         float matchTime = defaultMatchTime;
+        bool redIsNewazaOK = false;
+        bool whiteIsNewazaOK = false;
         while (!end)
         {
             Abillity redBaseAbility = red.abillities[r.Next(red.abillities.Count - 4, red.abillities.Count - 1)];
@@ -1173,23 +1175,31 @@ public class MemberMatch
 
             float diffValue = redAbilityStatusNum - whiteAbilityStatusNum + physicalDiffPoint;
 
+            // 1/5の確率で何もなかったことにする
+            int randomEvenFlag = r.Next(0, 5);
+            if (randomEvenFlag == 0){diffValue = 0;}
+
             // 一回判定したらランダムで秒数追加
-            endMatchTime += r.Next(2, 5);
+            endMatchTime += r.Next(2, 13);
             endMatchTime += timeSpeed;
             switch (diffValue)
             {
                 case >= 6:
                     // 赤一本
+                    if(redIsNewazaOK == false && redTurnAbility.typeId == "1"){break;}
                     this.redIppon ++;
                     lastAffectiveRedAbillity = redTurnAbility;
-                    if (redTurnAbility.groupId == "5")
+                    if (redTurnAbility.typeId == "1")
                     {
                         // 寝技の場合時間調整
                         endMatchTime += 30;
+                        redIsNewazaOK = false;
+                        whiteIsNewazaOK = false;
                     }
                     break;
                 case >= 4:
                     // 赤技あり
+                    if(redIsNewazaOK == false && redTurnAbility.typeId == "1"){break;}
                     if (redTurnAbility.groupId != "6" || redTurnAbility.groupId != "7")
                     {
                         if (this.redWazaari > 0) {
@@ -1200,36 +1210,49 @@ public class MemberMatch
                             this.redWazaari ++;
                         }
                         lastAffectiveRedAbillity = redTurnAbility;
+                        redIsNewazaOK = true;
+                        whiteIsNewazaOK = true;
                     }
                     if (redTurnAbility.groupId == "5")
                     {
                         endMatchTime += 25;
+                        redIsNewazaOK = false;
+                        whiteIsNewazaOK = false;
                     }
                     break;
                 case >= 2:
                     // 赤有効
+                    if(redIsNewazaOK == false && redTurnAbility.typeId == "1"){break;}
                     if (redTurnAbility.groupId != "6" && redTurnAbility.groupId != "7")
                     {
                         this.redYuko ++;
                         lastAffectiveRedAbillity = redTurnAbility;
+                        redIsNewazaOK = true;
+                        whiteIsNewazaOK = true;
                     }
                     if (redTurnAbility.groupId == "5")
                     {
                         endMatchTime += 20;
+                        redIsNewazaOK = false;
+                        whiteIsNewazaOK = false;
                     }
                     break;
                 case <= -6:
                     // 白一本
+                    if(whiteIsNewazaOK == false && whiteTurnAbility.typeId == "1"){break;}
                     this.whiteIppon ++;
                     lastAffectiveWhiteAbillity = whiteTurnAbility;
-                    if (whiteTurnAbility.groupId == "5")
+                    if (whiteTurnAbility.typeId == "1")
                     {
                         // 寝技の場合時間調整
                         endMatchTime += 30;
+                        redIsNewazaOK = false;
+                        whiteIsNewazaOK = false;
                     }
                     break;
                 case <= -4:
                     // 白技あり
+                    if(whiteIsNewazaOK == false && whiteTurnAbility.typeId == "1"){break;}
                     if  (whiteTurnAbility.groupId != "6" && whiteTurnAbility.groupId != "7")
                     {
                         if (this.whiteWazaari > 0) {
@@ -1240,25 +1263,36 @@ public class MemberMatch
                             this.whiteWazaari ++;
                         }
                         lastAffectiveWhiteAbillity = whiteTurnAbility;
+                        redIsNewazaOK = true;
+                        whiteIsNewazaOK = true;
                     }
                     if (whiteTurnAbility.groupId == "5")
                     {
                         endMatchTime += 25;
+                        redIsNewazaOK = false;
+                        whiteIsNewazaOK = false;
                     }
                     break;
                 case <= -2:
                     // 白有効
+                    if(whiteIsNewazaOK == false && whiteTurnAbility.typeId == "1"){break;}
                     if (whiteTurnAbility.groupId != "6" && whiteTurnAbility.groupId != "7")
                     {
                         this.whiteYuko ++;
                         lastAffectiveWhiteAbillity = whiteTurnAbility;
+                        redIsNewazaOK = true;
+                        whiteIsNewazaOK = true;
                     }
                     if (whiteTurnAbility.groupId == "5")
                     {
                         endMatchTime += 20;
+                        whiteIsNewazaOK = false;
+                        redIsNewazaOK = false;
                     }
                     break;
                 default:
+                    whiteIsNewazaOK = false;
+                    redIsNewazaOK = false;
                     // 何もなし
                     break;
             }
