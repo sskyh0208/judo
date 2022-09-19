@@ -699,24 +699,31 @@ public class Tournament
         {
             default:
             case 1:
+                memberMatchResult60.Reverse();
                 ranking.members60 = result;
                 break;
             case 2:
+                memberMatchResult66.Reverse();
                 ranking.members66 = result;
                 break;
             case 3:
+                memberMatchResult73.Reverse();
                 ranking.members73 = result;
                 break;
             case 4:
+                memberMatchResult81.Reverse();
                 ranking.members81 = result;
                 break;
             case 5:
+                memberMatchResult90.Reverse();
                 ranking.members90 = result;
                 break;
             case 6:
+                memberMatchResult100.Reverse();
                 ranking.members100 = result;
                 break;
             case 7:
+                memberMatchResultOver100.Reverse();
                 ranking.membersOver100 = result;
                 break;
         }
@@ -963,31 +970,24 @@ public class Tournament
         {
             default:
             case 1:
-                memberMatchResult60.Reverse();
                 target = memberMatchResult60;
                 break;
             case 2:
-                memberMatchResult66.Reverse();
                 target = memberMatchResult66;
                 break;
             case 3:
-                memberMatchResult73.Reverse();
                 target = memberMatchResult73;
                 break;
             case 4:
-                memberMatchResult81.Reverse();
                 target = memberMatchResult81;
                 break;
             case 5:
-                memberMatchResult90.Reverse();
                 target = memberMatchResult90;
                 break;
             case 6:
-                memberMatchResult100.Reverse();
                 target = memberMatchResult100;
                 break;
             case 7:
-                memberMatchResultOver100.Reverse();
                 target = memberMatchResultOver100;
                 break;
         }

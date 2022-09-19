@@ -105,13 +105,12 @@ public class KirokuController : MonoBehaviour
     // 大会を選択するボタンを画面に作成する
     private void GenerateTaikaiSelectButton(string year, Place place)
     {
-        GameObject Viewport = taikaiScrollView.transform.Find(n: "Viewport").gameObject;
-        GameObject taikaiScrollViewContent = GameObject.Find(place.id);
-        if (taikaiScrollViewContent != null)
+        GameObject Viewport = taikaiScrollView.transform.Find("Viewport").gameObject;
+        if (Viewport.transform.Find(place.id) != null)
         {
-            Destroy(taikaiScrollViewContent);
+            Destroy(Viewport.transform.Find(place.id).gameObject);
         }
-        taikaiScrollViewContent = Instantiate(taikaiScrollViewContentPrefab, Viewport.transform);
+        GameObject taikaiScrollViewContent = Instantiate(taikaiScrollViewContentPrefab, Viewport.transform);
         taikaiScrollViewContent.name = place.id;
         foreach (Tournament taikai in GameData.instance.matchManager.GetPlaceYearAllTaikai(year, place.id))
         {
@@ -150,6 +149,7 @@ public class KirokuController : MonoBehaviour
             int targetYear = startYear + i;
             yearList.Add(targetYear.ToString());
         }
+        yearList.Reverse();
         return yearList;
     }
 
@@ -242,7 +242,7 @@ public class KirokuController : MonoBehaviour
 
     private void DisplayTaikaiSelectScrollViewContent(bool isDisplay, string placeId)
     {   
-        GameObject taikaiScrollViewContent = taikaiScrollView.transform.Find("Viewport").Find(placeId).gameObject;
+        GameObject taikaiScrollViewContent = taikaiScrollView.transform.Find("Viewport").transform.Find(placeId).gameObject;
         if(isDisplay){
             taikaiScrollView.GetComponent<ScrollRect>().content = taikaiScrollViewContent.GetComponent<RectTransform>();
         }
