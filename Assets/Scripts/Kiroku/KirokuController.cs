@@ -1,42 +1,56 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
-using System.Text.RegularExpressions;
+using DG.Tweening;
 
-
-public class EventController : MonoBehaviour
+public class KirokuController : MonoBehaviour
 {
-    Schedule todayEvent;
+    public GameObject textPrefab;
+    public GameObject taikaiScrollViewContentPrefab;
+
+    private GameObject selectedYearObj;
+    private string selectedYear;
+    private GameObject selectedPlaceObj;
+    private Place selectedPlace;
+    private GameObject selectedTaikaiObj;
+    private Tournament selectedTaikai;
+    private GameObject placeScrollView;
+    private GameObject taikaiScrollView;
+    private GameObject taikaiUiCanvas;
+
+    // 大会表示用
+    public GameObject taikaiUiCanvasPrefb;
     public GameObject ipponIcon;
     public GameObject wazaariIcon;
     public GameObject yukoIcon;
-    public GameObject placeNameTextPrefab;
     public GameObject resultTextPrefab;
     public GameObject resultTextLabelPrefab;
     public GameObject resultTeamTextPrefab;
     public GameObject resultRoundLabelPrefab;
-    private GameObject classScrollViewContent;
     private GameObject matchScrollView;
     private GameObject selectedClassObj;
     public GameObject matchScrollViewContentPrefab;
     private List<SchoolMatch> selectedSchoolMatch;
     private List<MemberMatch> selectedMemberMatch;
 
-    private Tournament taikai;
-    bool is_test = false;
+    private float fadeTime = 1f;
+    private bool is_test = false;
     // Start is called before the first frame update
     void Start()
     {
-        // テスト用
         if(this.is_test){TestDataGenerate();}
-        this.taikai = GameData.instance.todayJoinTournament;
         SetUiModule();
-        SetClassScrollViewContent();
+        GenerateYearSelectButton();
+        GeneratePlaceSelectButton();
+    }
 
+    private void SetUiModule()
+    {
+        placeScrollView = GameObject.Find("KirokuUICanvas").transform.Find("PlaceScrollView").gameObject;
+        taikaiScrollView = GameObject.Find("KirokuUICanvas").transform.Find("TaikaiScrollView").gameObject;
     }
     private void TestDataGenerate()
     {
@@ -45,19 +59,231 @@ public class EventController : MonoBehaviour
         GameData.instance.player = GameData.instance.schoolManager.GetSchool("073404087").supervisor;
     }
 
-    private void SetUiModule()
+    // 記録年を選択するボタンを画面に作成する。
+    private void GenerateYearSelectButton()
     {
-        classScrollViewContent = GameObject.Find("ClassScrollViewContent");
-        matchScrollView = GameObject.Find("EventUICanvas").transform.Find("MatchScrollView").gameObject;
+        GameObject yearScrollViewContent = GameObject.Find("YearScrollViewContent");
+        foreach (string year in GenerateKirokuYearList())
+        {
+            string name = year + "年";
+            GameObject _text = Instantiate(textPrefab, yearScrollViewContent.transform);
+            _text.name = name;
+            _text.GetComponent<Text>().text = name;
+            _text.AddComponent<EventTrigger>();
+            EventTrigger trigger = _text.GetComponent<EventTrigger>();
+            EventTrigger.Entry entry = new EventTrigger.Entry();
+            entry.eventID = EventTriggerType.PointerDown;
+            entry.callback.AddListener((eventDate) => {
+                SelectedYear(_text);
+                GenerateYearPlaceAllTaikaiSelectButton(year);
+            });
+            trigger.triggers.Add(entry);
+        }
+    }
+
+     // 各県を選択するボタンを画面に作成する。
+    private void GeneratePlaceSelectButton()
+    {
+        DisplayPlaceSelectScrollView(true);
+        GameObject placeScrollViewContent = GameObject.Find("PlaceScrollViewContent");
+        foreach (var name in GameData.instance.placeManager.GetAllPlaceName())
+        {
+            GameObject _text = Instantiate(textPrefab, placeScrollViewContent.transform);
+            _text.GetComponent<Text>().text = name;
+            _text.AddComponent<EventTrigger>();
+            EventTrigger trigger = _text.GetComponent<EventTrigger>();
+            EventTrigger.Entry entry = new EventTrigger.Entry();
+            entry.eventID = EventTriggerType.PointerDown;
+            entry.callback.AddListener((eventDate) => {
+                SelectedPlace(_text);
+            });
+            trigger.triggers.Add(entry);
+        }
+        DisplayPlaceSelectScrollView(false);
+    }
+
+    // 大会を選択するボタンを画面に作成する
+    private void GenerateTaikaiSelectButton(string year, Place place)
+    {
+        GameObject Viewport = taikaiScrollView.transform.Find(n: "Viewport").gameObject;
+        GameObject taikaiScrollViewContent = GameObject.Find(place.id);
+        if (taikaiScrollViewContent != null)
+        {
+            Destroy(taikaiScrollViewContent);
+        }
+        taikaiScrollViewContent = Instantiate(taikaiScrollViewContentPrefab, Viewport.transform);
+        taikaiScrollViewContent.name = place.id;
+        foreach (Tournament taikai in GameData.instance.matchManager.GetPlaceYearAllTaikai(year, place.id))
+        {
+            GameObject _text = Instantiate(textPrefab, taikaiScrollViewContent.transform);
+            _text.name = taikai.tournamentId;
+            _text.GetComponent<Text>().text = taikai.tournamentName;
+            _text.AddComponent<EventTrigger>();
+            EventTrigger trigger = _text.GetComponent<EventTrigger>();
+            EventTrigger.Entry entry = new EventTrigger.Entry();
+            entry.eventID = EventTriggerType.PointerDown;
+            entry.callback.AddListener((eventDate) => {
+                SelectedTaikai(_text);
+            });
+            trigger.triggers.Add(entry);
+        }
+        taikaiScrollViewContent.SetActive(false);
+    }
+
+    private void GenerateYearPlaceAllTaikaiSelectButton(string year)
+    {
+        foreach(Place place in GameData.instance.placeManager.placeArray)
+        {
+            GenerateTaikaiSelectButton(year, place);
+        }
+    }
+    
+    private List<string> GenerateKirokuYearList()
+    {
+        int startYear = GameData.instance.startDate.Year;
+        int storyYear = GameData.instance.storyDate.Year;
+
+        int diffNum = storyYear - startYear;
+        List<string> yearList = new List<string>();
+        for (int i = 0; i <= diffNum; i++)
+        {
+            int targetYear = startYear + i;
+            yearList.Add(targetYear.ToString());
+        }
+        return yearList;
+    }
+
+    // 選択中の年を設定する
+    private void SelectedYear(GameObject targetYearObj)
+    {
+        if(selectedTaikaiObj != null)
+        {
+            DisplayTaikaiSelectScrollViewContent(isDisplay: false, selectedPlace.id);
+            DisplayTaikaiSelectScrollView(isDisplay: false);
+            selectedPlaceObj.GetComponent<Text>().color = Color.white;
+            selectedPlaceObj.GetComponent<Text>().fontStyle = FontStyle.Normal;
+            selectedPlaceObj = null;
+            selectedPlace = null;
+        }
+        if(selectedPlaceObj != null)
+        {
+            DisplayPlaceSelectScrollView(isDisplay: false);
+            selectedPlaceObj.GetComponent<Text>().color = Color.white;
+            selectedPlaceObj.GetComponent<Text>().fontStyle = FontStyle.Normal;
+            selectedPlaceObj = null;
+            selectedPlace = null;
+        }
+        if(selectedYearObj != null)
+        {
+            selectedYearObj.GetComponent<Text>().color = Color.white;
+            selectedYearObj.GetComponent<Text>().fontStyle = FontStyle.Normal;
+            selectedYearObj = null;
+        }
+        targetYearObj.GetComponent<Text>().color = Color.red;
+        targetYearObj.GetComponent<Text>().fontStyle = FontStyle.Bold;
+        selectedYearObj = targetYearObj;
+        selectedYear = selectedYearObj.name;
+        DisplayPlaceSelectScrollView(isDisplay: true);
+    }
+
+    // 選択中の県を設定する
+    private void SelectedPlace(GameObject targetPlaceObj)
+    {
+        if(selectedTaikaiObj != null)
+        {
+            DisplayTaikaiSelectScrollView(isDisplay: false);
+            selectedTaikaiObj.GetComponent<Text>().color = Color.white;
+            selectedTaikaiObj.GetComponent<Text>().fontStyle = FontStyle.Normal;
+            selectedTaikaiObj = null;
+            selectedTaikai = null;
+        }
+        if(selectedPlaceObj != null)
+        {
+            DisplayTaikaiSelectScrollViewContent(isDisplay: false, selectedPlace.id);
+            selectedPlaceObj.GetComponent<Text>().color = Color.white;
+            selectedPlaceObj.GetComponent<Text>().fontStyle = FontStyle.Normal;
+            selectedPlaceObj = null;
+            selectedPlace = null;
+        }
+        targetPlaceObj.GetComponent<Text>().color = Color.red;
+        targetPlaceObj.GetComponent<Text>().fontStyle = FontStyle.Bold;
+        selectedPlaceObj = targetPlaceObj;
+        selectedPlace = GameData.instance.placeManager.getPlaceDataWithName(targetPlaceObj.GetComponent<Text>().text);
+        DisplayTaikaiSelectScrollView(isDisplay: true);
+        DisplayTaikaiSelectScrollViewContent(true, selectedPlace.id);
+    }
+
+    // 選択中の大会を設定する
+    private void SelectedTaikai(GameObject targetTaikaiObj)
+    {
+        if(selectedTaikaiObj != null)
+        {
+            selectedTaikaiObj.GetComponent<Text>().color = Color.white;
+            selectedTaikaiObj.GetComponent<Text>().fontStyle = FontStyle.Normal;
+            selectedTaikaiObj = null;
+            selectedTaikai = null;
+        }
+        targetTaikaiObj.GetComponent<Text>().color = Color.red;
+        targetTaikaiObj.GetComponent<Text>().fontStyle = FontStyle.Bold;
+        selectedTaikaiObj = targetTaikaiObj;
+        selectedTaikai = GameData.instance.matchManager.GetTaikaiWithId(selectedTaikaiObj.name);
+        ShowTaikaiDetail();
+    }
+
+    private void DisplayPlaceSelectScrollView(bool isDisplay)
+    {   
+        placeScrollView.SetActive(isDisplay);
+
+    }
+    private void DisplayTaikaiSelectScrollView(bool isDisplay)
+    {   
+        taikaiScrollView.SetActive(isDisplay);
+    }
+
+    private void DisplayTaikaiSelectScrollViewContent(bool isDisplay, string placeId)
+    {   
+        GameObject taikaiScrollViewContent = taikaiScrollView.transform.Find("Viewport").Find(placeId).gameObject;
+        if(isDisplay){
+            taikaiScrollView.GetComponent<ScrollRect>().content = taikaiScrollViewContent.GetComponent<RectTransform>();
+        }
+        taikaiScrollViewContent.SetActive(isDisplay);
+    }
+
+    public void ShowTaikaiDetail()
+    {
+        taikaiUiCanvas = Instantiate(taikaiUiCanvasPrefb);
+        taikaiUiCanvas.name = "TaikaiUICanvas";
+        Button btn = taikaiUiCanvas.transform.Find("BackButton").GetComponent<Button>();
+        btn.onClick.AddListener(CloseTaikaiDetail);
+        SetClassScrollViewContent();
+        CanvasGroup taikaiCanvasGroup = taikaiUiCanvas.GetComponent<CanvasGroup>();
+        taikaiCanvasGroup.blocksRaycasts = true;
+        taikaiCanvasGroup.DOFade(1, fadeTime)
+            .OnComplete( () => {
+                taikaiCanvasGroup.blocksRaycasts = true;
+            });
+        
+    }
+
+    public void CloseTaikaiDetail()
+    {
+        CanvasGroup taikaiCanvasGroup = taikaiUiCanvas.GetComponent<CanvasGroup>();
+        taikaiCanvasGroup.blocksRaycasts = true;
+        taikaiCanvasGroup.DOFade(0, fadeTime)
+            .OnComplete( () => {
+                taikaiCanvasGroup.blocksRaycasts = false;
+                Destroy(taikaiUiCanvas);
+            });
     }
 
     private void SetClassScrollViewContent()
     {
+        GameObject classScrollViewContent = GameObject.Find("ClassScrollViewContent");
         // 団体戦、個人戦60kgなどのボタンを作成する
-        if (this.taikai.ranking.school.Count != 0)
+        if (selectedTaikai.ranking.school.Count != 0)
         {
             string weightClass = "団体戦";
-            GameObject _text = Instantiate(placeNameTextPrefab, classScrollViewContent.transform);
+            GameObject _text = Instantiate(textPrefab, classScrollViewContent.transform);
             _text.GetComponent<Text>().text = weightClass;
             _text.AddComponent<EventTrigger>();
             EventTrigger trigger = _text.GetComponent<EventTrigger>();
@@ -69,10 +295,10 @@ public class EventController : MonoBehaviour
             trigger.triggers.Add(entry);
             GenerateClassMatchScrollViewContent(weightClass);
         }
-        if (this.taikai.ranking.members60.Count != 0)
+        if (selectedTaikai.ranking.members60.Count != 0)
         {
             string weightClass = "60kg級";
-            GameObject _text = Instantiate(placeNameTextPrefab, classScrollViewContent.transform);
+            GameObject _text = Instantiate(textPrefab, classScrollViewContent.transform);
             _text.GetComponent<Text>().text = weightClass;
             _text.AddComponent<EventTrigger>();
             EventTrigger trigger = _text.GetComponent<EventTrigger>();
@@ -84,10 +310,10 @@ public class EventController : MonoBehaviour
             trigger.triggers.Add(entry);
             GenerateClassMatchScrollViewContent(weightClass);
         }
-        if (this.taikai.ranking.members66.Count != 0)
+        if (selectedTaikai.ranking.members66.Count != 0)
         {
             string weightClass = "66kg級";
-            GameObject _text = Instantiate(placeNameTextPrefab, classScrollViewContent.transform);
+            GameObject _text = Instantiate(textPrefab, classScrollViewContent.transform);
             _text.GetComponent<Text>().text = weightClass;
             _text.AddComponent<EventTrigger>();
             EventTrigger trigger = _text.GetComponent<EventTrigger>();
@@ -99,10 +325,10 @@ public class EventController : MonoBehaviour
             trigger.triggers.Add(entry);
             GenerateClassMatchScrollViewContent(weightClass);
         }
-        if (this.taikai.ranking.members73.Count != 0)
+        if (selectedTaikai.ranking.members73.Count != 0)
         {
             string weightClass = "73kg級";
-            GameObject _text = Instantiate(placeNameTextPrefab, classScrollViewContent.transform);
+            GameObject _text = Instantiate(textPrefab, classScrollViewContent.transform);
             _text.GetComponent<Text>().text = weightClass;
             _text.AddComponent<EventTrigger>();
             EventTrigger trigger = _text.GetComponent<EventTrigger>();
@@ -114,10 +340,10 @@ public class EventController : MonoBehaviour
             trigger.triggers.Add(entry);
             GenerateClassMatchScrollViewContent(weightClass);
         }
-        if (this.taikai.ranking.members81.Count != 0)
+        if (selectedTaikai.ranking.members81.Count != 0)
         {
             string weightClass = "81kg級";
-            GameObject _text = Instantiate(placeNameTextPrefab, classScrollViewContent.transform);
+            GameObject _text = Instantiate(textPrefab, classScrollViewContent.transform);
             _text.GetComponent<Text>().text = weightClass;
             _text.AddComponent<EventTrigger>();
             EventTrigger trigger = _text.GetComponent<EventTrigger>();
@@ -129,10 +355,10 @@ public class EventController : MonoBehaviour
             trigger.triggers.Add(entry);
             GenerateClassMatchScrollViewContent(weightClass);
         }
-        if (this.taikai.ranking.members90.Count != 0)
+        if (selectedTaikai.ranking.members90.Count != 0)
         {
             string weightClass = "90kg級";
-            GameObject _text = Instantiate(placeNameTextPrefab, classScrollViewContent.transform);
+            GameObject _text = Instantiate(textPrefab, classScrollViewContent.transform);
             _text.GetComponent<Text>().text = weightClass;
             _text.AddComponent<EventTrigger>();
             EventTrigger trigger = _text.GetComponent<EventTrigger>();
@@ -144,10 +370,10 @@ public class EventController : MonoBehaviour
             trigger.triggers.Add(entry);
             GenerateClassMatchScrollViewContent(weightClass);
         }
-        if (this.taikai.ranking.members100.Count != 0)
+        if (selectedTaikai.ranking.members100.Count != 0)
         {
             string weightClass = "100kg級";
-            GameObject _text = Instantiate(placeNameTextPrefab, classScrollViewContent.transform);
+            GameObject _text = Instantiate(textPrefab, classScrollViewContent.transform);
             _text.GetComponent<Text>().text = weightClass;
             _text.AddComponent<EventTrigger>();
             EventTrigger trigger = _text.GetComponent<EventTrigger>();
@@ -159,10 +385,10 @@ public class EventController : MonoBehaviour
             trigger.triggers.Add(entry);
             GenerateClassMatchScrollViewContent(weightClass);
         }
-        if (this.taikai.ranking.membersOver100.Count != 0)
+        if (selectedTaikai.ranking.membersOver100.Count != 0)
         {
             string weightClass = "100kg超級";
-            GameObject _text = Instantiate(placeNameTextPrefab, classScrollViewContent.transform);
+            GameObject _text = Instantiate(textPrefab, classScrollViewContent.transform);
             _text.GetComponent<Text>().text = weightClass;
             _text.AddComponent<EventTrigger>();
             EventTrigger trigger = _text.GetComponent<EventTrigger>();
@@ -221,6 +447,7 @@ public class EventController : MonoBehaviour
 
     private void DisplayMatchScrollView(bool isDisplay, string weightClass)
     {   
+        GameObject matchScrollView = GameObject.Find("TaikaiUICanvas").transform.Find("MatchScrollView").gameObject;
         matchScrollView.SetActive(isDisplay);
         GameObject matchScrollViewContent = matchScrollView.transform.Find("Viewport").Find(weightClass).gameObject;
         if(isDisplay){
@@ -231,6 +458,7 @@ public class EventController : MonoBehaviour
 
     private void GenerateClassMatchScrollViewContent(string weightClass)
     {
+        GameObject matchScrollView = GameObject.Find("TaikaiUICanvas").transform.Find("MatchScrollView").gameObject;
         GameObject Viewport = matchScrollView.transform.Find("Viewport").gameObject;
         GameObject matchScrollViewContent = Instantiate(matchScrollViewContentPrefab, Viewport.transform);
         matchScrollViewContent.name = weightClass;
@@ -238,7 +466,7 @@ public class EventController : MonoBehaviour
         if (weightClass == "団体戦")
         {
             matchScrollViewContent.GetComponent<VerticalLayoutGroup>().spacing = 40;
-            foreach (SchoolMatch match in this.taikai.allSchoolMatchResult)
+            foreach (SchoolMatch match in selectedTaikai.allSchoolMatchResult)
             {
                 if (match.loser == null) {continue;}
                 string roundStr = GetMatchRoundLabel(match.id);
@@ -299,7 +527,7 @@ public class EventController : MonoBehaviour
         else
         {
             matchScrollViewContent.GetComponent<VerticalLayoutGroup>().spacing = 0;
-            List<MemberMatch> dispList = this.taikai.GetMemberMatch(this.ConvetToClassNum(weightClass));
+            List<MemberMatch> dispList = selectedTaikai.GetMemberMatch(this.ConvetToClassNum(weightClass));
             foreach (MemberMatch match in dispList)
             {
                 if (match.loser == null) {continue;}
@@ -446,4 +674,4 @@ public class EventController : MonoBehaviour
         returnList.Reverse();
         return returnList;
     }
-}   
+}

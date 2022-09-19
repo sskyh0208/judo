@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class GameData : MonoBehaviour
 {
+    public DateTime startDate;
     public DateTime storyDate;
     public static GameData instance;
     public ScheduleManager scheduleManager;
@@ -39,6 +40,7 @@ public class GameData : MonoBehaviour
         schoolManager.SetAllSchool();
         abillityManager = LoadAbillityData();
         storyDate = GenerateNewStartDate();
+        startDate = storyDate;
         nameManager = LoadNameData();
         for(int i = 0; i < 3; i++)
         {

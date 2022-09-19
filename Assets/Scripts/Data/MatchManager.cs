@@ -15,6 +15,18 @@ public class MatchManager
         this.history = new List<Tournament>();
     }
 
+    public Tournament GetTaikaiWithId(string tournamentId)
+    {
+        foreach (Tournament taikai in this.history)
+        {
+            if (Regex.IsMatch(taikai.tournamentId, "^" + tournamentId))
+            {
+                return taikai;
+            }
+        }
+        return null;
+    }
+
     public List<Tournament> GenarateNewTournaments(DateTime date, Schedule schedule)
     {
         List<Tournament> newTournamentList = new List<Tournament>();
@@ -39,6 +51,21 @@ public class MatchManager
         }
         return targetList;
     }
+
+    public List<Tournament> GetPlaceYearAllTaikai(string year, string placeId)
+    {
+        string pattern = "^" + year + placeId;
+        List<Tournament> targetTaikaiList = new List<Tournament>();
+        foreach (Tournament taikai in this.history)
+        {
+            if (Regex.IsMatch(taikai.tournamentId, pattern))
+            {
+                targetTaikaiList.Add(taikai);
+            }
+        }
+        return targetTaikaiList;
+    }
+
     public List<PlayerManager> SortMemberTotalStatus(List<PlayerManager> targetList)
     {
         List<PlayerManager> tmpMemberList = new List<PlayerManager>();
@@ -55,6 +82,7 @@ public class Tournament
 {
     public DateTime date;
     public string eventId;
+    public string tournamentName;
     public string tournamentId;
     public string tournamentType;
     public string tournamentFilterEventId;
@@ -80,6 +108,7 @@ public class Tournament
     {
         this.date = date;
         this.eventId = eventObj.eventId;
+        this.tournamentName = eventObj.eventName;
         // <YYYYMMDD><地方><県><市><イベントID>
         // 202207340101
         this.tournamentId = date.Year.ToString()+targetId + eventObj.eventId;
@@ -555,6 +584,7 @@ public class Tournament
             }
             countRound ++;
         }
+        this.allSchoolMatchResult.Reverse();
         result.Reverse();
         ranking.school = result;
     }
@@ -933,24 +963,31 @@ public class Tournament
         {
             default:
             case 1:
+                memberMatchResult60.Reverse();
                 target = memberMatchResult60;
                 break;
             case 2:
+                memberMatchResult66.Reverse();
                 target = memberMatchResult66;
                 break;
             case 3:
+                memberMatchResult73.Reverse();
                 target = memberMatchResult73;
                 break;
             case 4:
+                memberMatchResult81.Reverse();
                 target = memberMatchResult81;
                 break;
             case 5:
+                memberMatchResult90.Reverse();
                 target = memberMatchResult90;
                 break;
             case 6:
+                memberMatchResult100.Reverse();
                 target = memberMatchResult100;
                 break;
             case 7:
+                memberMatchResultOver100.Reverse();
                 target = memberMatchResultOver100;
                 break;
         }
@@ -1160,6 +1197,26 @@ public class MemberMatch
         {
             physicalDiffPoint -= 3;
         }
+        // 身長差で技ポイントを調整
+        int redHeightDiffPoint = 0;
+        int whiteHeightDiffPoint = 0;
+        if (red.height - white.height > 20)
+        {
+            redHeightDiffPoint -= 5;
+        }
+        else if (red.height - white.height > 10)
+        {
+            redHeightDiffPoint -= 3;
+        }
+        if (white.height - red.height > 20)
+        {
+            whiteHeightDiffPoint -= 5;
+        }
+        else if (white.height - red.height > 10)
+        {
+            whiteHeightDiffPoint -= 3;
+        }
+
         float matchTime = defaultMatchTime;
         bool redIsNewazaOK = false;
         bool whiteIsNewazaOK = false;
@@ -1172,6 +1229,9 @@ public class MemberMatch
 
             int redAbilityStatusNum = (int)Math.Floor((double)(redBaseAbility.status + redTurnAbility.status) / 1000);
             int whiteAbilityStatusNum = (int)Math.Floor((double)(whiteBaseAbility.status + whiteTurnAbility.status) / 1000);
+
+            if(redTurnAbility.groupId == "0") {redAbilityStatusNum += redHeightDiffPoint;}
+            if(whiteTurnAbility.groupId == "0") {whiteAbilityStatusNum += whiteHeightDiffPoint;}
 
             float diffValue = redAbilityStatusNum - whiteAbilityStatusNum + physicalDiffPoint;
 

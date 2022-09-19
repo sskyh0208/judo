@@ -163,7 +163,7 @@ public class NewGameController : MonoBehaviour
         return school;
     }
 
-    public PlayerManager　GenerateNewPlayer()
+    public PlayerManager GenerateNewPlayer()
     {
         string defaultPlayerNameKaki = "山田太郎";
         nameInputField.text = defaultPlayerNameKaki;
