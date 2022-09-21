@@ -288,7 +288,8 @@ public class School
     public void SetRegularMember()
     {
         int count = 4;
-        foreach (PlayerManager member in members.Values.OrderByDescending(member => member.totalStatus).ToList())
+        List<PlayerManager> regularList = members.Values.OrderByDescending(member => member.totalStatus).ToList().GetRange(0, 4);
+        foreach (PlayerManager member in regularList.OrderBy(member => member.weight).ToList())
         {
             regularMembers[count] = member;
             if (count == 0)
