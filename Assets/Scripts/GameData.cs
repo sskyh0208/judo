@@ -188,4 +188,9 @@ public class GameData : MonoBehaviour
             Debug.Log(string.Format("名前: {0} 高校: {1}", member.nameKaki, schoolManager.schoolList[targetSchoolId].name));
         }
     }
+
+    public School GetPlayerSchool()
+    {
+        return this.schoolManager.GetSchool(this.player.schoolId);
+    }
 }
