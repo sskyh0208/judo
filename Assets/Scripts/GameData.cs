@@ -16,6 +16,7 @@ public class GameData : MonoBehaviour
     public AbillityManager abillityManager;
     public NameManager nameManager;
     public MatchManager matchManager;
+    public TrainingManager trainingManager;
     public Schedule todayEvent;
     public Tournament todayJoinTournament;
 
@@ -50,6 +51,7 @@ public class GameData : MonoBehaviour
         }
         GenerateSupervisor(storyDate);
         matchManager = new MatchManager();
+        trainingManager = new TrainingManager();
     }
 
     public void GenerateNewYearGameDate()

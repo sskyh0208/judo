@@ -14,7 +14,8 @@ public class RenshuController : MonoBehaviour
     private GameObject selectedMemberObj;
     private PlayerManager selectedMember;
     private GameObject trainingMenuPanel;
-    private GameObject trainingMenuParent;
+    private GameObject trainingMenuParentRight;
+    private GameObject trainingMenuParentLeft;
     private bool is_test = true;
     School targetSchool;
 
@@ -24,13 +25,9 @@ public class RenshuController : MonoBehaviour
         if(this.is_test){TestDataGenerate();}
 
         trainingMenuPanel = GameObject.Find("TrainingMenuPanel");
-        targetSchool = GameData.instance.schoolManager.GetSchool(GameData.instance.player.schoolId);
-        trainingMenuParent = GameObject.Find("TrainingMenuParent");
-
-        if(targetSchool.trainingMenu.Count > 0)
-        {
-            SetTrainingMenuInput();
-        }
+        targetSchool = GameData.instance.GetPlayerSchool();
+        trainingMenuParentLeft = GameObject.Find("LeftTraining");
+        trainingMenuParentRight = GameObject.Find("RightTraining");
 
         SetMySchoolMemberSelectButton();
     }
@@ -42,86 +39,16 @@ public class RenshuController : MonoBehaviour
         GameData.instance.player = GameData.instance.schoolManager.GetSchool("073404087").supervisor;
     }
 
-    public void SetTrainingMenu()
-    {
-        List<Tuple<RectTransform, Image, int>> barTrainingList = new List<Tuple<RectTransform, Image, int>>();
-        List<Tuple<string, int>> trainingMenuTuple = new List<Tuple<string, int>>();
-        int totalTrainingMinutes = 0;
-        foreach (Transform child in trainingMenuParent.transform)
-        {   
-            if (child.transform.Find("Input").GetComponent<InputField>().text == "")
-            {child.transform.Find("Input").GetComponent<InputField>().text = "0";}
-            int trainingMinutes = Int32.Parse(child.transform.Find("Input").GetComponent<InputField>().text);
-            if(trainingMinutes == 0){continue;}
-            string trainingName = child.name;
-            trainingMenuTuple.Add(new Tuple<string, int>(trainingName, trainingMinutes));
-            totalTrainingMinutes += trainingMinutes;
-        }
-
-        ClearTrainingMenuPanel();
-        if(trainingMenuTuple.Count == 0)
-        {
-            // 設定されていないと警告を出す
-            Debug.Log("練習が何も設定されていません。");
-        }
-        else if(targetSchool.CheckTrainingLimitMinutes(totalTrainingMinutes))
-        {
-            // 超過していると警告文を出す
-            Debug.Log(string.Format("練習時間を超過しています。　上限: {0}  設定値: {1}", targetSchool.trainingLimitMinutes, totalTrainingMinutes));
-        }
-        else{
-            // 練習内容の初期化
-            targetSchool.ClearTrainingMenu();
-            foreach(Tuple<string, int> trainingMenu in trainingMenuTuple)
-            {
-                // 表示用ゲージの作成
-                GameObject trainingBar = new GameObject(trainingMenu.Item1);
-                trainingBar.transform.parent = trainingMenuPanel.transform;
-                Image image = trainingBar.AddComponent<Image>();
-                Outline outline = trainingBar.AddComponent<Outline>();
-                outline.effectDistance = new Vector2(5,5);
-                RectTransform rect = trainingBar.GetComponent<RectTransform>();
-                rect.sizeDelta = new Vector2(0, 40);
-                image.color = Color.gray;
-                rect.DOSizeDelta(new Vector3(trainingMenu.Item2, 40), 0.5f);
-
-                // 練習効果の作成
-                targetSchool.SetTrainingMenu(trainingMenu.Item1, trainingMenu.Item2);
-            }
-        }
-
-    }
-    private void ClearTrainingMenuPanel()
-    {
-        // パネル内の表示をすべて削除
-        foreach (Transform child in trainingMenuPanel.transform)
-        {
-            Destroy(child.gameObject);
-        }
-    }
-
-    private void SetTrainingMenuInput()
-    {
-        foreach (Tuple<string, int> trainingMenu in targetSchool.trainingMenu)
-        {
-            InputField setField;
-            setField = trainingMenuParent.transform.Find(trainingMenu.Item1).transform.Find("Input").GetComponent<InputField>();
-            setField.text = trainingMenu.Item2.ToString();
-        }
-    }
-
     private void SetMySchoolMemberSelectButton()
     {   
-        School school = GameData.instance.GetPlayerSchool();
         GameObject membersScrollView = GameObject.Find("MembersScrollView");
-        GameObject Viewport = membersScrollView.transform.Find("Viewport").gameObject;
-        GameObject membersScrollViewContent = Instantiate(membersScrollViewContentPrefab, Viewport.transform);
-        membersScrollViewContent.name = school.name;
+        GameObject membersScrollViewContent = membersScrollView.transform.Find("Viewport").transform.Find("MemberScrollViewContent").gameObject;
         membersScrollView.GetComponent<ScrollRect>().content = membersScrollViewContent.GetComponent<RectTransform>();
         int count = 0;
-        foreach (PlayerManager member in school.GetSortDescMembers())
+        foreach (PlayerManager member in targetSchool.GetSortDescMembers())
         {
             GameObject memberPanel = Instantiate(memberDisplayPanelPrefab, membersScrollViewContent.transform);
+            memberPanel.name = member.id;
             memberPanel.transform.Find("NameKakiText").GetComponent<Text>().text = member.nameKaki;
             memberPanel.transform.Find("NameYomiText").GetComponent<Text>().text = member.nameYomi;
             memberPanel.transform.Find("GradeText").GetComponent<Text>().text = member.positionId.ToString() + "年生";
@@ -139,6 +66,8 @@ public class RenshuController : MonoBehaviour
             if(count == 0) {SelectedMember(memberPanel, member);}
             count ++;
         }
+
+        membersScrollView.GetComponent<ScrollRect>().content = membersScrollViewContent.GetComponent<RectTransform>();
     }
 
     // 選択中の部員を設定する
@@ -152,6 +81,7 @@ public class RenshuController : MonoBehaviour
         isSelectedMemberText(targetMemberObj);
         selectedMemberObj = targetMemberObj;
         selectedMember = targetMember;
+        SetTrainingMenuInput();
         ViewSelectedMemberInformation(targetMember);
     }
 
@@ -225,6 +155,119 @@ public class RenshuController : MonoBehaviour
                 targetWaza.transform.Find("WazaSlider").GetComponent<Slider>().value = waza.limit;
                 targetWaza.transform.Find("WazaSlider").Find("Present Area").GetComponent<Slider>().value = waza.status;
             }
+        }
+    }
+
+    public void DiplayMemberTachiWaza1Panel()
+    {
+        GameObject memberStatusPanel = GameObject.Find("MemberStatusPanel");
+        memberStatusPanel.transform.Find("MemberWaza3Panel").gameObject.SetActive(false);
+        memberStatusPanel.transform.Find("MemberWaza4Panel").gameObject.SetActive(false);
+        memberStatusPanel.transform.Find("MemberWaza5Panel").gameObject.SetActive(false);
+        memberStatusPanel.transform.Find("MemberWaza6Panel").gameObject.SetActive(false);
+        memberStatusPanel.transform.Find("MemberWaza7Panel").gameObject.SetActive(false);
+
+        memberStatusPanel.transform.Find("MemberWaza0Panel").gameObject.SetActive(true);
+        memberStatusPanel.transform.Find("MemberWaza1Panel").gameObject.SetActive(true);
+        memberStatusPanel.transform.Find("MemberWaza2Panel").gameObject.SetActive(true);
+    }
+    public void DiplayMemberTachiWaza2Panel()
+    {
+        GameObject memberStatusPanel = GameObject.Find("MemberStatusPanel");
+        memberStatusPanel.transform.Find("MemberWaza0Panel").gameObject.SetActive(false);
+        memberStatusPanel.transform.Find("MemberWaza1Panel").gameObject.SetActive(false);
+        memberStatusPanel.transform.Find("MemberWaza2Panel").gameObject.SetActive(false);
+        memberStatusPanel.transform.Find("MemberWaza5Panel").gameObject.SetActive(false);
+        memberStatusPanel.transform.Find("MemberWaza6Panel").gameObject.SetActive(false);
+        memberStatusPanel.transform.Find("MemberWaza7Panel").gameObject.SetActive(false);
+
+        memberStatusPanel.transform.Find("MemberWaza3Panel").gameObject.SetActive(true);
+        memberStatusPanel.transform.Find("MemberWaza4Panel").gameObject.SetActive(true);
+    }
+    public void DiplayMemberTachiWaza3Panel()
+    {
+        GameObject memberStatusPanel = GameObject.Find("MemberStatusPanel");
+        memberStatusPanel.transform.Find("MemberWaza0Panel").gameObject.SetActive(false);
+        memberStatusPanel.transform.Find("MemberWaza1Panel").gameObject.SetActive(false);
+        memberStatusPanel.transform.Find("MemberWaza2Panel").gameObject.SetActive(false);
+        memberStatusPanel.transform.Find("MemberWaza3Panel").gameObject.SetActive(false);
+        memberStatusPanel.transform.Find("MemberWaza4Panel").gameObject.SetActive(false);
+
+        memberStatusPanel.transform.Find("MemberWaza5Panel").gameObject.SetActive(true);
+        memberStatusPanel.transform.Find("MemberWaza6Panel").gameObject.SetActive(true);
+        memberStatusPanel.transform.Find("MemberWaza7Panel").gameObject.SetActive(true);
+    }
+
+    private List<Tuple<string, int>> GetTrainingMenuInput()
+    {
+        List<Tuple<string, int>> trainingMenuTuple = new List<Tuple<string, int>>();
+        int totalTrainingMinutes = 0;
+        foreach (GameObject child in trainingMenuParentLeft.transform)
+        {   
+            if(! child.name.StartsWith("Labe"))
+            {
+                if (child.transform.Find("Input").GetComponent<InputField>().text == "")
+                {child.transform.Find("Input").GetComponent<InputField>().text = "0";}
+                int trainingMinutes = Int32.Parse(child.transform.Find("Input").GetComponent<InputField>().text);
+                if(trainingMinutes == 0){continue;}
+                string trainingName = child.name;
+                trainingMenuTuple.Add(new Tuple<string, int>(trainingName, trainingMinutes));
+                totalTrainingMinutes += trainingMinutes;
+            }
+        }
+
+        foreach (GameObject child in trainingMenuParentRight.transform)
+        {   
+            if(! child.name.StartsWith("Labe"))
+            {
+                if (child.transform.Find("Input").GetComponent<InputField>().text == "")
+                {child.transform.Find("Input").GetComponent<InputField>().text = "0";}
+                int trainingMinutes = Int32.Parse(child.transform.Find("Input").GetComponent<InputField>().text);
+                if(trainingMinutes == 0){continue;}
+                string trainingName = child.name;
+                trainingMenuTuple.Add(new Tuple<string, int>(trainingName, trainingMinutes));
+                totalTrainingMinutes += trainingMinutes;
+            }
+        }
+
+        if(trainingMenuTuple.Count == 0)
+        {
+            // 設定されていないと警告を出す
+            Debug.Log("練習が何も設定されていません。");
+        }
+        else if(targetSchool.CheckTrainingLimitMinutes(totalTrainingMinutes))
+        {
+            // 超過していると警告文を出す
+            Debug.Log(string.Format("練習時間を超過しています。　上限: {0}  設定値: {1}", targetSchool.trainingLimitMinutes, totalTrainingMinutes));
+        }
+        return trainingMenuTuple;
+    }
+
+    public void SetSoloTrainingMenu()
+    {
+        // 練習内容の初期化
+        selectedMember.ClearTrainingMenu();
+        selectedMember.trainingMenu = GetTrainingMenuInput();
+    }
+
+    public void SetAllTrainingMenu()
+    {
+        List<Tuple<string, int>> trainingMenuTuple = GetTrainingMenuInput();
+        foreach (PlayerManager member in targetSchool.GetSortDescMembers())
+        {
+            // 練習内容の初期化
+            member.ClearTrainingMenu();
+            member.trainingMenu = trainingMenuTuple;
+        }
+    }
+
+    private void SetTrainingMenuInput()
+    {
+        foreach (Tuple<string, int> trainingMenu in selectedMember.trainingMenu)
+        {
+            InputField setField;
+            setField = GameObject.Find(trainingMenu.Item1).transform.Find("Input").GetComponent<InputField>();
+            setField.text = trainingMenu.Item2.ToString();
         }
     }
 }
