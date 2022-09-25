@@ -81,6 +81,7 @@ public class RenshuController : MonoBehaviour
         isSelectedMemberText(targetMemberObj);
         selectedMemberObj = targetMemberObj;
         selectedMember = targetMember;
+        ClearTrainingMenuInput();
         SetTrainingMenuInput();
         ViewSelectedMemberInformation(targetMember);
     }
@@ -202,9 +203,10 @@ public class RenshuController : MonoBehaviour
     {
         List<Tuple<string, int>> trainingMenuTuple = new List<Tuple<string, int>>();
         int totalTrainingMinutes = 0;
-        foreach (GameObject child in trainingMenuParentLeft.transform)
+        for (int i = 0; i < trainingMenuParentLeft.transform.childCount; i++)
         {   
-            if(! child.name.StartsWith("Labe"))
+            GameObject child = trainingMenuParentLeft.transform.GetChild(i).gameObject;
+            if(! child.name.StartsWith("Label"))
             {
                 if (child.transform.Find("Input").GetComponent<InputField>().text == "")
                 {child.transform.Find("Input").GetComponent<InputField>().text = "0";}
@@ -216,9 +218,10 @@ public class RenshuController : MonoBehaviour
             }
         }
 
-        foreach (GameObject child in trainingMenuParentRight.transform)
+        for (int i = 0; i < trainingMenuParentRight.transform.childCount; i++)
         {   
-            if(! child.name.StartsWith("Labe"))
+            GameObject child = trainingMenuParentRight.transform.GetChild(i).gameObject;
+            if(! child.name.StartsWith("Label"))
             {
                 if (child.transform.Find("Input").GetComponent<InputField>().text == "")
                 {child.transform.Find("Input").GetComponent<InputField>().text = "0";}
@@ -268,6 +271,27 @@ public class RenshuController : MonoBehaviour
             InputField setField;
             setField = GameObject.Find(trainingMenu.Item1).transform.Find("Input").GetComponent<InputField>();
             setField.text = trainingMenu.Item2.ToString();
+        }
+    }
+
+    private void ClearTrainingMenuInput()
+    {
+        for (int i = 0; i < trainingMenuParentLeft.transform.childCount; i++)
+        {   
+            GameObject child = trainingMenuParentLeft.transform.GetChild(i).gameObject;
+            if(! child.name.StartsWith("Label"))
+            {
+                child.transform.Find("Input").GetComponent<InputField>().text = "0";
+            }
+        }
+
+        for (int i = 0; i < trainingMenuParentRight.transform.childCount; i++)
+        {   
+            GameObject child = trainingMenuParentRight.transform.GetChild(i).gameObject;
+            if(! child.name.StartsWith("Label"))
+            {
+                child.transform.Find("Input").GetComponent<InputField>().text = "0";
+            }
         }
     }
 }
