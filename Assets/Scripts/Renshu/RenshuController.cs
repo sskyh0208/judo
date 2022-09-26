@@ -317,55 +317,50 @@ public class RenshuController : MonoBehaviour
         }
     }
 
-    public void SetAutoBalance()
+    public void ResetValueInput()
     {
-        // 練習メニューをバランスよく自動設定する
-        SetDefaultValueInput();
-        int trainingLimitMinutes = targetSchool.trainingLimitMinutes;
-        switch (trainingLimitMinutes)
-        {
-            
-            default:
-            case 120:
-                GameObject.Find("RandoriTachi").transform.Find("Input").GetComponent<InputField>().text = "21";
-                GameObject.Find("UchikomiTe").transform.Find("Input").GetComponent<InputField>().text = "3";
-                GameObject.Find("NagekomiTe").transform.Find("Input").GetComponent<InputField>().text = "3";
-                GameObject.Find("UchikomiKoshi").transform.Find("Input").GetComponent<InputField>().text = "3";
-                GameObject.Find("NagekomiKoshi").transform.Find("Input").GetComponent<InputField>().text = "3";
-                GameObject.Find("UchikomiAshi").transform.Find("Input").GetComponent<InputField>().text = "3";
-                GameObject.Find("NagekomiAshi").transform.Find("Input").GetComponent<InputField>().text = "3";
-                GameObject.Find("RandoriNe").transform.Find("Input").GetComponent<InputField>().text = "12";
-                GameObject.Find("UchikomiOsae").transform.Find("Input").GetComponent<InputField>().text = "3";
-                GameObject.Find("UchikomiShime").transform.Find("Input").GetComponent<InputField>().text = "3";
-                GameObject.Find("UchikomiKansetsu").transform.Find("Input").GetComponent<InputField>().text = "3";
-                GameObject.Find("Running").transform.Find("Input").GetComponent<InputField>().text = "30";
-                GameObject.Find("Dash").transform.Find("Input").GetComponent<InputField>().text = "10";
-                GameObject.Find("SelfWeight").transform.Find("Input").GetComponent<InputField>().text = "20";
-                break;
-
-            case 180:
-                break;
-
-            case 240:
-                break;
+        // null値のinputfieldに0を入れる
+        GameObject trainingMenuList = GameObject.Find("TrainingMenuList");
+        for (int i = 0; i < trainingMenuList.transform.childCount; i++)
+        {   
+            GameObject child = trainingMenuList.transform.GetChild(i).gameObject;
+            if(! child.name.StartsWith(value: "Label"))
+            {
+                child.transform.Find("Input").GetComponent<InputField>().text = "0";
+            }
         }
+        GameObject.Find("LimitMinutes").GetComponent<Text>().text = "0";
     }
 
-    public void SetAutoTachiwaza()
+    private void SetDisplayLimitMinutes()
     {
-        // 練習メニューを立技重視で設定する
-        SetDefaultValueInput();
+        int displayLimitMinutes = 0;
+        GameObject trainingMenuList = GameObject.Find("TrainingMenuList");
+        for (int i = 0; i < trainingMenuList.transform.childCount; i++)
+        {   
+            GameObject child = trainingMenuList.transform.GetChild(i).gameObject;
+            if(! child.name.StartsWith(value: "Label"))
+            {
+                if (child.transform.Find("Input").GetComponent<InputField>().text == "")
+                {
+                    child.transform.Find("Input").GetComponent<InputField>().text = "0";
+                }
+                displayLimitMinutes += int.Parse(child.transform.Find("Input").GetComponent<InputField>().text);
+            }
+        }
+        GameObject.Find("LimitMinutes").GetComponent<Text>().text = displayLimitMinutes.ToString();
     }
 
-    public void SetAutoNewaza()
+    public void SetAutoMenu(string type)
     {
-        // 練習メニューを寝技重視で設定する
-        SetDefaultValueInput();
-    }
-
-    public void SetAutoKiso()
-    {
-        // 練習メニューを基礎重視で設定する
-        SetDefaultValueInput();
+        // 練習メニューを自動設定する
+        ResetValueInput();
+        int trainingLimitMinutes = targetSchool.trainingLimitMinutes;
+        foreach (KeyValuePair<string, int> item in GameData.instance.trainingManager.GetTrainingMenuTemplateDictionary(trainingLimitMinutes, type))
+        {
+            GameObject.Find(item.Key).transform.Find("Input").GetComponent<InputField>().text = item.Value.ToString();
+            trainingLimitMinutes -= item.Value;
+        }
+        SetDisplayLimitMinutes();
     }
 }
