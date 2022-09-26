@@ -81,8 +81,8 @@ public class RenshuController : MonoBehaviour
         isSelectedMemberText(targetMemberObj);
         selectedMemberObj = targetMemberObj;
         selectedMember = targetMember;
-        ClearTrainingMenuInput();
-        SetTrainingMenuInput();
+        // ClearTrainingMenuInput();
+        // SetTrainingMenuInput();
         ViewSelectedMemberInformation(targetMember);
     }
 
@@ -293,5 +293,79 @@ public class RenshuController : MonoBehaviour
                 child.transform.Find("Input").GetComponent<InputField>().text = "0";
             }
         }
+    }
+
+    public void DisplayRenshuMenuTab(bool is_display)
+    {
+        GameObject renshuUICanvas = GameObject.Find("RenshuUICanvas");
+        GameObject trainingMenuPanel = renshuUICanvas.transform.Find("TrainingMenuPanel").gameObject;
+        trainingMenuPanel.SetActive(is_display);
+    }
+
+    private void SetDefaultValueInput()
+    {
+        // null値のinputfieldに0を入れる
+        GameObject trainingMenuList = GameObject.Find("TrainingMenuList");
+        for (int i = 0; i < trainingMenuList.transform.childCount; i++)
+        {   
+            GameObject child = trainingMenuList.transform.GetChild(i).gameObject;
+            if(! child.name.StartsWith(value: "Label"))
+            {
+                if (child.transform.Find("Input").GetComponent<InputField>().text == "")
+                {child.transform.Find("Input").GetComponent<InputField>().text = "0";}
+            }
+        }
+    }
+
+    public void SetAutoBalance()
+    {
+        // 練習メニューをバランスよく自動設定する
+        SetDefaultValueInput();
+        int trainingLimitMinutes = targetSchool.trainingLimitMinutes;
+        switch (trainingLimitMinutes)
+        {
+            
+            default:
+            case 120:
+                GameObject.Find("RandoriTachi").transform.Find("Input").GetComponent<InputField>().text = "21";
+                GameObject.Find("UchikomiTe").transform.Find("Input").GetComponent<InputField>().text = "3";
+                GameObject.Find("NagekomiTe").transform.Find("Input").GetComponent<InputField>().text = "3";
+                GameObject.Find("UchikomiKoshi").transform.Find("Input").GetComponent<InputField>().text = "3";
+                GameObject.Find("NagekomiKoshi").transform.Find("Input").GetComponent<InputField>().text = "3";
+                GameObject.Find("UchikomiAshi").transform.Find("Input").GetComponent<InputField>().text = "3";
+                GameObject.Find("NagekomiAshi").transform.Find("Input").GetComponent<InputField>().text = "3";
+                GameObject.Find("RandoriNe").transform.Find("Input").GetComponent<InputField>().text = "12";
+                GameObject.Find("UchikomiOsae").transform.Find("Input").GetComponent<InputField>().text = "3";
+                GameObject.Find("UchikomiShime").transform.Find("Input").GetComponent<InputField>().text = "3";
+                GameObject.Find("UchikomiKansetsu").transform.Find("Input").GetComponent<InputField>().text = "3";
+                GameObject.Find("Running").transform.Find("Input").GetComponent<InputField>().text = "30";
+                GameObject.Find("Dash").transform.Find("Input").GetComponent<InputField>().text = "10";
+                GameObject.Find("SelfWeight").transform.Find("Input").GetComponent<InputField>().text = "20";
+                break;
+
+            case 180:
+                break;
+
+            case 240:
+                break;
+        }
+    }
+
+    public void SetAutoTachiwaza()
+    {
+        // 練習メニューを立技重視で設定する
+        SetDefaultValueInput();
+    }
+
+    public void SetAutoNewaza()
+    {
+        // 練習メニューを寝技重視で設定する
+        SetDefaultValueInput();
+    }
+
+    public void SetAutoKiso()
+    {
+        // 練習メニューを基礎重視で設定する
+        SetDefaultValueInput();
     }
 }
