@@ -14,20 +14,21 @@ public class RenshuController : MonoBehaviour
     private GameObject selectedMemberObj;
     private PlayerManager selectedMember;
     private GameObject trainingMenuPanel;
-    private GameObject trainingMenuParentRight;
-    private GameObject trainingMenuParentLeft;
+    private GameObject trainingMenuList;
     private bool is_test = true;
     School targetSchool;
+
+    private int displayTrainingMenuTabNum;
 
     private void Start() {
 
         // テスト用
         if(this.is_test){TestDataGenerate();}
 
-        trainingMenuPanel = GameObject.Find("TrainingMenuPanel");
         targetSchool = GameData.instance.GetPlayerSchool();
-        trainingMenuParentLeft = GameObject.Find("LeftTraining");
-        trainingMenuParentRight = GameObject.Find("RightTraining");
+        GameObject renshuUICanvas = GameObject.Find("RenshuUICanvas");
+        trainingMenuPanel = renshuUICanvas.transform.Find("TrainingMenuPanel").gameObject;
+        trainingMenuList = trainingMenuPanel.transform.Find("TrainingMenuInnerPanel").transform.Find("TrainingMenuList").gameObject;
 
         SetMySchoolMemberSelectButton();
     }
@@ -199,113 +200,98 @@ public class RenshuController : MonoBehaviour
         memberStatusPanel.transform.Find("MemberWaza7Panel").gameObject.SetActive(true);
     }
 
-    private List<Tuple<string, int>> GetTrainingMenuInput()
-    {
-        List<Tuple<string, int>> trainingMenuTuple = new List<Tuple<string, int>>();
-        int totalTrainingMinutes = 0;
-        for (int i = 0; i < trainingMenuParentLeft.transform.childCount; i++)
-        {   
-            GameObject child = trainingMenuParentLeft.transform.GetChild(i).gameObject;
-            if(! child.name.StartsWith("Label"))
-            {
-                if (child.transform.Find("Input").GetComponent<InputField>().text == "")
-                {child.transform.Find("Input").GetComponent<InputField>().text = "0";}
-                int trainingMinutes = Int32.Parse(child.transform.Find("Input").GetComponent<InputField>().text);
-                if(trainingMinutes == 0){continue;}
-                string trainingName = child.name;
-                trainingMenuTuple.Add(new Tuple<string, int>(trainingName, trainingMinutes));
-                totalTrainingMinutes += trainingMinutes;
-            }
-        }
+    // private List<Tuple<string, int>> GetTrainingMenuInput()
+    // {
+    //     List<Tuple<string, int>> trainingMenuTuple = new List<Tuple<string, int>>();
+    //     int totalTrainingMinutes = 0;
+    //     for (int i = 0; i < trainingMenuParentLeft.transform.childCount; i++)
+    //     {   
+    //         GameObject child = trainingMenuParentLeft.transform.GetChild(i).gameObject;
+    //         if(! child.name.StartsWith("Label"))
+    //         {
+    //             if (child.transform.Find("Input").GetComponent<InputField>().text == "")
+    //             {child.transform.Find("Input").GetComponent<InputField>().text = "0";}
+    //             int trainingMinutes = Int32.Parse(child.transform.Find("Input").GetComponent<InputField>().text);
+    //             if(trainingMinutes == 0){continue;}
+    //             string trainingName = child.name;
+    //             trainingMenuTuple.Add(new Tuple<string, int>(trainingName, trainingMinutes));
+    //             totalTrainingMinutes += trainingMinutes;
+    //         }
+    //     }
 
-        for (int i = 0; i < trainingMenuParentRight.transform.childCount; i++)
-        {   
-            GameObject child = trainingMenuParentRight.transform.GetChild(i).gameObject;
-            if(! child.name.StartsWith("Label"))
-            {
-                if (child.transform.Find("Input").GetComponent<InputField>().text == "")
-                {child.transform.Find("Input").GetComponent<InputField>().text = "0";}
-                int trainingMinutes = Int32.Parse(child.transform.Find("Input").GetComponent<InputField>().text);
-                if(trainingMinutes == 0){continue;}
-                string trainingName = child.name;
-                trainingMenuTuple.Add(new Tuple<string, int>(trainingName, trainingMinutes));
-                totalTrainingMinutes += trainingMinutes;
-            }
-        }
+    //     for (int i = 0; i < trainingMenuParentRight.transform.childCount; i++)
+    //     {   
+    //         GameObject child = trainingMenuParentRight.transform.GetChild(i).gameObject;
+    //         if(! child.name.StartsWith("Label"))
+    //         {
+    //             if (child.transform.Find("Input").GetComponent<InputField>().text == "")
+    //             {child.transform.Find("Input").GetComponent<InputField>().text = "0";}
+    //             int trainingMinutes = Int32.Parse(child.transform.Find("Input").GetComponent<InputField>().text);
+    //             if(trainingMinutes == 0){continue;}
+    //             string trainingName = child.name;
+    //             trainingMenuTuple.Add(new Tuple<string, int>(trainingName, trainingMinutes));
+    //             totalTrainingMinutes += trainingMinutes;
+    //         }
+    //     }
 
-        if(trainingMenuTuple.Count == 0)
-        {
-            // 設定されていないと警告を出す
-            Debug.Log("練習が何も設定されていません。");
-        }
-        else if(targetSchool.CheckTrainingLimitMinutes(totalTrainingMinutes))
-        {
-            // 超過していると警告文を出す
-            Debug.Log(string.Format("練習時間を超過しています。　上限: {0}  設定値: {1}", targetSchool.trainingLimitMinutes, totalTrainingMinutes));
-        }
-        return trainingMenuTuple;
-    }
+    //     if(trainingMenuTuple.Count == 0)
+    //     {
+    //         // 設定されていないと警告を出す
+    //         Debug.Log("練習が何も設定されていません。");
+    //     }
+    //     else if(targetSchool.CheckTrainingLimitMinutes(totalTrainingMinutes))
+    //     {
+    //         // 超過していると警告文を出す
+    //         Debug.Log(string.Format("練習時間を超過しています。　上限: {0}  設定値: {1}", targetSchool.trainingLimitMinutes, totalTrainingMinutes));
+    //     }
+    //     return trainingMenuTuple;
+    // }
 
     public void SetSoloTrainingMenu()
     {
         // 練習内容の初期化
         selectedMember.ClearTrainingMenu();
-        selectedMember.trainingMenu = GetTrainingMenuInput();
+        // selectedMember.trainingMenu = GetTrainingMenuInput();
     }
 
     public void SetAllTrainingMenu()
     {
-        List<Tuple<string, int>> trainingMenuTuple = GetTrainingMenuInput();
+        // List<Tuple<string, int>> trainingMenuTuple = GetTrainingMenuInput();
         foreach (PlayerManager member in targetSchool.GetSortDescMembers())
         {
             // 練習内容の初期化
             member.ClearTrainingMenu();
-            member.trainingMenu = trainingMenuTuple;
+            // member.trainingMenu = trainingMenuTuple;
         }
     }
 
-    private void SetTrainingMenuInput()
+    private void SetTrainingMenuInput(Dictionary<string, int> trainingMenu)
     {
-        foreach (Tuple<string, int> trainingMenu in selectedMember.trainingMenu)
+        foreach (KeyValuePair<string, int> item in trainingMenu)
         {
             InputField setField;
-            setField = GameObject.Find(trainingMenu.Item1).transform.Find("Input").GetComponent<InputField>();
-            setField.text = trainingMenu.Item2.ToString();
+            setField = GameObject.Find(item.Key).transform.Find("Input").GetComponent<InputField>();
+            setField.text = item.Value.ToString();
         }
     }
 
-    private void ClearTrainingMenuInput()
+    public void OpenTrainingMenu(int setMenuNum)
     {
-        for (int i = 0; i < trainingMenuParentLeft.transform.childCount; i++)
-        {   
-            GameObject child = trainingMenuParentLeft.transform.GetChild(i).gameObject;
-            if(! child.name.StartsWith("Label"))
-            {
-                child.transform.Find("Input").GetComponent<InputField>().text = "0";
-            }
-        }
-
-        for (int i = 0; i < trainingMenuParentRight.transform.childCount; i++)
-        {   
-            GameObject child = trainingMenuParentRight.transform.GetChild(i).gameObject;
-            if(! child.name.StartsWith("Label"))
-            {
-                child.transform.Find("Input").GetComponent<InputField>().text = "0";
-            }
-        }
+        this.displayTrainingMenuTabNum = setMenuNum;
+        Dictionary<string, int> setMenuDict = targetSchool.GetTrainingMenu(setMenuNum);
+        trainingMenuPanel.SetActive(true);
+        if (setMenuDict.Count != 0){SetTrainingMenuInput(setMenuDict);}
+        else{ResetValueInput();}
     }
 
-    public void DisplayRenshuMenuTab(bool is_display)
+    public void CloseTrainingMenu()
     {
-        GameObject renshuUICanvas = GameObject.Find("RenshuUICanvas");
-        GameObject trainingMenuPanel = renshuUICanvas.transform.Find("TrainingMenuPanel").gameObject;
-        trainingMenuPanel.SetActive(is_display);
+        trainingMenuPanel.SetActive(false);
     }
 
     private void SetDefaultValueInput()
     {
         // null値のinputfieldに0を入れる
-        GameObject trainingMenuList = GameObject.Find("TrainingMenuList");
         for (int i = 0; i < trainingMenuList.transform.childCount; i++)
         {   
             GameObject child = trainingMenuList.transform.GetChild(i).gameObject;
@@ -320,7 +306,6 @@ public class RenshuController : MonoBehaviour
     public void ResetValueInput()
     {
         // null値のinputfieldに0を入れる
-        GameObject trainingMenuList = GameObject.Find("TrainingMenuList");
         for (int i = 0; i < trainingMenuList.transform.childCount; i++)
         {   
             GameObject child = trainingMenuList.transform.GetChild(i).gameObject;
@@ -335,7 +320,6 @@ public class RenshuController : MonoBehaviour
     private void SetDisplayLimitMinutes()
     {
         int displayLimitMinutes = 0;
-        GameObject trainingMenuList = GameObject.Find("TrainingMenuList");
         for (int i = 0; i < trainingMenuList.transform.childCount; i++)
         {   
             GameObject child = trainingMenuList.transform.GetChild(i).gameObject;

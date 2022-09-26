@@ -145,6 +145,11 @@ public class School
     public Dictionary<int, PlayerManager> regularMembers;
 
     public int trainingLimitMinutes;
+    public Dictionary<string, int> trainingMenu1;
+    public Dictionary<string, int> trainingMenu2;
+    public Dictionary<string, int> trainingMenu3;
+    public Dictionary<string, int> trainingMenu4;
+    public Dictionary<string, int> trainingMenu5;
     
 
     public School(string id, string placeId, string name, int schoolRank)
@@ -160,6 +165,11 @@ public class School
         this.members = new Dictionary<string, PlayerManager>();
         this.regularMembers = new Dictionary<int, PlayerManager>();
         this.trainingLimitMinutes = 120;
+        this.trainingMenu1 = new Dictionary<string, int>();
+        this.trainingMenu2 = new Dictionary<string, int>();
+        this.trainingMenu3 = new Dictionary<string, int>();
+        this.trainingMenu4 = new Dictionary<string, int>();
+        this.trainingMenu5 = new Dictionary<string, int>();
         SetSchoolRank();
     }
 
@@ -302,5 +312,23 @@ public class School
     public bool CheckTrainingLimitMinutes(int minutes)
     {
         return minutes > this.trainingLimitMinutes;
+    }
+
+    public Dictionary<string, int> GetTrainingMenu(int setMenuNum)
+    {
+        switch (setMenuNum)
+        {
+            default:
+            case 1:
+                return this.trainingMenu1;
+            case 2:
+                return this.trainingMenu2;
+            case 3:
+                return this.trainingMenu3;
+            case 4:
+                return this.trainingMenu4;
+            case 5:
+                return this.trainingMenu5;
+        }
     }
 }
