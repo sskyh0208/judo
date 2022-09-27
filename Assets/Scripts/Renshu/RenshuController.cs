@@ -200,58 +200,41 @@ public class RenshuController : MonoBehaviour
         memberStatusPanel.transform.Find("MemberWaza7Panel").gameObject.SetActive(true);
     }
 
-    // private List<Tuple<string, int>> GetTrainingMenuInput()
-    // {
-    //     List<Tuple<string, int>> trainingMenuTuple = new List<Tuple<string, int>>();
-    //     int totalTrainingMinutes = 0;
-    //     for (int i = 0; i < trainingMenuParentLeft.transform.childCount; i++)
-    //     {   
-    //         GameObject child = trainingMenuParentLeft.transform.GetChild(i).gameObject;
-    //         if(! child.name.StartsWith("Label"))
-    //         {
-    //             if (child.transform.Find("Input").GetComponent<InputField>().text == "")
-    //             {child.transform.Find("Input").GetComponent<InputField>().text = "0";}
-    //             int trainingMinutes = Int32.Parse(child.transform.Find("Input").GetComponent<InputField>().text);
-    //             if(trainingMinutes == 0){continue;}
-    //             string trainingName = child.name;
-    //             trainingMenuTuple.Add(new Tuple<string, int>(trainingName, trainingMinutes));
-    //             totalTrainingMinutes += trainingMinutes;
-    //         }
-    //     }
-
-    //     for (int i = 0; i < trainingMenuParentRight.transform.childCount; i++)
-    //     {   
-    //         GameObject child = trainingMenuParentRight.transform.GetChild(i).gameObject;
-    //         if(! child.name.StartsWith("Label"))
-    //         {
-    //             if (child.transform.Find("Input").GetComponent<InputField>().text == "")
-    //             {child.transform.Find("Input").GetComponent<InputField>().text = "0";}
-    //             int trainingMinutes = Int32.Parse(child.transform.Find("Input").GetComponent<InputField>().text);
-    //             if(trainingMinutes == 0){continue;}
-    //             string trainingName = child.name;
-    //             trainingMenuTuple.Add(new Tuple<string, int>(trainingName, trainingMinutes));
-    //             totalTrainingMinutes += trainingMinutes;
-    //         }
-    //     }
-
-    //     if(trainingMenuTuple.Count == 0)
-    //     {
-    //         // 設定されていないと警告を出す
-    //         Debug.Log("練習が何も設定されていません。");
-    //     }
-    //     else if(targetSchool.CheckTrainingLimitMinutes(totalTrainingMinutes))
-    //     {
-    //         // 超過していると警告文を出す
-    //         Debug.Log(string.Format("練習時間を超過しています。　上限: {0}  設定値: {1}", targetSchool.trainingLimitMinutes, totalTrainingMinutes));
-    //     }
-    //     return trainingMenuTuple;
-    // }
+    private Dictionary<string, int> GetTrainingMenuInput()
+    {
+        Dictionary<string, int> trainingMenu = new Dictionary<string, int>();
+        int totalTrainingMinutes = 0;
+        for (int i = 0; i < trainingMenuList.transform.childCount; i++)
+        {   
+            GameObject child = trainingMenuList.transform.GetChild(i).gameObject;
+            if(! child.name.StartsWith("Label"))
+            {
+                if (child.transform.Find("Input").GetComponent<InputField>().text == "")
+                {child.transform.Find("Input").GetComponent<InputField>().text = "0";}
+                int trainingMinutes = Int32.Parse(child.transform.Find("Input").GetComponent<InputField>().text);
+                if(trainingMinutes == 0){continue;}
+                trainingMenu[child.name] = trainingMinutes;
+                totalTrainingMinutes += trainingMinutes;
+            }
+        }
+        return trainingMenu;
+    }
 
     public void SetSoloTrainingMenu()
     {
         // 練習内容の初期化
         selectedMember.ClearTrainingMenu();
         // selectedMember.trainingMenu = GetTrainingMenuInput();
+        // if(trainingMenuTuple.Count == 0)
+        // {
+        //     // 設定されていないと警告を出す
+        //     Debug.Log("練習が何も設定されていません。");
+        // }
+        // else if(targetSchool.CheckTrainingLimitMinutes(totalTrainingMinutes))
+        // {
+        //     // 超過していると警告文を出す
+        //     Debug.Log(string.Format("練習時間を超過しています。　上限: {0}  設定値: {1}", targetSchool.trainingLimitMinutes, totalTrainingMinutes));
+        // }
     }
 
     public void SetAllTrainingMenu()
@@ -287,6 +270,7 @@ public class RenshuController : MonoBehaviour
     public void CloseTrainingMenu()
     {
         trainingMenuPanel.SetActive(false);
+        targetSchool.SetTrainingMenu(this.displayTrainingMenuTabNum, GetTrainingMenuInput());
     }
 
     private void SetDefaultValueInput()

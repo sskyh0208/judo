@@ -331,4 +331,27 @@ public class School
                 return this.trainingMenu5;
         }
     }
+
+    public void SetTrainingMenu(int setMenuNum, Dictionary<string, int>trainingMenu)
+    {
+        switch (setMenuNum)
+        {
+            default:
+            case 1:
+                this.trainingMenu1 = trainingMenu;
+                break;
+            case 2:
+                this.trainingMenu2 = trainingMenu;
+                break;
+            case 3:
+                this.trainingMenu3 = trainingMenu;
+                break;
+            case 4:
+                this.trainingMenu4 = trainingMenu;
+                break;
+            case 5:
+                this.trainingMenu5 = trainingMenu;
+                break;
+        }
+    }
 }
