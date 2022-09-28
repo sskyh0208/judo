@@ -539,3 +539,226 @@ public class TrainingManager
         return template;
     }
 }
+
+public class Training {
+    public int firstExp = 0;
+    public int secondExp = 0;
+    public int thirdExp = 0;
+
+    // ファースト経験値に係数が必要かどうか
+    public bool firstExpCoef = false;
+    // セカンド経験値に係数が必要かどうか
+    public bool secondExpCoef = false;
+    // サード経験値に係数が必要かどうか
+    public bool thirdExpCoef = false;
+
+    // 技IDで指定する場合追加
+    public List<string> firstExpWazaIdList = new List<string>();
+    // 技タイプで指定する場合追加
+    public List<string> firstExpWazaTypeList = new List<string>();
+    // 技グループで指定する場合追加
+    public List<string> firstExpWazaGroupList = new List<string>();
+    public List<string> secondExpWazaIdList = new List<string>();
+    public List<string> secondExpWazaTypeList = new List<string>();
+    public List<string> secondExpWazaGroupList = new List<string>();
+    public List<string> thirdExpWazaIdList = new List<string>();
+    public List<string> thirdExpWazaTypeList = new List<string>();
+    public List<string> thirdExpWazaGroupList = new List<string>();
+
+}
+
+class Running: Training
+{
+    public Running()
+    {
+        this.firstExp = 100;
+        this.secondExp = 20;
+
+        this.firstExpCoef = true;
+        this.secondExpCoef = true;
+
+        this.firstExpWazaIdList = new List<string>(){"902"};
+        this.secondExpWazaTypeList = new List<string>(){"0", "1"};
+    }
+}
+
+class Dash: Training
+{
+    public Dash()
+    {
+        this.firstExp = 100;
+        this.secondExp = 20;
+
+        this.firstExpCoef = true;
+        this.secondExpCoef = true;
+
+        this.firstExpWazaIdList = new List<string>(){"901"};
+        this.secondExpWazaTypeList = new List<string>(){"0", "1"};
+    }
+}
+
+class KaidanDash: Training
+{
+    public KaidanDash()
+    {
+        this.firstExp = 70;
+        this.secondExp = 40;
+        this.thirdExp = 20;
+
+        this.firstExpCoef = true;
+        this.secondExpCoef = true;
+        this.thirdExpCoef = true;
+        
+        this.firstExpWazaIdList = new List<string>(){"902"};
+        this.secondExpWazaIdList = new List<string>(){"901"};
+        this.thirdExpWazaTypeList = new List<string>(){"0", "1"};
+    }
+}
+
+class SelfWeight: Training
+{
+    public SelfWeight()
+    {
+        this.firstExp = 100;
+        this.secondExp = 20;
+
+        this.firstExpCoef = true;
+        this.secondExpCoef = true;
+
+        this.firstExpWazaIdList = new List<string>(){"900"};
+        this.secondExpWazaTypeList = new List<string>(){"0", "1"};
+    }
+}
+
+class MachineWeight: Training
+{
+    public MachineWeight()
+    {
+        this.firstExp = 150;
+        this.secondExp = 20;
+
+        this.firstExpCoef = true;
+        this.firstExpWazaIdList = new List<string>(){"900"};
+        this.secondExpWazaTypeList = new List<string>(){"0", "1"};
+    }
+}
+
+class UchikomiTe: Training
+{
+    public UchikomiTe()
+    {
+        this.firstExp = 100;
+        this.secondExp = 20;
+
+        this.firstExpCoef = true;
+        this.secondExpCoef = true;
+
+        this.firstExpWazaGroupList = new List<string>(){"0"};
+        this.secondExpWazaIdList = new List<string>(){"900", "901", "902"};
+    }
+}
+
+class UchikomiKoshi: Training
+{
+    public UchikomiKoshi()
+    {
+        this.firstExp = 100;
+        this.secondExp = 20;
+
+        this.firstExpCoef = true;
+        this.secondExpCoef = true;
+
+        this.firstExpWazaGroupList = new List<string>(){"1"};
+        this.secondExpWazaIdList = new List<string>(){"900", "901", "902"};
+    }
+}
+
+class UchikomiAshi: Training
+{
+    public UchikomiAshi()
+    {
+        this.firstExp = 100;
+        this.secondExp = 20;
+
+        this.firstExpCoef = true;
+        this.secondExpCoef = true;
+
+        this.firstExpWazaGroupList = new List<string>(){"2"};
+        this.secondExpWazaIdList = new List<string>(){"900", "901", "902"};
+    }
+}
+
+class RandoriTachi: Training
+{
+    public RandoriTachi()
+    {
+        this.firstExp = 70;
+        this.secondExp = 40;
+
+        this.firstExpCoef = true;
+        this.secondExpCoef = true;
+
+        this.firstExpWazaTypeList = new List<string>(){"0"};
+        this.secondExpWazaIdList = new List<string>(){"900", "901", "902"};
+    }
+}
+
+class UchikomiOsae: Training
+{
+    public UchikomiOsae()
+    {
+        this.firstExp = 100;
+        this.secondExp = 30;
+
+        this.firstExpCoef = true;
+        this.secondExpCoef = true;
+
+        this.firstExpWazaGroupList = new List<string>(){"5"};
+        this.secondExpWazaIdList = new List<string>(){"900", "901", "902"};
+    }
+}
+
+class UchikomiShime: Training
+{
+    public UchikomiShime()
+    {
+        this.firstExp = 100;
+        this.secondExp = 30;
+
+        this.firstExpCoef = true;
+        this.secondExpCoef = true;
+
+        this.firstExpWazaGroupList = new List<string>(){"6"};
+        this.secondExpWazaIdList = new List<string>(){"900", "901", "902"};
+    }
+}
+
+class UchikomiKansetsu: Training
+{
+    public UchikomiKansetsu()
+    {
+        this.firstExp = 100;
+        this.secondExp = 30;
+
+        this.firstExpCoef = true;
+        this.secondExpCoef = true;
+
+        this.firstExpWazaGroupList = new List<string>(){"7"};
+        this.secondExpWazaIdList = new List<string>(){"900", "901", "902"};
+    }
+}
+
+class RandoriNe: Training
+{
+    public RandoriNe()
+    {
+        this.firstExp = 70;
+        this.secondExp = 50;
+
+        this.firstExpCoef = true;
+        this.secondExpCoef = true;
+
+        this.firstExpWazaTypeList = new List<string>(){"1"};
+        this.secondExpWazaIdList = new List<string>(){"900", "901", "902"};
+    }
+}

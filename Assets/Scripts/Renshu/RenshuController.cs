@@ -331,4 +331,51 @@ public class RenshuController : MonoBehaviour
         }
         SetDisplayLimitMinutes();
     }
+
+    private Tuple<RectTransform, Image> GenerateTrainingBarParts(GameObject trainingBar)
+    {
+        GameObject go = new GameObject("Barparts");
+        go.transform.parent = trainingBar.transform;
+
+        Image image = go.AddComponent<Image>();
+        RectTransform rect = go.GetComponent<RectTransform>();
+
+        rect.sizeDelta = new Vector2(0, trainingBar.GetComponent<RectTransform>().sizeDelta.y);
+
+        return new Tuple<RectTransform, Image>(rect,image);
+    }
+
+    private void SetTrainingBar()
+    {
+        for (int i = 0; i <5; i++)
+        {
+            GameObject targetTrainingBar = new GameObject();
+            Dictionary<string, int> targetTrainingMenu = new Dictionary<string, int>();
+            switch (i)
+            {
+                default:
+                case 0:
+                    targetTrainingBar = GameObject.Find("TrainingMenuBar1");
+                    targetTrainingMenu = targetSchool.trainingMenu1;
+                    break;
+                case 1:
+                    targetTrainingBar = GameObject.Find("TrainingMenuBar2");
+                    targetTrainingMenu = targetSchool.trainingMenu2;
+                    break;
+                case 2:
+                    targetTrainingBar = GameObject.Find("TrainingMenuBar3");
+                    targetTrainingMenu = targetSchool.trainingMenu3;
+                    break;
+                case 3:
+                    targetTrainingBar = GameObject.Find("TrainingMenuBar4");
+                    targetTrainingMenu = targetSchool.trainingMenu4;
+                    break;
+                case 4:
+                    targetTrainingBar = GameObject.Find("TrainingMenuBar5");
+                    targetTrainingMenu = targetSchool.trainingMenu5;
+                    break;
+            }
+            Tuple<RectTransform, Image> targetBarparts = GenerateTrainingBarParts(targetTrainingBar);
+        }
+    }
 }
