@@ -42,7 +42,7 @@ public class PlayerManager
 
     public int totalStatus;
 
-    public List<Tuple<string, int>> trainingMenu;
+    public Dictionary<string, int> trainingMenu;
     public List<Tuple<string, int>> trainingMenuResult;
 
     public PlayerManager(string id, string nameKaki, string nameYomi, DateTime generateDt, int positionId, string placeId, string schoolId, int sense)
@@ -65,7 +65,7 @@ public class PlayerManager
         this.staminaString = GetAbillity("902").displayString;
         this.waza0String = GetAbillityTypeStatusDisplayString("0");
         this.waza1String = GetAbillityTypeStatusDisplayString("1");
-        this.trainingMenu = new List<Tuple<string, int>>();
+        this.trainingMenu = new Dictionary<string, int>();
         this.trainingMenuResult = new List<Tuple<string, int>>();
         this.cityRank = 0;
         this.placeRank = 0;
@@ -345,7 +345,7 @@ public class PlayerManager
 
     public void ClearTrainingMenu()
     {
-        this.trainingMenu = new List<Tuple<string, int>>();
+        this.trainingMenu = new Dictionary<string, int>();
         this.trainingMenuResult = new List<Tuple<string, int>>();
     }
 }

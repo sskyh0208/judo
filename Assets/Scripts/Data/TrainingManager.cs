@@ -63,7 +63,6 @@ public class TrainingManager
             }
         }
 
-
         foreach (string group in training.firstExpWazaGroupList)
         {
             foreach (string wazaId in GameData.instance.abillityManager.GetWazaIdArrayWithGroup(group))
@@ -92,7 +91,7 @@ public class TrainingManager
         return trainingMenuResult;
     }
 
-    private Training GetTraining(string trainingName)
+    public Training GetTraining(string trainingName)
     {
         switch (trainingName)
         {
@@ -348,6 +347,8 @@ public class TrainingManager
 }
 
 public class Training {
+
+    public string colorCode = "#000000";
     public int firstExp = 0;
     public int secondExp = 0;
     public int thirdExp = 0;

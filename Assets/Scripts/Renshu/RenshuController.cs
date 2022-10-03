@@ -19,6 +19,7 @@ public class RenshuController : MonoBehaviour
     School targetSchool;
 
     private int displayTrainingMenuTabNum;
+    private int selectTrainingBarNum;
 
     private void Start() {
 
@@ -219,32 +220,27 @@ public class RenshuController : MonoBehaviour
         }
         return trainingMenu;
     }
+    public void SelectTrainingBar(int selectNum)
+    {
+        // 選択中のトレーニングバーを設定する
+        this.selectTrainingBarNum = selectNum;
+    }
 
     public void SetSoloTrainingMenu()
     {
         // 練習内容の初期化
         selectedMember.ClearTrainingMenu();
-        // selectedMember.trainingMenu = GetTrainingMenuInput();
-        // if(trainingMenuTuple.Count == 0)
-        // {
-        //     // 設定されていないと警告を出す
-        //     Debug.Log("練習が何も設定されていません。");
-        // }
-        // else if(targetSchool.CheckTrainingLimitMinutes(totalTrainingMinutes))
-        // {
-        //     // 超過していると警告文を出す
-        //     Debug.Log(string.Format("練習時間を超過しています。　上限: {0}  設定値: {1}", targetSchool.trainingLimitMinutes, totalTrainingMinutes));
-        // }
+        selectedMember.trainingMenu = targetSchool.GetTrainingMenu(this.selectTrainingBarNum);
     }
 
     public void SetAllTrainingMenu()
     {
-        // List<Tuple<string, int>> trainingMenuTuple = GetTrainingMenuInput();
+        Dictionary<string, int> trainingMenu = targetSchool.GetTrainingMenu(this.selectTrainingBarNum);
         foreach (PlayerManager member in targetSchool.GetSortDescMembers())
         {
             // 練習内容の初期化
             member.ClearTrainingMenu();
-            // member.trainingMenu = trainingMenuTuple;
+            member.trainingMenu = trainingMenu;
         }
     }
 
@@ -271,6 +267,7 @@ public class RenshuController : MonoBehaviour
     {
         trainingMenuPanel.SetActive(false);
         targetSchool.SetTrainingMenu(this.displayTrainingMenuTabNum, GetTrainingMenuInput());
+        SetTrainingBar();
     }
 
     private void SetDefaultValueInput()
@@ -332,17 +329,38 @@ public class RenshuController : MonoBehaviour
         SetDisplayLimitMinutes();
     }
 
-    private Tuple<RectTransform, Image> GenerateTrainingBarParts(GameObject trainingBar)
+    private void GenerateTrainingBarParts(GameObject trainingBar, Dictionary<string, int> targetTrainingMenu)
     {
-        GameObject go = new GameObject("Barparts");
-        go.transform.parent = trainingBar.transform;
+        // 子要素削除
+        foreach (Transform child in trainingBar.transform)
+        {
+            Destroy(child.gameObject);
+        }
 
-        Image image = go.AddComponent<Image>();
-        RectTransform rect = go.GetComponent<RectTransform>();
+        if (targetTrainingMenu.Count > 0)
+        {
+            foreach (KeyValuePair<string, int> training in targetTrainingMenu)
+            {
+                GameObject go = new GameObject("Barparts");
+                go.transform.parent = trainingBar.transform;
+                Image image = go.AddComponent<Image>();
+                image.color = GetColor(GameData.instance.trainingManager.GetTraining(training.Key).colorCode);
+                RectTransform rect = go.GetComponent<RectTransform>();
 
-        rect.sizeDelta = new Vector2(0, trainingBar.GetComponent<RectTransform>().sizeDelta.y);
+                rect.sizeDelta = new Vector2(training.Value, trainingBar.GetComponent<RectTransform>().sizeDelta.y);
+            }
+        }
+        else
+        {
+            GameObject go = new GameObject("Barparts");
+            go.transform.parent = trainingBar.transform;
+            Image image = go.AddComponent<Image>();
+            image.color = Color.black;
+            RectTransform rect = go.GetComponent<RectTransform>();
 
-        return new Tuple<RectTransform, Image>(rect,image);
+            rect.sizeDelta = new Vector2(trainingBar.GetComponent<RectTransform>().sizeDelta.x, trainingBar.GetComponent<RectTransform>().sizeDelta.y);
+        }
+        // return new Tuple<RectTransform, Image>(rect,i mage);
     }
 
     private void SetTrainingBar()
@@ -375,7 +393,20 @@ public class RenshuController : MonoBehaviour
                     targetTrainingMenu = targetSchool.trainingMenu5;
                     break;
             }
-            Tuple<RectTransform, Image> targetBarparts = GenerateTrainingBarParts(targetTrainingBar);
+            this.GenerateTrainingBarParts(targetTrainingBar, targetTrainingMenu);
+        }
+    }
+
+    private Color GetColor(string colorCode)
+    {
+        Color color = default(Color);
+        if (ColorUtility.TryParseHtmlString(colorCode, out color))
+        {
+            return color;
+        }
+        else
+        {
+            return new Color32(255, 255, 255, 255);
         }
     }
 }
