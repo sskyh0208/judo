@@ -348,7 +348,7 @@ public class TrainingManager
 
 public class Training {
 
-    public string colorCode = "#000000";
+    public string colorCode = "#808080";
     public int firstExp = 0;
     public int secondExp = 0;
     public int thirdExp = 0;
@@ -372,6 +372,7 @@ class Running: Training
 {
     public Running()
     {
+        this.colorCode = "#CD5C5C";
         this.firstExp = 100;
         this.secondExp = 20;
 
@@ -384,6 +385,7 @@ class Dash: Training
 {
     public Dash()
     {
+        this.colorCode = "#CD5C5C";
         this.firstExp = 100;
         this.secondExp = 20;
 
@@ -396,6 +398,7 @@ class KaidanDash: Training
 {
     public KaidanDash()
     {
+        this.colorCode = "#CD5C5C";
         this.firstExp = 70;
         this.secondExp = 40;
         this.thirdExp = 20;
@@ -410,6 +413,7 @@ class SelfWeight: Training
 {
     public SelfWeight()
     {
+        this.colorCode = "#CD5C5C";
         this.firstExp = 100;
         this.secondExp = 20;
 
@@ -422,6 +426,7 @@ class MachineWeight: Training
 {
     public MachineWeight()
     {
+        this.colorCode = "#CD5C5C";
         this.firstExp = 150;
         this.secondExp = 20;
 
@@ -434,6 +439,7 @@ class Circuit: Training
 {
     public Circuit()
     {
+        this.colorCode = "#CD5C5C";
         this.firstExp = 70;
         this.secondExp = 30;
 
@@ -446,6 +452,7 @@ class UchikomiTe: Training
 {
     public UchikomiTe()
     {
+        this.colorCode = "#4169E1";
         this.firstExp = 90;
         this.secondExp = 10;
 
@@ -458,6 +465,7 @@ class IdoUchikomiTe: Training
 {
     public IdoUchikomiTe()
     {
+        this.colorCode = "#4169E1";
         this.firstExp = 130;
         this.secondExp = 20;
 
@@ -470,6 +478,7 @@ class SpeedUchikomiTe: Training
 {
     public SpeedUchikomiTe()
     {
+        this.colorCode = "#4169E1";
         this.firstExp = 120;
         this.secondExp = 30;
 
@@ -482,6 +491,7 @@ class SanninUchikomiTe: Training
 {
     public SanninUchikomiTe()
     {
+        this.colorCode = "#4169E1";
         this.firstExp = 120;
         this.secondExp = 30;
 
@@ -494,6 +504,7 @@ class NagekomiTe: Training
 {
     public NagekomiTe()
     {
+        this.colorCode = "#4169E1";
         this.firstExp = 150;
         this.secondExp = 10;
 
@@ -506,6 +517,7 @@ class UchikomiKoshi: Training
 {
     public UchikomiKoshi()
     {
+        this.colorCode = "#DAA520";
         this.firstExp = 100;
         this.secondExp = 20;
 
@@ -518,6 +530,7 @@ class IdoUchikomiKoshi: Training
 {
     public IdoUchikomiKoshi()
     {
+        this.colorCode = "#DAA520";
         this.firstExp = 140;
         this.secondExp = 20;
 
@@ -530,6 +543,7 @@ class SpeedUchikomiKoshi: Training
 {
     public SpeedUchikomiKoshi()
     {
+        this.colorCode = "#DAA520";
         this.firstExp = 130;
         this.secondExp = 30;
 
@@ -542,6 +556,7 @@ class SanninUchikomiKoshi: Training
 {
     public SanninUchikomiKoshi()
     {
+        this.colorCode = "#DAA520";
         this.firstExp = 130;
         this.secondExp = 30;
 
@@ -554,6 +569,7 @@ class NagekomiKoshi: Training
 {
     public NagekomiKoshi()
     {
+        this.colorCode = "#DAA520";
         this.firstExp = 150;
         this.secondExp = 10;
 
@@ -566,6 +582,7 @@ class UchikomiAshi: Training
 {
     public UchikomiAshi()
     {
+        this.colorCode = "#6B8E23";
         this.firstExp = 100;
         this.secondExp = 20;
 
@@ -578,6 +595,7 @@ class IdoUchikomiAshi: Training
 {
     public IdoUchikomiAshi()
     {
+        this.colorCode = "#6B8E23";
         this.firstExp = 140;
         this.secondExp = 20;
 
@@ -590,6 +608,7 @@ class SpeedUchikomiAshi: Training
 {
     public SpeedUchikomiAshi()
     {
+        this.colorCode = "#6B8E23";
         this.firstExp = 130;
         this.secondExp = 30;
 
@@ -602,6 +621,7 @@ class SanninUchikomiAshi: Training
 {
     public SanninUchikomiAshi()
     {
+        this.colorCode = "#6B8E23";
         this.firstExp = 130;
         this.secondExp = 30;
 
@@ -614,6 +634,7 @@ class NagekomiAshi: Training
 {
     public NagekomiAshi()
     {
+        this.colorCode = "#6B8E23";
         this.firstExp = 150;
         this.secondExp = 10;
 
@@ -626,6 +647,7 @@ class RandoriTachi: Training
 {
     public RandoriTachi()
     {
+        this.colorCode = "#B1063A";
         this.firstExp = 70;
         this.secondExp = 40;
 
@@ -638,6 +660,7 @@ class UchikomiOsae: Training
 {
     public UchikomiOsae()
     {
+        this.colorCode = "#800080";
         this.firstExp = 80;
         this.secondExp = 30;
 
@@ -650,6 +673,7 @@ class GrapplingOsae: Training
 {
     public GrapplingOsae()
     {
+        this.colorCode = "#800080";
         this.firstExp = 120;
         this.secondExp = 40;
 
@@ -662,6 +686,7 @@ class UchikomiShime: Training
 {
     public UchikomiShime()
     {
+        this.colorCode = "#800080";
         this.firstExp = 100;
         this.secondExp = 30;
 
@@ -674,6 +699,7 @@ class GrapplingShime: Training
 {
     public GrapplingShime()
     {
+        this.colorCode = "#800080";
         this.firstExp = 120;
         this.secondExp = 40;
 
@@ -686,6 +712,7 @@ class UchikomiKansetsu: Training
 {
     public UchikomiKansetsu()
     {
+        this.colorCode = "#800080";
         this.firstExp = 100;
         this.secondExp = 30;
 
@@ -698,6 +725,7 @@ class GrapplingKansetsu: Training
 {
     public GrapplingKansetsu()
     {
+        this.colorCode = "#800080";
         this.firstExp = 120;
         this.secondExp = 40;
 
@@ -710,6 +738,7 @@ class RandoriNe: Training
 {
     public RandoriNe()
     {
+        this.colorCode = "#745399";
         this.firstExp = 70;
         this.secondExp = 50;
 
