@@ -249,7 +249,7 @@ public class RenshuController : MonoBehaviour
         foreach (KeyValuePair<string, int> item in trainingMenu)
         {
             InputField setField;
-            setField = GameObject.Find(item.Key).transform.Find("Input").GetComponent<InputField>();
+            setField = trainingMenuList.transform.Find(item.Key).transform.Find("Input").GetComponent<InputField>();
             setField.text = item.Value.ToString();
         }
     }
@@ -323,7 +323,7 @@ public class RenshuController : MonoBehaviour
         int trainingLimitMinutes = targetSchool.trainingLimitMinutes;
         foreach (KeyValuePair<string, int> item in GameData.instance.trainingManager.GetTrainingMenuTemplateDictionary(trainingLimitMinutes, type))
         {
-            GameObject.Find(item.Key).transform.Find("Input").GetComponent<InputField>().text = item.Value.ToString();
+            trainingMenuList.transform.Find(item.Key).transform.Find("Input").GetComponent<InputField>().text = item.Value.ToString();
             trainingLimitMinutes -= item.Value;
         }
         SetDisplayLimitMinutes();
@@ -341,18 +341,21 @@ public class RenshuController : MonoBehaviour
         {
             foreach (KeyValuePair<string, int> training in targetTrainingMenu)
             {
-                GameObject go = new GameObject("Barparts");
+                GameObject go = new GameObject(training.Key);
                 go.transform.parent = trainingBar.transform;
                 Image image = go.AddComponent<Image>();
                 image.color = GetColor(GameData.instance.trainingManager.GetTraining(training.Key).colorCode);
                 RectTransform rect = go.GetComponent<RectTransform>();
 
-                rect.sizeDelta = new Vector2(training.Value, trainingBar.GetComponent<RectTransform>().sizeDelta.y);
+                float wariai = trainingBar.GetComponent<RectTransform>().sizeDelta.x / targetSchool.trainingLimitMinutes;
+                float size = (int)(training.Value * wariai);
+
+                rect.sizeDelta = new Vector2(size, trainingBar.GetComponent<RectTransform>().sizeDelta.y);
             }
         }
         else
         {
-            GameObject go = new GameObject("Barparts");
+            GameObject go = new GameObject("Empty");
             go.transform.parent = trainingBar.transform;
             Image image = go.AddComponent<Image>();
             image.color = Color.black;
@@ -367,7 +370,7 @@ public class RenshuController : MonoBehaviour
     {
         for (int i = 0; i <5; i++)
         {
-            GameObject targetTrainingBar = new GameObject();
+            GameObject targetTrainingBar = null;
             Dictionary<string, int> targetTrainingMenu = new Dictionary<string, int>();
             switch (i)
             {
