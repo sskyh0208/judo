@@ -32,6 +32,7 @@ public class RenshuController : MonoBehaviour
         trainingMenuList = trainingMenuPanel.transform.Find("TrainingMenuInnerPanel").transform.Find("TrainingMenuList").gameObject;
 
         SetMySchoolMemberSelectButton();
+        SetTrainingBar();
     }
 
     private void TestDataGenerate()
@@ -358,7 +359,7 @@ public class RenshuController : MonoBehaviour
             GameObject go = new GameObject("Empty");
             go.transform.parent = trainingBar.transform;
             Image image = go.AddComponent<Image>();
-            image.color = Color.black;
+            image.color = Color.gray;
             RectTransform rect = go.GetComponent<RectTransform>();
 
             rect.sizeDelta = new Vector2(trainingBar.GetComponent<RectTransform>().sizeDelta.x, trainingBar.GetComponent<RectTransform>().sizeDelta.y);
@@ -376,23 +377,23 @@ public class RenshuController : MonoBehaviour
             {
                 default:
                 case 0:
-                    targetTrainingBar = GameObject.Find("TrainingMenuBar1");
+                    targetTrainingBar = GameObject.Find("TrainingMenuBar1").transform.Find("DisplayBartLine").gameObject;
                     targetTrainingMenu = targetSchool.trainingMenu1;
                     break;
                 case 1:
-                    targetTrainingBar = GameObject.Find("TrainingMenuBar2");
+                    targetTrainingBar = GameObject.Find("TrainingMenuBar2").transform.Find("DisplayBartLine").gameObject;
                     targetTrainingMenu = targetSchool.trainingMenu2;
                     break;
                 case 2:
-                    targetTrainingBar = GameObject.Find("TrainingMenuBar3");
+                    targetTrainingBar = GameObject.Find("TrainingMenuBar3").transform.Find("DisplayBartLine").gameObject;
                     targetTrainingMenu = targetSchool.trainingMenu3;
                     break;
                 case 3:
-                    targetTrainingBar = GameObject.Find("TrainingMenuBar4");
+                    targetTrainingBar = GameObject.Find("TrainingMenuBar4").transform.Find("DisplayBartLine").gameObject;
                     targetTrainingMenu = targetSchool.trainingMenu4;
                     break;
                 case 4:
-                    targetTrainingBar = GameObject.Find("TrainingMenuBar5");
+                    targetTrainingBar = GameObject.Find("TrainingMenuBar5").transform.Find("DisplayBartLine").gameObject;
                     targetTrainingMenu = targetSchool.trainingMenu5;
                     break;
             }
@@ -409,7 +410,7 @@ public class RenshuController : MonoBehaviour
         }
         else
         {
-            return new Color32(255, 255, 255, 255);
+            return new Color32(126, 126, b: 126, 126);
         }
     }
 }
