@@ -20,6 +20,7 @@ public class RenshuController : MonoBehaviour
 
     private int displayTrainingMenuTabNum;
     private int selectTrainingBarNum;
+    private GameObject selectedOutline;
 
     private void Start() {
 
@@ -144,6 +145,15 @@ public class RenshuController : MonoBehaviour
         memberInforPanel.transform.Find("MemberStaminaText").GetComponent<Text>().text = member.GetAbillity("902").displayString;
         memberInforPanel.transform.Find("MemberStaminaSlider").GetComponent<Slider>().value = member.GetAbillity("902").limit;
         memberInforPanel.transform.Find("MemberStaminaSlider").Find("Present Area").GetComponent<Slider>().value = member.GetAbillity("902").status;
+        // 練習設定
+        if (member.trainingMenu.trainingMenuNum > 0)
+        {
+            memberInforPanel.transform.Find("MemberSelectTrainingText").GetComponent<Text>().text = "メニュー" + member.trainingMenu.trainingMenuNum;
+        }
+        else
+        {
+            memberInforPanel.transform.Find("MemberSelectTrainingText").GetComponent<Text>().text = "なし";
+        }
 
 
         // 技表示
@@ -231,7 +241,8 @@ public class RenshuController : MonoBehaviour
     {
         // 練習内容の初期化
         selectedMember.ClearTrainingMenu();
-        selectedMember.trainingMenu = targetSchool.GetTrainingMenu(this.selectTrainingBarNum);
+        selectedMember.trainingMenu = new TrainingMenu(this.selectTrainingBarNum, targetSchool.GetTrainingMenu(this.selectTrainingBarNum));
+        this.ViewSelectedMemberInformation(selectedMember);
     }
 
     public void SetAllTrainingMenu()
@@ -241,8 +252,9 @@ public class RenshuController : MonoBehaviour
         {
             // 練習内容の初期化
             member.ClearTrainingMenu();
-            member.trainingMenu = trainingMenu;
+            member.trainingMenu = new TrainingMenu(this.selectTrainingBarNum, trainingMenu);
         }
+        this.ViewSelectedMemberInformation(selectedMember);
     }
 
     private void SetTrainingMenuInput(Dictionary<string, int> trainingMenu)
@@ -267,7 +279,8 @@ public class RenshuController : MonoBehaviour
     public void CloseTrainingMenu()
     {
         trainingMenuPanel.SetActive(false);
-        targetSchool.SetTrainingMenu(this.displayTrainingMenuTabNum, GetTrainingMenuInput());
+        targetSchool.SetTrainingMenu(this.displayTrainingMenuTabNum, this.GetTrainingMenuInput());
+        SelectTraining(this.displayTrainingMenuTabNum);
         SetTrainingBar();
     }
 
@@ -411,6 +424,20 @@ public class RenshuController : MonoBehaviour
         else
         {
             return new Color32(126, 126, b: 126, 126);
+        }
+    }
+
+    public void SelectTraining(int trainingNum)
+    {
+        if (this.selectedOutline)
+        {
+            this.selectedOutline.SetActive(false);
+        }
+        if (targetSchool.GetTrainingMenu(trainingNum).Count > 0)
+        {
+            this.selectedOutline = GameObject.Find("TrainingMenuBar" + trainingNum).transform.Find("SelectedOutLine").gameObject;
+            this.selectedOutline.SetActive(true);
+            this.selectTrainingBarNum = trainingNum;
         }
     }
 }

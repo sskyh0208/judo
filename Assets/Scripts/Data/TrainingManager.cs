@@ -346,7 +346,27 @@ public class TrainingManager
     }
 }
 
-public class Training {
+public class TrainingMenu
+{
+    public int trainingMenuNum;
+    public Dictionary<string, int> menuList;
+
+    public TrainingMenu(int trainingMenuNum = 0, Dictionary<string, int> menuList = null)
+    {
+        this.trainingMenuNum = trainingMenuNum;
+        if (menuList is null)
+        {
+            this.menuList = new Dictionary<string, int>();
+        }
+        else
+        {
+            this.menuList = menuList;
+        }
+    }
+}
+
+public class Training
+{
 
     public string colorCode = "#808080";
     public int firstExp = 0;

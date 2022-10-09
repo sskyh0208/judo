@@ -268,7 +268,7 @@ public class School
     {
         foreach (PlayerManager member in members.Values)
         {
-            member.GetTrainingExp(GameData.instance.trainingManager.GetTrainingMenuResult(member.trainingMenu));
+            member.GetTrainingExp(GameData.instance.trainingManager.GetTrainingMenuResult(member.trainingMenu.menuList));
         }
     }
 
