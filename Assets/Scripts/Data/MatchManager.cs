@@ -214,6 +214,7 @@ public class Tournament
 
         foreach (School school in teamList)
         {
+            Debug.Log(string.Format("{0} {1}", school.name, school.regularMembers.Count));
             if (GameData.instance.player.schoolId == school.id)
             {
                 this.is_myschool = true;
@@ -1028,15 +1029,17 @@ public class SchoolMatch
 
     public bool Fight()
     {
-        List<PlayerManager> redMember = new List<PlayerManager>(){null,null,null,null,null};
-        List<PlayerManager> whiteMember = new List<PlayerManager>(){null,null,null,null,null};
+        List<PlayerManager> redMember = new List<PlayerManager>(){null, null,null,null,null,null};
+        List<PlayerManager> whiteMember = new List<PlayerManager>(){null, null,null,null,null,null};
         if (this.red != null)
         {
             redMember = red.regularMembers.Values.ToList();
+            Debug.Log(string.Format("red is not null  {0} 人数{1}", red.name, redMember.Count));
         }
         if (this.white != null)
         {
             whiteMember = white.regularMembers.Values.ToList();
+            Debug.Log(string.Format("white is not null  {0} 人数{1}", white.name, whiteMember.Count));
         }
         this.senpo = new MemberMatch(id + "01", redMember[0], whiteMember[0]);
         this.senpo.Fight();

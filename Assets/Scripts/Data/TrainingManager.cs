@@ -21,70 +21,96 @@ public class TrainingManager
     public List<Tuple<string, int>> ExecuteTraining(Training training, PlayerManager supervisor, int minutes)
     {
         List<Tuple<string, int>> trainingMenuResult = new List<Tuple<string, int>>();
-        foreach (string wazaId in training.firstExpWazaIdList)
+        if (training.firstExpWazaIdList.Count > 0)
         {
-            int exp = (int)(training.firstExp * supervisor.GetAbillity(wazaId).GetUpdateExpSenseCoef());
-            trainingMenuResult.Add(new Tuple<string, int>(wazaId, exp * minutes));
-        }
-        foreach (string wazaId in training.secondExpWazaIdList)
-        {
-            int exp = (int)(training.secondExp * supervisor.GetAbillity(wazaId).GetUpdateExpSenseCoef());
-            trainingMenuResult.Add(new Tuple<string, int>(wazaId, exp * minutes));
-        }
-        foreach (string wazaId in training.thirdExpWazaIdList)
-        {
-            int exp = (int)(training.thirdExp * supervisor.GetAbillity(wazaId).GetUpdateExpSenseCoef());
-            trainingMenuResult.Add(new Tuple<string, int>(wazaId, exp * minutes));
-        }
-
-
-        foreach (string typeId in training.firstExpWazaTypeList)
-        {
-            foreach (string wazaId in GameData.instance.abillityManager.GetWazaIdArrayWithType(typeId))
+            foreach (string wazaId in training.firstExpWazaIdList)
             {
                 int exp = (int)(training.firstExp * supervisor.GetAbillity(wazaId).GetUpdateExpSenseCoef());
                 trainingMenuResult.Add(new Tuple<string, int>(wazaId, exp * minutes));
             }
         }
-        foreach (string typeId in training.secondExpWazaTypeList)
+        if (training.secondExpWazaIdList.Count > 0)
         {
-            foreach (string wazaId in GameData.instance.abillityManager.GetWazaIdArrayWithType(typeId))
+            foreach (string wazaId in training.secondExpWazaIdList)
             {
                 int exp = (int)(training.secondExp * supervisor.GetAbillity(wazaId).GetUpdateExpSenseCoef());
                 trainingMenuResult.Add(new Tuple<string, int>(wazaId, exp * minutes));
             }
         }
-        foreach (string typeId in training.thirdExpWazaTypeList)
+        if (training.thirdExpWazaIdList.Count > 0)
         {
-            foreach (string wazaId in GameData.instance.abillityManager.GetWazaIdArrayWithType(typeId))
+            foreach (string wazaId in training.thirdExpWazaIdList)
             {
                 int exp = (int)(training.thirdExp * supervisor.GetAbillity(wazaId).GetUpdateExpSenseCoef());
                 trainingMenuResult.Add(new Tuple<string, int>(wazaId, exp * minutes));
             }
         }
 
-        foreach (string group in training.firstExpWazaGroupList)
+        if (training.firstExpWazaTypeList.Count > 0)
         {
-            foreach (string wazaId in GameData.instance.abillityManager.GetWazaIdArrayWithGroup(group))
+            foreach (string typeId in training.firstExpWazaTypeList)
             {
-                int exp = (int)(training.firstExp * supervisor.GetAbillity(wazaId).GetUpdateExpSenseCoef());
-                trainingMenuResult.Add(new Tuple<string, int>(wazaId, exp * minutes));
+                foreach (string wazaId in GameData.instance.abillityManager.GetWazaIdArrayWithType(typeId))
+                {
+                    int exp = (int)(training.firstExp * supervisor.GetAbillity(wazaId).GetUpdateExpSenseCoef());
+                    trainingMenuResult.Add(new Tuple<string, int>(wazaId, exp * minutes));
+                }
             }
         }
-        foreach (string group in training.secondExpWazaGroupList)
+        if (training.secondExpWazaTypeList.Count > 0)
         {
-            foreach (string wazaId in GameData.instance.abillityManager.GetWazaIdArrayWithGroup(group))
+            foreach (string typeId in training.secondExpWazaTypeList)
             {
-                int exp = (int)(training.secondExp * supervisor.GetAbillity(wazaId).GetUpdateExpSenseCoef());
-                trainingMenuResult.Add(new Tuple<string, int>(wazaId, exp * minutes));
+                foreach (string wazaId in GameData.instance.abillityManager.GetWazaIdArrayWithType(typeId))
+                {
+                    int exp = (int)(training.secondExp * supervisor.GetAbillity(wazaId).GetUpdateExpSenseCoef());
+                    trainingMenuResult.Add(new Tuple<string, int>(wazaId, exp * minutes));
+                }
             }
         }
-        foreach (string group in training.thirdExpWazaGroupList)
+        if (training.thirdExpWazaTypeList.Count > 0)
         {
-            foreach (string wazaId in GameData.instance.abillityManager.GetWazaIdArrayWithGroup(group))
+            foreach (string typeId in training.thirdExpWazaTypeList)
             {
-                int exp = (int)(training.thirdExp * supervisor.GetAbillity(wazaId).GetUpdateExpSenseCoef());
-                trainingMenuResult.Add(new Tuple<string, int>(wazaId, exp * minutes));
+                foreach (string wazaId in GameData.instance.abillityManager.GetWazaIdArrayWithType(typeId))
+                {
+                    int exp = (int)(training.thirdExp * supervisor.GetAbillity(wazaId).GetUpdateExpSenseCoef());
+                    trainingMenuResult.Add(new Tuple<string, int>(wazaId, exp * minutes));
+                }
+            }
+        }
+
+        if (training.firstExpWazaGroupList.Count > 0)
+        {
+            foreach (string group in training.firstExpWazaGroupList)
+            {
+                foreach (string wazaId in GameData.instance.abillityManager.GetWazaIdArrayWithGroup(group))
+                {
+                    int exp = (int)(training.firstExp * supervisor.GetAbillity(wazaId).GetUpdateExpSenseCoef());
+                    trainingMenuResult.Add(new Tuple<string, int>(wazaId, exp * minutes));
+                }
+            }
+        }
+        if (training.secondExpWazaGroupList.Count > 0)
+        {
+            foreach (string group in training.secondExpWazaGroupList)
+            {
+                foreach (string wazaId in GameData.instance.abillityManager.GetWazaIdArrayWithGroup(group))
+                {
+                    int exp = (int)(training.secondExp * supervisor.GetAbillity(wazaId).GetUpdateExpSenseCoef());
+                    trainingMenuResult.Add(new Tuple<string, int>(wazaId, exp * minutes));
+                }
+            }
+        }
+        if (training.thirdExpWazaGroupList.Count > 0)
+        {
+            foreach (string group in training.thirdExpWazaGroupList)
+            {
+                foreach (string wazaId in GameData.instance.abillityManager.GetWazaIdArrayWithGroup(group))
+                {
+                    int exp = (int)(training.thirdExp * supervisor.GetAbillity(wazaId).GetUpdateExpSenseCoef());
+                    trainingMenuResult.Add(new Tuple<string, int>(wazaId, exp * minutes));
+                }
             }
         }
 

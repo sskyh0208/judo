@@ -15,7 +15,7 @@ public class RenshuController : MonoBehaviour
     private PlayerManager selectedMember;
     private GameObject trainingMenuPanel;
     private GameObject trainingMenuList;
-    private bool is_test = true;
+    private bool is_test = false;
     School targetSchool;
 
     private int displayTrainingMenuTabNum;
