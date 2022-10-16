@@ -21,97 +21,20 @@ public class TrainingManager
     public List<Tuple<string, int>> ExecuteTraining(Training training, PlayerManager supervisor, int minutes)
     {
         List<Tuple<string, int>> trainingMenuResult = new List<Tuple<string, int>>();
-        if (training.firstExpWazaIdList.Count > 0)
+        foreach (string wazaId in training.firstExpWazaIdList)
         {
-            foreach (string wazaId in training.firstExpWazaIdList)
-            {
-                int exp = (int)(training.firstExp * supervisor.GetAbillity(wazaId).GetUpdateExpSenseCoef());
-                trainingMenuResult.Add(new Tuple<string, int>(wazaId, exp * minutes));
-            }
+            int exp = (int)(training.firstExp * supervisor.GetAbillity(wazaId).GetUpdateExpSenseCoef());
+            trainingMenuResult.Add(new Tuple<string, int>(wazaId, exp * minutes));
         }
-        if (training.secondExpWazaIdList.Count > 0)
+        foreach (string wazaId in training.secondExpWazaIdList)
         {
-            foreach (string wazaId in training.secondExpWazaIdList)
-            {
-                int exp = (int)(training.secondExp * supervisor.GetAbillity(wazaId).GetUpdateExpSenseCoef());
-                trainingMenuResult.Add(new Tuple<string, int>(wazaId, exp * minutes));
-            }
+            int exp = (int)(training.secondExp * supervisor.GetAbillity(wazaId).GetUpdateExpSenseCoef());
+            trainingMenuResult.Add(new Tuple<string, int>(wazaId, exp * minutes));
         }
-        if (training.thirdExpWazaIdList.Count > 0)
+        foreach (string wazaId in training.thirdExpWazaIdList)
         {
-            foreach (string wazaId in training.thirdExpWazaIdList)
-            {
-                int exp = (int)(training.thirdExp * supervisor.GetAbillity(wazaId).GetUpdateExpSenseCoef());
-                trainingMenuResult.Add(new Tuple<string, int>(wazaId, exp * minutes));
-            }
-        }
-
-        if (training.firstExpWazaTypeList.Count > 0)
-        {
-            foreach (string typeId in training.firstExpWazaTypeList)
-            {
-                foreach (string wazaId in GameData.instance.abillityManager.GetWazaIdArrayWithType(typeId))
-                {
-                    int exp = (int)(training.firstExp * supervisor.GetAbillity(wazaId).GetUpdateExpSenseCoef());
-                    trainingMenuResult.Add(new Tuple<string, int>(wazaId, exp * minutes));
-                }
-            }
-        }
-        if (training.secondExpWazaTypeList.Count > 0)
-        {
-            foreach (string typeId in training.secondExpWazaTypeList)
-            {
-                foreach (string wazaId in GameData.instance.abillityManager.GetWazaIdArrayWithType(typeId))
-                {
-                    int exp = (int)(training.secondExp * supervisor.GetAbillity(wazaId).GetUpdateExpSenseCoef());
-                    trainingMenuResult.Add(new Tuple<string, int>(wazaId, exp * minutes));
-                }
-            }
-        }
-        if (training.thirdExpWazaTypeList.Count > 0)
-        {
-            foreach (string typeId in training.thirdExpWazaTypeList)
-            {
-                foreach (string wazaId in GameData.instance.abillityManager.GetWazaIdArrayWithType(typeId))
-                {
-                    int exp = (int)(training.thirdExp * supervisor.GetAbillity(wazaId).GetUpdateExpSenseCoef());
-                    trainingMenuResult.Add(new Tuple<string, int>(wazaId, exp * minutes));
-                }
-            }
-        }
-
-        if (training.firstExpWazaGroupList.Count > 0)
-        {
-            foreach (string group in training.firstExpWazaGroupList)
-            {
-                foreach (string wazaId in GameData.instance.abillityManager.GetWazaIdArrayWithGroup(group))
-                {
-                    int exp = (int)(training.firstExp * supervisor.GetAbillity(wazaId).GetUpdateExpSenseCoef());
-                    trainingMenuResult.Add(new Tuple<string, int>(wazaId, exp * minutes));
-                }
-            }
-        }
-        if (training.secondExpWazaGroupList.Count > 0)
-        {
-            foreach (string group in training.secondExpWazaGroupList)
-            {
-                foreach (string wazaId in GameData.instance.abillityManager.GetWazaIdArrayWithGroup(group))
-                {
-                    int exp = (int)(training.secondExp * supervisor.GetAbillity(wazaId).GetUpdateExpSenseCoef());
-                    trainingMenuResult.Add(new Tuple<string, int>(wazaId, exp * minutes));
-                }
-            }
-        }
-        if (training.thirdExpWazaGroupList.Count > 0)
-        {
-            foreach (string group in training.thirdExpWazaGroupList)
-            {
-                foreach (string wazaId in GameData.instance.abillityManager.GetWazaIdArrayWithGroup(group))
-                {
-                    int exp = (int)(training.thirdExp * supervisor.GetAbillity(wazaId).GetUpdateExpSenseCoef());
-                    trainingMenuResult.Add(new Tuple<string, int>(wazaId, exp * minutes));
-                }
-            }
+            int exp = (int)(training.thirdExp * supervisor.GetAbillity(wazaId).GetUpdateExpSenseCoef());
+            trainingMenuResult.Add(new Tuple<string, int>(wazaId, exp * minutes));
         }
 
         return trainingMenuResult;
@@ -401,16 +324,8 @@ public class Training
 
     // 技IDで指定する場合追加
     public List<string> firstExpWazaIdList = new List<string>();
-    // 技タイプで指定する場合追加
-    public List<string> firstExpWazaTypeList = new List<string>();
-    // 技グループで指定する場合追加
-    public List<string> firstExpWazaGroupList = new List<string>();
     public List<string> secondExpWazaIdList = new List<string>();
-    public List<string> secondExpWazaTypeList = new List<string>();
-    public List<string> secondExpWazaGroupList = new List<string>();
     public List<string> thirdExpWazaIdList = new List<string>();
-    public List<string> thirdExpWazaTypeList = new List<string>();
-    public List<string> thirdExpWazaGroupList = new List<string>();
 
 }
 
@@ -423,7 +338,7 @@ class Running: Training
         this.secondExp = 20;
 
         this.firstExpWazaIdList = new List<string>(){"902"};
-        this.secondExpWazaTypeList = new List<string>(){"0", "1"};
+        this.secondExpWazaIdList = new List<string>(){"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31", "32"};
     }
 }
 
@@ -436,7 +351,7 @@ class Dash: Training
         this.secondExp = 20;
 
         this.firstExpWazaIdList = new List<string>(){"901"};
-        this.secondExpWazaTypeList = new List<string>(){"0", "1"};
+        this.secondExpWazaIdList = new List<string>(){"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31", "32"};
     }
 }
 
@@ -451,7 +366,7 @@ class KaidanDash: Training
         
         this.firstExpWazaIdList = new List<string>(){"902"};
         this.secondExpWazaIdList = new List<string>(){"901"};
-        this.thirdExpWazaTypeList = new List<string>(){"0", "1"};
+        this.thirdExpWazaIdList = new List<string>(){"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31", "32"};
     }
 }
 
@@ -464,7 +379,7 @@ class SelfWeight: Training
         this.secondExp = 20;
 
         this.firstExpWazaIdList = new List<string>(){"900"};
-        this.secondExpWazaTypeList = new List<string>(){"0", "1"};
+        this.secondExpWazaIdList = new List<string>(){"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31", "32"};
     }
 }
 
@@ -477,7 +392,7 @@ class MachineWeight: Training
         this.secondExp = 20;
 
         this.firstExpWazaIdList = new List<string>(){"900"};
-        this.secondExpWazaTypeList = new List<string>(){"0", "1"};
+        this.secondExpWazaIdList = new List<string>(){"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31", "32"};
     }
 }
 
@@ -490,7 +405,7 @@ class Circuit: Training
         this.secondExp = 30;
 
         this.firstExpWazaIdList = new List<string>(){"900", "901", "902"};
-        this.secondExpWazaTypeList = new List<string>(){"0", "1"};
+        this.secondExpWazaIdList = new List<string>(){"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31", "32"};
     }
 }
 
@@ -502,7 +417,7 @@ class UchikomiTe: Training
         this.firstExp = 90;
         this.secondExp = 10;
 
-        this.firstExpWazaGroupList = new List<string>(){"0"};
+        this.firstExpWazaIdList = new List<string>(){"1", "2", "3", "4"};
         this.secondExpWazaIdList = new List<string>(){"900", "901", "902"};
     }
 }
@@ -515,7 +430,7 @@ class IdoUchikomiTe: Training
         this.firstExp = 130;
         this.secondExp = 20;
 
-        this.firstExpWazaGroupList = new List<string>(){"0"};
+        this.firstExpWazaIdList = new List<string>(){"1", "2", "3", "4"};
         this.secondExpWazaIdList = new List<string>(){"900", "901", "902"};
     }
 }
@@ -528,7 +443,7 @@ class SpeedUchikomiTe: Training
         this.firstExp = 120;
         this.secondExp = 30;
 
-        this.firstExpWazaGroupList = new List<string>(){"0"};
+        this.firstExpWazaIdList = new List<string>(){"1", "2", "3", "4"};
         this.secondExpWazaIdList = new List<string>(){"901", "902"};
     }
 }
@@ -541,7 +456,7 @@ class SanninUchikomiTe: Training
         this.firstExp = 120;
         this.secondExp = 30;
 
-        this.firstExpWazaGroupList = new List<string>(){"0"};
+        this.firstExpWazaIdList = new List<string>(){"1", "2", "3", "4"};
         this.secondExpWazaIdList = new List<string>(){"900", "902"};
     }
 }
@@ -554,7 +469,7 @@ class NagekomiTe: Training
         this.firstExp = 150;
         this.secondExp = 10;
 
-        this.firstExpWazaGroupList = new List<string>(){"0"};
+        this.firstExpWazaIdList = new List<string>(){"1", "2", "3", "4"};
         this.secondExpWazaIdList = new List<string>(){"900", "901", "902"};
     }
 }
@@ -567,7 +482,7 @@ class UchikomiKoshi: Training
         this.firstExp = 100;
         this.secondExp = 20;
 
-        this.firstExpWazaGroupList = new List<string>(){"1"};
+        this.firstExpWazaIdList = new List<string>(){"5", "6", "7", "8"};
         this.secondExpWazaIdList = new List<string>(){"900", "901", "902"};
     }
 }
@@ -580,7 +495,7 @@ class IdoUchikomiKoshi: Training
         this.firstExp = 140;
         this.secondExp = 20;
 
-        this.firstExpWazaGroupList = new List<string>(){"0"};
+        this.firstExpWazaIdList = new List<string>(){"5", "6", "7", "8"};
         this.secondExpWazaIdList = new List<string>(){"900", "901", "902"};
     }
 }
@@ -593,7 +508,7 @@ class SpeedUchikomiKoshi: Training
         this.firstExp = 130;
         this.secondExp = 30;
 
-        this.firstExpWazaGroupList = new List<string>(){"0"};
+        this.firstExpWazaIdList = new List<string>(){"5", "6", "7", "8"};
         this.secondExpWazaIdList = new List<string>(){"901", "902"};
     }
 }
@@ -606,7 +521,7 @@ class SanninUchikomiKoshi: Training
         this.firstExp = 130;
         this.secondExp = 30;
 
-        this.firstExpWazaGroupList = new List<string>(){"0"};
+        this.firstExpWazaIdList = new List<string>(){"5", "6", "7", "8"};
         this.secondExpWazaIdList = new List<string>(){"900", "902"};
     }
 }
@@ -619,7 +534,7 @@ class NagekomiKoshi: Training
         this.firstExp = 150;
         this.secondExp = 10;
 
-        this.firstExpWazaGroupList = new List<string>(){"0"};
+        this.firstExpWazaIdList = new List<string>(){"5", "6", "7", "8"};
         this.secondExpWazaIdList = new List<string>(){"900", "901", "902"};
     }
 }
@@ -632,7 +547,7 @@ class UchikomiAshi: Training
         this.firstExp = 100;
         this.secondExp = 20;
 
-        this.firstExpWazaGroupList = new List<string>(){"2"};
+        this.firstExpWazaIdList = new List<string>(){"9", "10", "11", "12"};
         this.secondExpWazaIdList = new List<string>(){"900", "901", "902"};
     }
 }
@@ -645,7 +560,7 @@ class IdoUchikomiAshi: Training
         this.firstExp = 140;
         this.secondExp = 20;
 
-        this.firstExpWazaGroupList = new List<string>(){"0"};
+        this.firstExpWazaIdList = new List<string>(){"9", "10", "11", "12"};
         this.secondExpWazaIdList = new List<string>(){"900", "901", "902"};
     }
 }
@@ -658,7 +573,7 @@ class SpeedUchikomiAshi: Training
         this.firstExp = 130;
         this.secondExp = 30;
 
-        this.firstExpWazaGroupList = new List<string>(){"0"};
+        this.firstExpWazaIdList = new List<string>(){"9", "10", "11", "12"};
         this.secondExpWazaIdList = new List<string>(){"901", "902"};
     }
 }
@@ -671,7 +586,7 @@ class SanninUchikomiAshi: Training
         this.firstExp = 130;
         this.secondExp = 30;
 
-        this.firstExpWazaGroupList = new List<string>(){"0"};
+        this.firstExpWazaIdList = new List<string>(){"9", "10", "11", "12"};
         this.secondExpWazaIdList = new List<string>(){"900", "902"};
     }
 }
@@ -684,7 +599,7 @@ class NagekomiAshi: Training
         this.firstExp = 150;
         this.secondExp = 10;
 
-        this.firstExpWazaGroupList = new List<string>(){"0"};
+        this.firstExpWazaIdList = new List<string>(){"9", "10", "11", "12"};
         this.secondExpWazaIdList = new List<string>(){"900", "901", "902"};
     }
 }
@@ -697,7 +612,7 @@ class RandoriTachi: Training
         this.firstExp = 70;
         this.secondExp = 40;
 
-        this.firstExpWazaTypeList = new List<string>(){"0"};
+        this.firstExpWazaIdList = new List<string>(){"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20"};
         this.secondExpWazaIdList = new List<string>(){"900", "901", "902"};
     }
 }
@@ -710,7 +625,7 @@ class UchikomiOsae: Training
         this.firstExp = 80;
         this.secondExp = 30;
 
-        this.firstExpWazaGroupList = new List<string>(){"5"};
+        this.firstExpWazaIdList = new List<string>(){"21", "22", "23", "24"};
         this.secondExpWazaIdList = new List<string>(){"900", "901", "902"};
     }
 }
@@ -723,7 +638,7 @@ class GrapplingOsae: Training
         this.firstExp = 120;
         this.secondExp = 40;
 
-        this.firstExpWazaGroupList = new List<string>(){"5"};
+        this.firstExpWazaIdList = new List<string>(){"21", "22", "23", "24"};
         this.secondExpWazaIdList = new List<string>(){"900", "901", "902"};
     }
 }
@@ -736,7 +651,7 @@ class UchikomiShime: Training
         this.firstExp = 100;
         this.secondExp = 30;
 
-        this.firstExpWazaGroupList = new List<string>(){"6"};
+        this.firstExpWazaIdList = new List<string>(){"25", "26", "27", "28"};
         this.secondExpWazaIdList = new List<string>(){"900", "901", "902"};
     }
 }
@@ -749,7 +664,7 @@ class GrapplingShime: Training
         this.firstExp = 120;
         this.secondExp = 40;
 
-        this.firstExpWazaGroupList = new List<string>(){"5"};
+        this.firstExpWazaIdList = new List<string>(){"25", "26", "27", "28"};
         this.secondExpWazaIdList = new List<string>(){"900", "901", "902"};
     }
 }
@@ -762,7 +677,7 @@ class UchikomiKansetsu: Training
         this.firstExp = 100;
         this.secondExp = 30;
 
-        this.firstExpWazaGroupList = new List<string>(){"7"};
+        this.firstExpWazaIdList = new List<string>(){"29", "30", "31", "32"};
         this.secondExpWazaIdList = new List<string>(){"900", "901", "902"};
     }
 }
@@ -775,7 +690,7 @@ class GrapplingKansetsu: Training
         this.firstExp = 120;
         this.secondExp = 40;
 
-        this.firstExpWazaGroupList = new List<string>(){"5"};
+        this.firstExpWazaIdList = new List<string>(){"29", "30", "31", "32"};
         this.secondExpWazaIdList = new List<string>(){"900", "901", "902"};
     }
 }
@@ -788,7 +703,7 @@ class RandoriNe: Training
         this.firstExp = 70;
         this.secondExp = 50;
 
-        this.firstExpWazaTypeList = new List<string>(){"1"};
+        this.firstExpWazaIdList = new List<string>(){"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31", "32"};
         this.secondExpWazaIdList = new List<string>(){"900", "901", "902"};
     }
 }
