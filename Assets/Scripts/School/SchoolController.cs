@@ -266,6 +266,7 @@ public class SchoolController : MonoBehaviour
                 canvasGroup.blocksRaycasts = true;
             });
         
+        Debug.Log(string.Format("名声: {0} {1}", selectedSchool.name, selectedSchool.fame));
     }
 
     public void CloseSchoolMembers()

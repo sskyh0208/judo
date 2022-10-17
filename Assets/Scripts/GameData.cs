@@ -56,6 +56,9 @@ public class GameData : MonoBehaviour
 
     public void GenerateNewYearGameDate()
     {
+
+        GameData.instance.schoolManager.PayTheClubActivityFee();
+        GameData.instance.schoolManager.UpgradeScoolRank();
         GameData.instance.schoolManager.DoneGuradiationAllSchools();
         DateTime generateDt = new DateTime(storyDate.Year - 16, 4, 1);
         GenerateThisYearPlayers(new DateTime(storyDate.Year, 4, 1), generateDt, 1);

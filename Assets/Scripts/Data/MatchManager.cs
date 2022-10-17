@@ -138,6 +138,7 @@ public class Tournament
                 this.DoIndividualMatch(i);
             }
         }
+        AddFame();
     }
 
     public bool CheckTeamMatch()
@@ -214,7 +215,6 @@ public class Tournament
 
         foreach (School school in teamList)
         {
-            Debug.Log(string.Format("{0} {1}", school.name, school.regularMembers.Count));
             if (GameData.instance.player.schoolId == school.id)
             {
                 this.is_myschool = true;
@@ -994,6 +994,78 @@ public class Tournament
         }
         return target;
     }
+
+    private void AddFame()
+    {
+        int addFame = 0;
+        int coef = 0;
+        switch (this.eventId)
+        {
+            default:
+            case "01":
+                coef = 1;
+                break;
+            case "02":
+                coef = 3;
+                break;
+            case "03":
+                coef = 5;
+                break;
+            case "04":
+            case "05":
+            case "06":
+                coef = 10;
+                break;
+
+        }
+        for (int i = 0; i < 8; i++)
+        {   
+            switch (i)
+            {
+                case 0:
+                    addFame = 5 * coef;
+                    break;
+                case 1:
+                    addFame = 3 * coef;
+                    break;
+                case 2:
+                case 3:
+                    addFame = 2 * coef;
+                    break;
+                default:
+                    addFame = 1 * coef;
+                    break;
+            }
+            if (i + 1 <= ranking.school.Count){GameData.instance.schoolManager.GetSchool(ranking.school[i].id).fame += addFame;}
+        }
+
+        for (int i = 0; i < 8; i++)
+        {   
+            switch (i)
+            {
+                case 0:
+                    addFame = 4 * coef;
+                    break;
+                case 1:
+                    addFame = 3 * coef;
+                    break;
+                case 2:
+                case 3:
+                    addFame = 2 * coef;
+                    break;
+                default:
+                    addFame = 1 * coef;
+                    break;
+            }
+            if (i + 1 <= ranking.members60.Count){GameData.instance.schoolManager.GetSchool(ranking.members60[i].schoolId).fame += addFame;}
+            if (i + 1 <= ranking.members66.Count){GameData.instance.schoolManager.GetSchool(ranking.members66[i].schoolId).fame += addFame;}
+            if (i + 1 <= ranking.members73.Count){GameData.instance.schoolManager.GetSchool(ranking.members73[i].schoolId).fame += addFame;}
+            if (i + 1 <= ranking.members81.Count){GameData.instance.schoolManager.GetSchool(ranking.members81[i].schoolId).fame += addFame;}
+            if (i + 1 <= ranking.members90.Count){GameData.instance.schoolManager.GetSchool(ranking.members90[i].schoolId).fame += addFame;}
+            if (i + 1 <= ranking.members100.Count){GameData.instance.schoolManager.GetSchool(ranking.members100[i].schoolId).fame += addFame;}
+            if (i + 1 <= ranking.membersOver100.Count){GameData.instance.schoolManager.GetSchool(ranking.membersOver100[i].schoolId).fame += addFame;}
+        }
+    }
 }
 public class SchoolMatch
 {
@@ -1034,12 +1106,10 @@ public class SchoolMatch
         if (this.red != null)
         {
             redMember = red.regularMembers.Values.ToList();
-            Debug.Log(string.Format("red is not null  {0} 人数{1}", red.name, redMember.Count));
         }
         if (this.white != null)
         {
             whiteMember = white.regularMembers.Values.ToList();
-            Debug.Log(string.Format("white is not null  {0} 人数{1}", white.name, whiteMember.Count));
         }
         this.senpo = new MemberMatch(id + "01", redMember[0], whiteMember[0]);
         this.senpo.Fight();

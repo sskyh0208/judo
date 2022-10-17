@@ -114,6 +114,69 @@ public class SchoolManager
         }
         return targetList.ToList();
     }
+
+    // 名声で学校ランクを上下させる
+    public void UpgradeScoolRank()
+    {
+        foreach (string schoolId in schoolList.Keys)
+        {
+            List<int> gradeLine = new List<int>();
+            switch (schoolList[schoolId].schoolRank)
+            {
+                default:
+                case 1:
+                    gradeLine = new List<int>{0, 8};
+                    break;
+                case 2:
+                    gradeLine = new List<int>{8, 16};
+                    break;
+                case 3:
+                    gradeLine = new List<int>{16, 32};
+                    break;
+                case 4:
+                    gradeLine = new List<int>{32, 64};
+                    break;
+                case 5:
+                    gradeLine = new List<int>{64, 128};
+                    break;
+                case 6:
+                    gradeLine = new List<int>{128, 256};
+                    break;
+                case 7:
+                    gradeLine = new List<int>{256, 512};
+                    break;
+                case 8:
+                    gradeLine = new List<int>{512, 1024};
+                    break;
+                case 9:
+                    gradeLine = new List<int>{1024, 2048};
+                    break;
+                case 10:
+                    gradeLine = new List<int>{2048, 9999};
+                    break;
+            }
+
+            // 下限より低い場合は下げる
+            if (schoolList[schoolId].fame < gradeLine[0])
+            {
+                schoolList[schoolId].schoolRank -= 1;
+            }
+            else if (schoolList[schoolId].fame >= gradeLine[1])
+            {
+                schoolList[schoolId].schoolRank += 1;
+            }
+            schoolList[schoolId].fame = 0;
+        }
+    }
+
+    // 
+    public void PayTheClubActivityFee()
+    {
+        foreach (string schoolId in schoolList.Keys)
+        {  
+            schoolList[schoolId].money += (schoolList[schoolId].schoolRank * 10) + schoolList[schoolId].fame;
+        }
+    }
 }
 
 [Serializable]
@@ -132,6 +195,7 @@ public class School
     public string name;
     public int baseRank;
     public int fame;
+    public int money;
 
     public int schoolRank;
     public int totalStatus;
@@ -170,6 +234,7 @@ public class School
         this.trainingMenu3 = new Dictionary<string, int>();
         this.trainingMenu4 = new Dictionary<string, int>();
         this.trainingMenu5 = new Dictionary<string, int>();
+        this.money = 50;
         SetSchoolRank();
     }
 

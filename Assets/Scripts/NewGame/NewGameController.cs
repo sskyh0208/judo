@@ -182,7 +182,7 @@ public class NewGameController : MonoBehaviour
         GameData.instance.player.schoolId = selectedSchool.id;
 
         GameData.instance.schoolManager.SetSuperVoisor(selectedSchool.id, GameData.instance.player);
-
+        
         GameObject SceneController = GameObject.Find("SceneController");
         SceneController.GetComponent<SceneTransitionController>().LoadTo("Main");
     }
