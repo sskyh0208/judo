@@ -490,18 +490,11 @@ public class Abillity
 
     public void UpdateExpPoint(int expPoint)
     {
-        while (expPoint >= (this.status + 1))
+        this.exp += expPoint;
+        while (this.exp > this.status)
         {
-            if (this.status + 1 <= this.limit)
-            {
-                this.status ++;
-                expPoint -= this.status;
-                this.exp = expPoint;
-            }
-            if(CheckLimit())
-            {
-                break;
-            }
+            this.exp -= this.status;
+            this.status ++;
         }
         SetDisplayString();
     }
