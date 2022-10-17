@@ -414,11 +414,9 @@ class UchikomiTe: Training
     public UchikomiTe()
     {
         this.colorCode = "#4169E1";
-        this.firstExp = 90;
-        this.secondExp = 10;
+        this.firstExp = 110;
 
         this.firstExpWazaIdList = new List<string>(){"1", "2", "3", "4"};
-        this.secondExpWazaIdList = new List<string>(){"900", "901", "902"};
     }
 }
 
@@ -427,8 +425,8 @@ class IdoUchikomiTe: Training
     public IdoUchikomiTe()
     {
         this.colorCode = "#4169E1";
-        this.firstExp = 130;
-        this.secondExp = 20;
+        this.firstExp = 90;
+        this.secondExp = 10;
 
         this.firstExpWazaIdList = new List<string>(){"1", "2", "3", "4"};
         this.secondExpWazaIdList = new List<string>(){"900", "901", "902"};
@@ -440,8 +438,8 @@ class SpeedUchikomiTe: Training
     public SpeedUchikomiTe()
     {
         this.colorCode = "#4169E1";
-        this.firstExp = 120;
-        this.secondExp = 30;
+        this.firstExp = 80;
+        this.secondExp = 20;
 
         this.firstExpWazaIdList = new List<string>(){"1", "2", "3", "4"};
         this.secondExpWazaIdList = new List<string>(){"901", "902"};
@@ -453,8 +451,8 @@ class SanninUchikomiTe: Training
     public SanninUchikomiTe()
     {
         this.colorCode = "#4169E1";
-        this.firstExp = 120;
-        this.secondExp = 30;
+        this.firstExp = 100;
+        this.secondExp = 10;
 
         this.firstExpWazaIdList = new List<string>(){"1", "2", "3", "4"};
         this.secondExpWazaIdList = new List<string>(){"900", "902"};
@@ -466,7 +464,7 @@ class NagekomiTe: Training
     public NagekomiTe()
     {
         this.colorCode = "#4169E1";
-        this.firstExp = 150;
+        this.firstExp = 90;
         this.secondExp = 10;
 
         this.firstExpWazaIdList = new List<string>(){"1", "2", "3", "4"};
@@ -479,11 +477,9 @@ class UchikomiKoshi: Training
     public UchikomiKoshi()
     {
         this.colorCode = "#DAA520";
-        this.firstExp = 100;
-        this.secondExp = 20;
+        this.firstExp = 110;
 
         this.firstExpWazaIdList = new List<string>(){"5", "6", "7", "8"};
-        this.secondExpWazaIdList = new List<string>(){"900", "901", "902"};
     }
 }
 
@@ -492,11 +488,11 @@ class IdoUchikomiKoshi: Training
     public IdoUchikomiKoshi()
     {
         this.colorCode = "#DAA520";
-        this.firstExp = 140;
-        this.secondExp = 20;
+        this.firstExp = 90;
+        this.secondExp = 10;
 
         this.firstExpWazaIdList = new List<string>(){"5", "6", "7", "8"};
-        this.secondExpWazaIdList = new List<string>(){"900", "901", "902"};
+        this.secondExpWazaIdList = new List<string>(){"902"};
     }
 }
 
@@ -505,8 +501,8 @@ class SpeedUchikomiKoshi: Training
     public SpeedUchikomiKoshi()
     {
         this.colorCode = "#DAA520";
-        this.firstExp = 130;
-        this.secondExp = 30;
+        this.firstExp = 80;
+        this.secondExp = 20;
 
         this.firstExpWazaIdList = new List<string>(){"5", "6", "7", "8"};
         this.secondExpWazaIdList = new List<string>(){"901", "902"};
@@ -518,8 +514,8 @@ class SanninUchikomiKoshi: Training
     public SanninUchikomiKoshi()
     {
         this.colorCode = "#DAA520";
-        this.firstExp = 130;
-        this.secondExp = 30;
+        this.firstExp = 100;
+        this.secondExp = 10;
 
         this.firstExpWazaIdList = new List<string>(){"5", "6", "7", "8"};
         this.secondExpWazaIdList = new List<string>(){"900", "902"};
@@ -531,11 +527,10 @@ class NagekomiKoshi: Training
     public NagekomiKoshi()
     {
         this.colorCode = "#DAA520";
-        this.firstExp = 150;
+        this.firstExp = 90;
         this.secondExp = 10;
 
         this.firstExpWazaIdList = new List<string>(){"5", "6", "7", "8"};
-        this.secondExpWazaIdList = new List<string>(){"900", "901", "902"};
     }
 }
 
@@ -544,8 +539,8 @@ class UchikomiAshi: Training
     public UchikomiAshi()
     {
         this.colorCode = "#6B8E23";
-        this.firstExp = 100;
-        this.secondExp = 20;
+        this.firstExp = 110;
+
 
         this.firstExpWazaIdList = new List<string>(){"9", "10", "11", "12"};
         this.secondExpWazaIdList = new List<string>(){"900", "901", "902"};
@@ -557,8 +552,8 @@ class IdoUchikomiAshi: Training
     public IdoUchikomiAshi()
     {
         this.colorCode = "#6B8E23";
-        this.firstExp = 140;
-        this.secondExp = 20;
+        this.firstExp = 90;
+        this.secondExp = 10;
 
         this.firstExpWazaIdList = new List<string>(){"9", "10", "11", "12"};
         this.secondExpWazaIdList = new List<string>(){"900", "901", "902"};
@@ -570,8 +565,8 @@ class SpeedUchikomiAshi: Training
     public SpeedUchikomiAshi()
     {
         this.colorCode = "#6B8E23";
-        this.firstExp = 130;
-        this.secondExp = 30;
+        this.firstExp = 80;
+        this.secondExp = 20;
 
         this.firstExpWazaIdList = new List<string>(){"9", "10", "11", "12"};
         this.secondExpWazaIdList = new List<string>(){"901", "902"};
@@ -583,8 +578,8 @@ class SanninUchikomiAshi: Training
     public SanninUchikomiAshi()
     {
         this.colorCode = "#6B8E23";
-        this.firstExp = 130;
-        this.secondExp = 30;
+        this.firstExp = 100;
+        this.secondExp = 10;
 
         this.firstExpWazaIdList = new List<string>(){"9", "10", "11", "12"};
         this.secondExpWazaIdList = new List<string>(){"900", "902"};
@@ -596,7 +591,7 @@ class NagekomiAshi: Training
     public NagekomiAshi()
     {
         this.colorCode = "#6B8E23";
-        this.firstExp = 150;
+        this.firstExp = 90;
         this.secondExp = 10;
 
         this.firstExpWazaIdList = new List<string>(){"9", "10", "11", "12"};
@@ -609,11 +604,13 @@ class RandoriTachi: Training
     public RandoriTachi()
     {
         this.colorCode = "#B1063A";
-        this.firstExp = 70;
-        this.secondExp = 40;
+        this.firstExp = 40;
+        this.secondExp = 20;
+        this.thirdExp = 10;
 
         this.firstExpWazaIdList = new List<string>(){"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20"};
-        this.secondExpWazaIdList = new List<string>(){"900", "901", "902"};
+        this.secondExpWazaIdList = new List<string>(){"902"};
+        this.thirdExpWazaIdList = new List<string>(){"900", "901"};
     }
 }
 
@@ -624,9 +621,11 @@ class UchikomiOsae: Training
         this.colorCode = "#800080";
         this.firstExp = 80;
         this.secondExp = 30;
+        this.thirdExp = 10;
 
         this.firstExpWazaIdList = new List<string>(){"21", "22", "23", "24"};
-        this.secondExpWazaIdList = new List<string>(){"900", "901", "902"};
+        this.secondExpWazaIdList = new List<string>(){"902"};
+        this.thirdExpWazaIdList = new List<string>(){"900", "901"};
     }
 }
 
@@ -636,10 +635,12 @@ class GrapplingOsae: Training
     {
         this.colorCode = "#800080";
         this.firstExp = 120;
-        this.secondExp = 40;
+        this.secondExp = 30;
+        this.thirdExp = 10;
 
         this.firstExpWazaIdList = new List<string>(){"21", "22", "23", "24"};
-        this.secondExpWazaIdList = new List<string>(){"900", "901", "902"};
+        this.secondExpWazaIdList = new List<string>(){"902"};
+        this.thirdExpWazaIdList = new List<string>(){"900", "901"};
     }
 }
 
@@ -650,9 +651,11 @@ class UchikomiShime: Training
         this.colorCode = "#800080";
         this.firstExp = 100;
         this.secondExp = 30;
+        this.thirdExp = 10;
 
         this.firstExpWazaIdList = new List<string>(){"25", "26", "27", "28"};
-        this.secondExpWazaIdList = new List<string>(){"900", "901", "902"};
+        this.secondExpWazaIdList = new List<string>(){"902"};
+        this.thirdExpWazaIdList = new List<string>(){"900", "901"};
     }
 }
 
@@ -662,10 +665,12 @@ class GrapplingShime: Training
     {
         this.colorCode = "#800080";
         this.firstExp = 120;
-        this.secondExp = 40;
+        this.secondExp = 30;
+        this.thirdExp = 10;
 
         this.firstExpWazaIdList = new List<string>(){"25", "26", "27", "28"};
-        this.secondExpWazaIdList = new List<string>(){"900", "901", "902"};
+        this.secondExpWazaIdList = new List<string>(){"902"};
+        this.thirdExpWazaIdList = new List<string>(){"900", "901"};
     }
 }
 
@@ -676,9 +681,11 @@ class UchikomiKansetsu: Training
         this.colorCode = "#800080";
         this.firstExp = 100;
         this.secondExp = 30;
+        this.thirdExp = 10;
 
         this.firstExpWazaIdList = new List<string>(){"29", "30", "31", "32"};
-        this.secondExpWazaIdList = new List<string>(){"900", "901", "902"};
+        this.secondExpWazaIdList = new List<string>(){"902"};
+        this.thirdExpWazaIdList = new List<string>(){"900", "901"};
     }
 }
 
@@ -688,10 +695,12 @@ class GrapplingKansetsu: Training
     {
         this.colorCode = "#800080";
         this.firstExp = 120;
-        this.secondExp = 40;
+        this.secondExp = 30;
+        this.thirdExp = 10;
 
         this.firstExpWazaIdList = new List<string>(){"29", "30", "31", "32"};
-        this.secondExpWazaIdList = new List<string>(){"900", "901", "902"};
+        this.secondExpWazaIdList = new List<string>(){"902"};
+        this.thirdExpWazaIdList = new List<string>(){"900", "901"};
     }
 }
 
@@ -700,10 +709,12 @@ class RandoriNe: Training
     public RandoriNe()
     {
         this.colorCode = "#745399";
-        this.firstExp = 70;
+        this.firstExp = 50;
         this.secondExp = 50;
+        this.thirdExp = 20;
 
-        this.firstExpWazaIdList = new List<string>(){"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31", "32"};
-        this.secondExpWazaIdList = new List<string>(){"900", "901", "902"};
+        this.firstExpWazaIdList = new List<string>(){"21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31", "32"};
+        this.secondExpWazaIdList = new List<string>(){"902"};
+        this.thirdExpWazaIdList = new List<string>(){"900", "901"};
     }
 }
