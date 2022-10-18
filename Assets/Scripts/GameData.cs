@@ -17,6 +17,7 @@ public class GameData : MonoBehaviour
     public NameManager nameManager;
     public MatchManager matchManager;
     public TrainingManager trainingManager;
+    public SetsubiManager setsubiManager;
     public Schedule todayEvent;
     public Tournament todayJoinTournament;
 
@@ -52,6 +53,7 @@ public class GameData : MonoBehaviour
         GenerateSupervisor(storyDate);
         matchManager = new MatchManager();
         trainingManager = new TrainingManager();
+        setsubiManager = new SetsubiManager();
     }
 
     public void GenerateNewYearGameDate()

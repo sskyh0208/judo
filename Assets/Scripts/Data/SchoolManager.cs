@@ -215,6 +215,7 @@ public class School
     public Dictionary<string, int> trainingMenu4;
     public Dictionary<string, int> trainingMenu5;
     
+    public List<Setsubi> setsubiList;
 
     public School(string id, string placeId, string name, int schoolRank)
     {
@@ -234,6 +235,7 @@ public class School
         this.trainingMenu3 = new Dictionary<string, int>();
         this.trainingMenu4 = new Dictionary<string, int>();
         this.trainingMenu5 = new Dictionary<string, int>();
+        this.setsubiList = new List<Setsubi>();
         this.money = 50;
         SetSchoolRank();
     }
