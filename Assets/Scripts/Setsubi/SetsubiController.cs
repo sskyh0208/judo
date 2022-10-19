@@ -2,11 +2,16 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class SetsubiController : MonoBehaviour
 {
+
+    [SerializeField] private  EventSystem eventSystem;
     private GameObject moneyPanel;
+
+    public GameObject setsubiPrefab;
 
     void Start()
     {
@@ -19,11 +24,14 @@ public class SetsubiController : MonoBehaviour
     private void SetSetsubiDisplay()
     {
         List<Setsubi> setsubiList = GameData.instance.setsubiManager.GetAllSetsubi();
+        GameObject content = GameObject.Find("Viewport").transform.Find("Content").gameObject;
         foreach (Setsubi setsubi in setsubiList)
         {
-            GameObject obj = GameObject.Find("Setsubi" + setsubi.no);
-            obj.transform.Find("Label").GetComponent<Text>().text = setsubi.name;
-            obj.transform.Find("Value").GetComponent<Text>().text = setsubi.value.ToString();
+            GameObject setsubiObj = Instantiate(setsubiPrefab, content.transform);
+            setsubiObj.transform.Find("Button").GetComponent<Button>().onClick.AddListener(this.BuySetsubi);
+            setsubiObj.name = "Setsubi" + setsubi.no;
+            setsubiObj.transform.Find("Label").GetComponent<Text>().text = setsubi.name;
+            setsubiObj.transform.Find("Value").GetComponent<Text>().text = setsubi.value.ToString();
         }
     }
 
@@ -37,13 +45,16 @@ public class SetsubiController : MonoBehaviour
         foreach (Setsubi setsubi in GameData.instance.GetPlayerSchool().setsubiList)
         {
             // 購入済みの設備の設定
-            this.ChangeStatusBought(setsubi.no);
+            this.ChangeStatusBought(GameObject.Find("Setsubi" + setsubi.no).transform.Find("Button").gameObject);
         }
     }
 
-    public void BuySetsubi(string setsubiNo)
+    public void BuySetsubi()
     {
-        GameObject parent = GameObject.Find("Setsubi" + setsubiNo);
+        GameObject button = eventSystem.currentSelectedGameObject.gameObject;
+        Debug.Log(button.name);
+        GameObject parent = button.transform.parent.gameObject;
+        string setsubiNo = parent.name.Replace("Setsubi", "");
         int value = Int32.Parse(parent.transform.Find("Value").GetComponent<Text>().text);
 
         if (value > GameData.instance.GetPlayerSchool().money)
@@ -55,14 +66,13 @@ public class SetsubiController : MonoBehaviour
             GameData.instance.GetPlayerSchool().money -= value;
             GameData.instance.GetPlayerSchool().setsubiList.Add(GameData.instance.setsubiManager.GetSetsubi(setsubiNo));
             this.UpdateBuhiValue();
-            this.ChangeStatusBought(setsubiNo);
+            this.ChangeStatusBought(button);
         }
     }
 
     // 購入済み設備のボタンのグレーアウトおよび表示変更
-    private　void ChangeStatusBought(string setsubiNo)
+    private　void ChangeStatusBought(GameObject button)
     {
-        GameObject button = GameObject.Find("Setsubi" + setsubiNo).transform.Find("Button").gameObject;
         button.GetComponent<Button>().interactable = false;
         button.transform.Find("Text").GetComponent<Text>().text = "購入済み";
     }
