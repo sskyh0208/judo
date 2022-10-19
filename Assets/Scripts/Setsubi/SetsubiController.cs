@@ -28,8 +28,15 @@ public class SetsubiController : MonoBehaviour
         foreach (Setsubi setsubi in setsubiList)
         {
             GameObject setsubiObj = Instantiate(setsubiPrefab, content.transform);
-            setsubiObj.transform.Find("Button").GetComponent<Button>().onClick.AddListener(this.BuySetsubi);
             setsubiObj.name = "Setsubi" + setsubi.no;
+            GameObject button = setsubiObj.transform.Find("Button").gameObject;
+            button.GetComponent<Button>().onClick.AddListener(this.BuySetsubi);
+            setsubiObj.gameObject.AddComponent<EventTrigger>();
+            EventTrigger trigger = setsubiObj.GetComponent<EventTrigger>();
+            EventTrigger.Entry entry = new EventTrigger.Entry();
+            entry.eventID = EventTriggerType.PointerEnter;
+            entry.callback.AddListener((data) => {Debug.Log(setsubiObj.name);});
+            trigger.triggers.Add(entry);
             setsubiObj.transform.Find("Label").GetComponent<Text>().text = setsubi.name;
             setsubiObj.transform.Find("Value").GetComponent<Text>().text = setsubi.value.ToString();
         }
