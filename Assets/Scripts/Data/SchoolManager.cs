@@ -235,7 +235,7 @@ public class School
         this.trainingMenu3 = new Dictionary<string, int>();
         this.trainingMenu4 = new Dictionary<string, int>();
         this.trainingMenu5 = new Dictionary<string, int>();
-        this.setsubiList = new List<Setsubi>();
+        this.setsubiList = GameData.instance.setsubiManager.GetAllSetsubi();
         this.money = 50;
         SetSchoolRank();
     }

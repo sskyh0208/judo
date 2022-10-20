@@ -36,6 +36,9 @@ public class GameData : MonoBehaviour
 
     public void LoadNewGameData()
     {
+        matchManager = new MatchManager();
+        trainingManager = new TrainingManager();
+        setsubiManager = new SetsubiManager();
         placeManager = LoadJapanData();
         scheduleManager =LoadScheduleData();
         schoolManager = LoadSchoolData();
@@ -51,9 +54,6 @@ public class GameData : MonoBehaviour
             GenerateThisYearPlayers(new DateTime(storyDate.Year - i, 4, 1), generateDt, i + 1);
         }
         GenerateSupervisor(storyDate);
-        matchManager = new MatchManager();
-        trainingManager = new TrainingManager();
-        setsubiManager = new SetsubiManager();
     }
 
     public void GenerateNewYearGameDate()

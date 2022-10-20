@@ -41,9 +41,11 @@ public class Setsubi
 {
     public string no;
     public string name;
+    public string description;
     public int value;
     public List<string> coefTargetList;
     public float coef;
+    public bool is_bought = false;
 
     // 設備の係数を取得する
     public float GetSetsubiCoef(string wazaId)
@@ -62,6 +64,7 @@ public class BookTe: Setsubi
     {
         this.no = "1";
         this.name = "技術本(手)";
+        this.description = "手技の技術書、あの背負い投げの達人の本。";
         this.value = 5;
         this.coefTargetList = new List<string>(){"1", "2", "3", "4"};
         this.coef = 1.1f;
@@ -74,6 +77,7 @@ public class BookKoshi: Setsubi
     {
         this.no = "2";
         this.name = "技術本(腰)";
+        this.description = "腰技の技術書、内股はこれを見れば上手くなる。";
         this.value = 5;
         this.coefTargetList = new List<string>(){"5", "6", "7", "8"};
         this.coef = 1.1f;
@@ -86,6 +90,7 @@ public class BookAshi: Setsubi
     {
         this.no = "3";
         this.name = "技術本(足)";
+        this.description = "足技の技術書、大外刈りの教本。";
         this.value = 5;
         this.coefTargetList = new List<string>(){"9", "10", "11", "12"};
         this.coef = 1.1f;
@@ -98,6 +103,7 @@ public class BookOsae: Setsubi
     {
         this.no = "4";
         this.name = "技術本(抑)";
+        this.description = "";
         this.value = 5;
         this.coefTargetList = new List<string>(){"21", "22", "23", "24"};
         this.coef = 1.1f;
@@ -110,6 +116,7 @@ public class BookShime: Setsubi
     {
         this.no = "5";
         this.name = "技術本(締)";
+        this.description = "";
         this.value = 5;
         this.coefTargetList = new List<string>(){"25", "26", "27", "28"};
         this.coef = 1.1f;
@@ -122,6 +129,7 @@ public class BookKansetsu: Setsubi
     {
         this.no = "6";
         this.name = "技術本(関)";
+        this.description = "";
         this.value = 5;
         this.coefTargetList = new List<string>(){"29", "30", "31", "32"};
         this.coef = 1.1f;
@@ -134,6 +142,7 @@ public class DvdTe: Setsubi
     {
         this.no = "7";
         this.name = "技術DVD(手)";
+        this.description = "";
         this.value = 10;
         this.coefTargetList = new List<string>(){"1", "2", "3", "4"};
         this.coef = 1.1f;
@@ -146,6 +155,7 @@ public class DvdKoshi: Setsubi
     {
         this.no = "8";
         this.name = "技術DVD(腰)";
+        this.description = "";
         this.value = 10;
         this.coefTargetList = new List<string>(){"5", "6", "7", "8"};
         this.coef = 1.1f;
@@ -158,6 +168,7 @@ public class DvdAshi: Setsubi
     {
         this.no = "9";
         this.name = "技術DVD(足)";
+        this.description = "";
         this.value = 10;
         this.coefTargetList = new List<string>(){"9", "10", "11", "12"};
         this.coef = 1.1f;
@@ -170,6 +181,7 @@ public class DvdOsae: Setsubi
     {
         this.no = "10";
         this.name = "技術DVD(抑)";
+        this.description = "";
         this.value = 10;
         this.coefTargetList = new List<string>(){"21", "22", "23", "24"};
         this.coef = 1.1f;
@@ -182,6 +194,7 @@ public class DvdShime: Setsubi
     {
         this.no = "11";
         this.name = "技術DVD(締)";
+        this.description = "";
         this.value = 10;
         this.coefTargetList = new List<string>(){"25", "26", "27", "28"};
         this.coef = 1.1f;
@@ -194,6 +207,7 @@ public class DvdKansetsu: Setsubi
     {
         this.no = "12";
         this.name = "技術DVD(関)";
+        this.description = "";
         this.value = 10;
         this.coefTargetList = new List<string>(){"29", "30", "31", "32"};
         this.coef = 1.1f;
