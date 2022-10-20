@@ -8,9 +8,11 @@ public class TrainingManager
     public List<Tuple<string, int>> GetTrainingMenuResult(Dictionary<string, int> trainingMenu)
     {
         List<Tuple<string, int>> allTrainingMenuResult = new List<Tuple<string, int>>();
+        List<Setsubi> setsubiList = GameData.instance.GetPlayerSchool().setsubiList;
+        PlayerManager supervisor = GameData.instance.player;
         foreach (KeyValuePair<string, int> training in trainingMenu)
         {
-            foreach (Tuple<string, int> trainingMenuResult in this.ExecuteTraining(this.GetTraining(training.Key), GameData.instance.player, training.Value))
+            foreach (Tuple<string, int> trainingMenuResult in this.ExecuteTraining(this.GetTraining(training.Key), setsubiList, supervisor, training.Value))
             {
                 allTrainingMenuResult.Add(trainingMenuResult);
             }
@@ -18,12 +20,19 @@ public class TrainingManager
         return allTrainingMenuResult;
     }
 
-    public List<Tuple<string, int>> ExecuteTraining(Training training, PlayerManager supervisor, int minutes)
+    public List<Tuple<string, int>> ExecuteTraining(Training training, List<Setsubi> setsubiList, PlayerManager supervisor, int minutes)
     {
         List<Tuple<string, int>> trainingMenuResult = new List<Tuple<string, int>>();
         foreach (string wazaId in training.firstExpWazaIdList)
         {
             int exp = (int)(training.firstExp * supervisor.GetAbillity(wazaId).GetUpdateExpSenseCoef());
+            foreach (Setsubi setsubi in setsubiList)
+            {
+                if (setsubi.coefTargetList.Contains(wazaId))
+                {
+                    exp = (int)(exp * setsubi.coef);
+                }
+            }
             trainingMenuResult.Add(new Tuple<string, int>(wazaId, exp * minutes));
         }
         foreach (string wazaId in training.secondExpWazaIdList)
